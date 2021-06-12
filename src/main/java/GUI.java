@@ -117,10 +117,11 @@ import javax.swing.*;
         import java.awt.event.ActionListener;
         import java.awt.event.MouseAdapter;
         import java.awt.event.MouseEvent;
-        import java.util.ArrayList;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 
 public class GUI extends JFrame {
-    private ArrayList<ArrayList<CellLabel>> boxes;
+    private ArrayList<ArrayList<CellLabel>> labels;
     private CellLabel clicked;
     private Color backgroundColor;
     private Color clickedColor;
@@ -129,7 +130,6 @@ public class GUI extends JFrame {
     public GUI(int size) {
         super("Sudoku");
 
-        boxes = new ArrayList<>();
         backgroundColor = Color.white;
         clickedColor = Color.decode("#dcedc9");
         borderColor = Color.darkGray;
@@ -140,47 +140,57 @@ public class GUI extends JFrame {
         // Game overlay
         JPanel outerPanel = new JPanel();
         outerPanel.setLayout(new GridLayout((int)Math.sqrt(size),(int)Math.sqrt(size)));
-        for (int i = 0; i < size; i++) {
-            JPanel innerPanel = new JPanel();
-            innerPanel.setLayout(new GridLayout((int)Math.sqrt(size),(int)Math.sqrt(size)));
-            innerPanel.setBorder(new LineBorder(borderColor, 2));
-            ArrayList<CellLabel> fields = new ArrayList<>();
+        // Creating matrix of Label-Elements ('labels') -> Creation in advance in order to get the right coordinates
+        labels = new ArrayList<>();
+        for (int i = 0; i < size+100; i++) {
+            ArrayList<CellLabel> temp = new ArrayList<>();
             for (int j = 0; j < size; j++) {
-                CellLabel field = new CellLabel(i+" "+j,i,j);
+                CellLabel field = new CellLabel(" ",i,j);
                 field.setOpaque(true);
                 field.setBackground(backgroundColor);
                 field.setBorder(new LineBorder(borderColor, 1));
+                field.setHorizontalAlignment(SwingConstants.CENTER);
+                field.setVerticalAlignment(SwingConstants.CENTER);
                 field.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mousePressed(MouseEvent e) {
                         if(clicked != null) clicked.setBackground(backgroundColor);
                         clicked = field;
                         field.setBackground(clickedColor);
-                        // TODO Prüfung der Eingabe (Backend)
                     }
-
                 });
-                fields.add(field);
-                innerPanel.add(field);
-//                if(colCounter >= Math.sqrt(size)-1) {
-//                    colCounter = 0;
-//                    if(rowCounter >= Math.sqrt(size)-1) {
-//                        rowCounter = 0;
-//                        fieldCounter++;
-//                    } else {
-//                        rowCounter++;
-//                    }
-//                } else {
-//                    colCounter++;
-//                }
+                temp.add(field);
             }
-            boxes.add(fields);
-            outerPanel.add(innerPanel);
+            labels.add(temp);
         }
-        // TODO: "Einlesen" aus vorgegebenem/generierten Sudoku
-        boxes.get(1).get(1).setText("PRE");
-        boxes.get(1).get(1).setPredefined(true);
 
+        // Creating matrix of panels ('panels') -> Creation in advance in order to get the right coordinates
+        ArrayList<ArrayList<JPanel>> panels = new ArrayList<>();
+        for (int i = 0; i < Math.sqrt(size); i++) {
+            ArrayList<JPanel> temp = new ArrayList<>();
+            for (int j = 0; j < Math.sqrt(size); j++) {
+                JPanel panel = new JPanel();
+                panel.setLayout(new GridLayout((int) Math.sqrt(size), (int) Math.sqrt(size)));
+                panel.setBorder(new LineBorder(borderColor, 2));
+                temp.add(panel);
+            }
+            panels.add(temp);
+        }
+
+        // Filling the panels-matrix with values from the labels-matrix
+        for (int row = 0; row < size; row++) {
+            for (int col = 0; col < size; col++) {
+                CellLabel field = labels.get(row).get(col);
+                panels.get(row/(int)Math.sqrt(size)).get(col/(int)Math.sqrt(size)).add(field);
+            }
+        }
+
+        // Filling the outerPanel-matrix (game overlay) with values from the panels-matrix
+        for (ArrayList<JPanel> panel : panels) {
+            for (JPanel jPanel : panel) {
+                outerPanel.add(jPanel);
+            }
+        }
 
         // Buttons for input
         JPanel buttonsPanel = new JPanel();
@@ -216,10 +226,23 @@ public class GUI extends JFrame {
         button9.addActionListener(new ButtonListener());
         buttonDelete.addActionListener(new ButtonListener());
 
+        // Adding game overlay and buttons to the panel
         pane.add(outerPanel, BorderLayout.CENTER);
         pane.add(buttonsPanel, BorderLayout.EAST);
+
+        // Changing clicked-Value to 0|0 to exclude errors
+        clicked = labels.get(0).get(0);
+        clicked.setBackground(clickedColor);
     }
 
+    // Definition of pre-defined elements -> cannot be changed
+    public void definePredfined(int row, int col, int value) {
+        // TODO: "Einlesen" aus vorgegebenem/generierten Sudoku -> Methodenaufruf aus Backend
+        labels.get(row).get(col).setText(value+"");
+        labels.get(row).get(col).setPredefined(true);
+    }
+
+    // Button-Listener for numbers-buttons to provide a correct input
     private class ButtonListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
