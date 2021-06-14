@@ -1,4 +1,5 @@
-import java.util.Arrays;
+import static java.util.Arrays.copyOf;
+import static java.util.Arrays.fill;
 
 public class Sudoku {
 
@@ -7,55 +8,40 @@ public class Sudoku {
     public static final int SUB_GRID_SIZE = 3;
 
 
+    private static record Cell(int row, int column) {}
+
+
     private final int[][] grid;
+
+
+    public Sudoku() {
+        grid = new int[GRID_SIZE][GRID_SIZE];
+        for (final int[] row : grid) {
+            fill(row, EMPTY_CELL);
+        }
+    }
+
+    public Sudoku(final int[][] grid) throws IllegalArgumentException {
+        this.grid = new int[grid.length][];
+        for (int i = 0; i < grid.length; i++) {
+            this.grid[i] = copyOf(grid[i], grid[i].length);
+        }
+        if (!isValid()) throw new IllegalArgumentException("input sudoku is not valid");
+    }
+
 
     public int[][] getGrid() {
         return grid;
     }
 
-    public Sudoku() {
-        grid = new int[GRID_SIZE][GRID_SIZE];
-        for (int[] row : grid) {
-            Arrays.fill(row, EMPTY_CELL);
-        }
-    }
-
-    public Sudoku(final int[][] grid) throws IllegalArgumentException {
-        this.grid = new int[grid.length][0];
-        for (int i = 0; i < grid.length; i++) {
-            this.grid[i] = Arrays.copyOf(grid[i], grid[i].length);
-        }
-        if (!isValid()) throw new IllegalArgumentException("input sudoku is not valid");
-    }
-
-    private boolean isValid() {
-        if (grid.length != GRID_SIZE) return false; // wrong amount of rows
-
-        for (int row = 0; row < GRID_SIZE; row++) {
-            if (grid[row].length != GRID_SIZE) return false; // wrong amount of columns
-
-            for (int column = 0; column < GRID_SIZE; column++) {
-                final int currentCell = grid[row][column];
-
-                if (currentCell == EMPTY_CELL) continue; // empty cell is always ok
-                if (currentCell < 1 || currentCell > GRID_SIZE || !constraintsFulfilled(new Cell(row, column))) {
-                    return false;
-                }
-            }
-        }
-        return true; // no rule was violated -> valid
-    }
-
 
     public boolean solve() {
-        final Cell startCell = getNextEmptyCell(0, 0);
-        if (startCell == null) return true; // all cells are filled (only valid fills happen) -> already solved
-        return solveInternal(startCell);
+        return solveInternal(getNextEmptyCell(0, 0));
     }
 
     private boolean solveInternal(final Cell currentCell) {
 
-        if (currentCell == null) return true; // all cells are filled -> found solution
+        if (currentCell == null) return true; // all cells are filled (only valid fills happen) -> found solution
 
         // on overflow: back to 0
         final int nextCellColumn = (currentCell.column + 1 < GRID_SIZE) ? currentCell.column + 1 : 0;
@@ -74,9 +60,6 @@ public class Sudoku {
     }
 
     private Cell getNextEmptyCell(final int startRow, final int startColumn) {
-        if (startRow >= GRID_SIZE) return null;
-        if (grid[startRow][startColumn] == EMPTY_CELL) return new Cell(startRow, startColumn);
-
         // start row with startRow
         for (int row = startRow; row < GRID_SIZE; row++) {
 
@@ -86,7 +69,7 @@ public class Sudoku {
                 if (grid[row][column] == EMPTY_CELL) return new Cell(row, column);
             }
         }
-        return null;
+        return null; // startRow >= GRID_SIZE or reached end
     }
 
     private boolean constraintsFulfilled(final Cell cell) {
@@ -120,5 +103,21 @@ public class Sudoku {
         return true; // no rule was violated -> constraints fulfilled
     }
 
-    private static record Cell(int row, int column) {}
+    private boolean isValid() {
+        if (grid.length != GRID_SIZE) return false; // wrong amount of rows
+
+        for (int row = 0; row < GRID_SIZE; row++) {
+            if (grid[row].length != GRID_SIZE) return false; // wrong amount of columns
+
+            for (int column = 0; column < GRID_SIZE; column++) {
+                final int currentCell = grid[row][column];
+
+                if (currentCell == EMPTY_CELL) continue; // empty cell is always ok
+                if (currentCell < 1 || currentCell > GRID_SIZE || !constraintsFulfilled(new Cell(row, column))) {
+                    return false;
+                }
+            }
+        }
+        return true; // no rule was violated -> valid
+    }
 }
