@@ -55,7 +55,7 @@ class SudokuTest {
     void shouldBeCreatedWithEmptyGrid() {
         assertEquals(0, Sudoku.EMPTY_CELL);
         assertTrue(deepEquals(
-                new int[Sudoku.GRID_SIZE][Sudoku.GRID_SIZE],
+                new int[Sudoku.DEFAULT_GRID_SIZE][Sudoku.DEFAULT_GRID_SIZE],
                 new Sudoku().getGrid()
         ));
     }
@@ -113,7 +113,7 @@ class SudokuTest {
         for (final int[] row : cut.getGrid()) {
             for (final int cell : row) {
                 assertTrue(cell > 0);
-                assertTrue(cell <= Sudoku.GRID_SIZE);
+                assertTrue(cell <= cut.getGridSize());
             }
         }
     }
