@@ -1,6 +1,7 @@
 package view;
 
 import javax.swing.*;
+import java.awt.*;
 
 public class CellLabel extends JLabel {
     private boolean isPredefined = false;
@@ -9,6 +10,7 @@ public class CellLabel extends JLabel {
 
     public CellLabel(String text, int row, int col) {
         super(text);
+        setFont(new Font(getFont().getName(), Font.BOLD, 25));
         this.row = row;
         this.col = col;
     }
