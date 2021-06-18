@@ -1,3 +1,5 @@
+package model;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,6 +13,7 @@ class SudokuTest {
 
     private Sudoku cut;
 
+    // https://sudoku.tagesspiegel.de/files/2021/14062021_sudoku_hard.pdf
     private final int[][] grid = {
             {0, 0, 2,/**/ 0, 0, 7,/**/ 0, 9, 0},
             {0, 0, 0,/**/ 0, 0, 0,/**/ 6, 0, 0},
@@ -25,6 +28,7 @@ class SudokuTest {
             {2, 0, 0,/**/ 0, 0, 0,/**/ 3, 0, 0},
     };
 
+    // https://sudoku.tagesspiegel.de/files/2021/14062021_solve_hard.pdf
     private final int[][] solution = {
             {3, 6, 2,/**/ 5, 8, 7,/**/ 1, 9, 4},
             {5, 9, 8,/**/ 2, 4, 1,/**/ 6, 3, 7},

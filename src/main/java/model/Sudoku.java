@@ -1,3 +1,5 @@
+package model;
+
 import static java.util.Arrays.copyOf;
 import static java.util.Arrays.fill;
 
@@ -26,7 +28,9 @@ public class Sudoku {
         for (int i = 0; i < grid.length; i++) {
             this.grid[i] = copyOf(grid[i], grid[i].length);
         }
-        if (!isValid()) throw new IllegalArgumentException("input sudoku is not valid");
+        if (!isValid()) {
+            throw new IllegalArgumentException("input sudoku is not valid");
+        }
     }
 
 
@@ -41,7 +45,9 @@ public class Sudoku {
 
     private boolean solveInternal(final Cell currentCell) {
 
-        if (currentCell == null) return true; // all cells are filled (only valid fills happen) -> found solution
+        if (currentCell == null) {
+            return true; // all cells are filled (only valid fills happen) -> found solution
+        }
 
         // on overflow: back to 0
         final int nextCellColumn = (currentCell.column + 1 < GRID_SIZE) ? currentCell.column + 1 : 0;
@@ -52,7 +58,9 @@ public class Sudoku {
             grid[currentCell.row][currentCell.column] = number; // choose next number
 
             // number was valid and recursive solve was successful -> found solution
-            if (constraintsFulfilled(currentCell) && solveInternal(nextEmptyCell)) return true;
+            if (constraintsFulfilled(currentCell) && solveInternal(nextEmptyCell)) {
+                return true;
+            }
         }
 
         grid[currentCell.row][currentCell.column] = EMPTY_CELL; // no number was valid -> undo and go back in recursion
@@ -66,7 +74,9 @@ public class Sudoku {
             // start column with startColumn (but only in first iteration of outer loop)
             for (int column = (row == startRow) ? startColumn : 0; column < GRID_SIZE; column++) {
 
-                if (grid[row][column] == EMPTY_CELL) return new Cell(row, column);
+                if (grid[row][column] == EMPTY_CELL) {
+                    return new Cell(row, column);
+                }
             }
         }
         return null; // startRow >= GRID_SIZE or reached end
@@ -104,15 +114,22 @@ public class Sudoku {
     }
 
     private boolean isValid() {
-        if (grid.length != GRID_SIZE) return false; // wrong amount of rows
+        if (grid.length != GRID_SIZE) {
+            return false; // wrong amount of rows
+        }
 
         for (int row = 0; row < GRID_SIZE; row++) {
-            if (grid[row].length != GRID_SIZE) return false; // wrong amount of columns
+            if (grid[row].length != GRID_SIZE) {
+                return false; // wrong amount of columns
+            }
 
             for (int column = 0; column < GRID_SIZE; column++) {
                 final int currentCell = grid[row][column];
 
-                if (currentCell == EMPTY_CELL) continue; // empty cell is always ok
+                if (currentCell == EMPTY_CELL) {
+                    continue; // empty cell is always ok
+                }
+
                 if (currentCell < 1 || currentCell > GRID_SIZE || !constraintsFulfilled(new Cell(row, column))) {
                     return false;
                 }
