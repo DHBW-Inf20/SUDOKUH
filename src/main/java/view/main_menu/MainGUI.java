@@ -1,4 +1,6 @@
-package view;
+package view.main_menu;
+
+import view.GUI;
 
 import javax.swing.*;
 import java.awt.*;

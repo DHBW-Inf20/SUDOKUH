@@ -1,12 +1,13 @@
-import presenter.GUIPresenter;
+import view.main_menu.MainGUI;
+
+import javax.swing.*;
 
 public class Main {
 
     public static void main(String[] args) {
-//        MainGUI gui = new MainGUI();
-//        gui.setSize(800,600);
-//        gui.setVisible(true);
-//        gui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        new GUIPresenter(3);
+        MainGUI gui = new MainGUI();
+        gui.setSize(800,600);
+        gui.setVisible(true);
+        gui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 }
