@@ -8,17 +8,28 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
 public class GUI extends JFrame {
+
     private ArrayList<ArrayList<CellLabel>> labels;
     private CellLabel clicked;
-    private Color backgroundColor;
-    private Color clickedColor;
-    private Color borderColor;
+
+    // Color for field-background
+    private final Color backgroundColor;
+    // Color for field-background when clicked
+    private final Color clickedColor;
+    // Color for field-background when there mustn't be a duplicate to clicked field
+    private final Color markedColor; // TODO implementation of marking
+    // Color for field-background when field is predefined
+    private final Color predefinedColor;
+    // Color for field-borders
+    private final Color borderColor;
 
     public GUI(int size) {
         super("Sudoku");
 
         backgroundColor = Color.white;
         clickedColor = Color.decode("#dcedc9");
+        markedColor = Color.decode("#f2ffe3");
+        predefinedColor = Color.lightGray;
         borderColor = Color.darkGray;
 
         Container pane = getContentPane();
@@ -41,7 +52,13 @@ public class GUI extends JFrame {
                 field.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mousePressed(MouseEvent e) {
-                        if(clicked != null) clicked.setBackground(backgroundColor);
+                        if(clicked != null) {
+                            if(clicked.isPredefined()) {
+                                clicked.setBackground(predefinedColor);
+                            } else {
+                                clicked.setBackground(backgroundColor);
+                            }
+                        }
                         clicked = field;
                         field.setBackground(clickedColor);
                     }
@@ -81,36 +98,14 @@ public class GUI extends JFrame {
 
         // Buttons for input
         JPanel buttonsPanel = new JPanel();
-        buttonsPanel.setLayout(new GridLayout(4,3));
-        JButton button1 = new JButton("1");
-        JButton button2 = new JButton("2");
-        JButton button3 = new JButton("3");
-        JButton button4 = new JButton("4");
-        JButton button5 = new JButton("5");
-        JButton button6 = new JButton("6");
-        JButton button7 = new JButton("7");
-        JButton button8 = new JButton("8");
-        JButton button9 = new JButton("9");
+        buttonsPanel.setLayout(new GridLayout((int)Math.sqrt(size)+1,(int)Math.sqrt(size)));
+        for (int i = 1; i <= size; i++) {
+            JButton button = new JButton(""+i);
+            buttonsPanel.add(button);
+            button.addActionListener(new ButtonListener());
+        }
         JButton buttonDelete = new JButton("L\u00f6schen");
-        buttonsPanel.add(button9);
-        buttonsPanel.add(button8);
-        buttonsPanel.add(button7);
-        buttonsPanel.add(button6);
-        buttonsPanel.add(button5);
-        buttonsPanel.add(button4);
-        buttonsPanel.add(button3);
-        buttonsPanel.add(button2);
-        buttonsPanel.add(button1);
         buttonsPanel.add(buttonDelete);
-        button1.addActionListener(new ButtonListener());
-        button2.addActionListener(new ButtonListener());
-        button3.addActionListener(new ButtonListener());
-        button4.addActionListener(new ButtonListener());
-        button5.addActionListener(new ButtonListener());
-        button6.addActionListener(new ButtonListener());
-        button7.addActionListener(new ButtonListener());
-        button8.addActionListener(new ButtonListener());
-        button9.addActionListener(new ButtonListener());
         buttonDelete.addActionListener(new ButtonListener());
 
         // Adding game overlay and buttons to the panel
@@ -123,10 +118,15 @@ public class GUI extends JFrame {
     }
 
     // Definition of pre-defined elements -> cannot be changed
-    public void definePredfined(int row, int col, int value) {
+    public void setPredefined(int row, int col, int value) {
         // TODO: "Einlesen" aus vorgegebenem/generierten Sudoku -> Methodenaufruf aus Backend
         labels.get(row).get(col).setText(value+"");
         labels.get(row).get(col).setPredefined(true);
+        labels.get(row).get(col).setBackground(predefinedColor);
+    }
+
+    public ArrayList<ArrayList<CellLabel>> getLabels() {
+        return labels;
     }
 
     // Button-Listener for numbers-buttons to provide a correct input
@@ -142,6 +142,6 @@ public class GUI extends JFrame {
             }
         }
     }
-
-
 }
+
+// TODO MVC implementieren (Klassen umbennenen, Button-Klick-Events auslagern in Controller, GUI aktualisieren von Model)
