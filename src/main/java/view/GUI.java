@@ -27,6 +27,9 @@ public class GUI extends JFrame {
     public GUI(int size, ActionListener buttonListener) {
         super("Sudoku");
 
+        setLocationRelativeTo(null);
+
+
         backgroundColor = Color.white;
         clickedColor = Color.decode("#dcedc9");
         markedColor = Color.decode("#f2ffe3");

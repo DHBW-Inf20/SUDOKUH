@@ -1,5 +1,6 @@
 package view.main_menu;
 
+import presenter.GUIPresenter;
 import view.GUI;
 
 import javax.swing.*;
@@ -109,15 +110,8 @@ public class MainMenu extends JFrame {
     }
 
     public void startSolveMode(int size){
-        GUI gameGui = new GUI(size);
-        gameGui.setSize(800,600);
-        gameGui.setVisible(true);
-        gameGui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        gameGui.setLocationRelativeTo(null);
-         dispose();
-        // DEBUG - Aufruf erfolgt aus Backend
-        gameGui.setPredefined(0,0,4);
-        gameGui.setPredefined(2,3,9);
+        new GUIPresenter(size);
+        dispose();
     }
 }
 
