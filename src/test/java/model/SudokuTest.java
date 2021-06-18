@@ -3,6 +3,12 @@ package model;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static java.util.Arrays.deepEquals;
 import static org.junit.jupiter.api.Assertions.*;
@@ -11,10 +17,10 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 @DisplayName("Sudoku")
 class SudokuTest {
 
-    private Sudoku cut;
+    private Sudoku sudoku;
 
     // https://sudoku.tagesspiegel.de/files/2021/14062021_sudoku_hard.pdf
-    private final int[][] grid = {
+    private static final int[][] grid = {
             {0, 0, 2,/**/ 0, 0, 7,/**/ 0, 9, 0},
             {0, 0, 0,/**/ 0, 0, 0,/**/ 6, 0, 0},
             {0, 0, 7,/**/ 0, 9, 3,/**/ 0, 0, 0},
@@ -29,7 +35,7 @@ class SudokuTest {
     };
 
     // https://sudoku.tagesspiegel.de/files/2021/14062021_solve_hard.pdf
-    private final int[][] solution = {
+    private static final int[][] solution = {
             {3, 6, 2,/**/ 5, 8, 7,/**/ 1, 9, 4},
             {5, 9, 8,/**/ 2, 4, 1,/**/ 6, 3, 7},
             {4, 1, 7,/**/ 6, 9, 3,/**/ 8, 5, 2},
@@ -44,9 +50,22 @@ class SudokuTest {
     };
 
 
+    @SuppressWarnings("unused")
+    static List<Arguments> allCellRowsAndColumnsForGrid() {
+        final int size = grid.length;
+        List<Arguments> list = new ArrayList<>();
+        for (int row = 0; row < size; row++) {
+            for (int column = 0; column < size; column++) {
+                list.add(Arguments.of(row, column));
+            }
+        }
+        return list;
+    }
+
+
     @BeforeEach
     void createSudoku() {
-        cut = new Sudoku(grid);
+        sudoku = new Sudoku(grid);
     }
 
 
@@ -63,10 +82,10 @@ class SudokuTest {
     @Test
     @DisplayName("should be created with grid equal to but not same as specified one")
     void shouldBeCreatedWithGridEqualToButNotSameAsSpecifiedOne() {
-        assertNotSame(grid, cut.getGrid());
+        assertNotSame(grid, sudoku.getGrid());
         assertTrue(deepEquals(
                 grid,
-                cut.getGrid()
+                sudoku.getGrid()
         ));
     }
 
@@ -80,41 +99,64 @@ class SudokuTest {
     }
 
     @Test
+    @DisplayName("should not set cell with invalid number")
+    void shouldNotSetCellWithInvalidNumber() {
+        assertFalse(sudoku.setCell(0, 0, sudoku.getGridSize() + 1)); // number too big
+        assertEquals(Sudoku.EMPTY_CELL, sudoku.getGrid()[0][0]);
+
+        assertFalse(sudoku.setCell(0, 0, 2)); // 2 is already in same row, see grid
+        assertEquals(Sudoku.EMPTY_CELL, sudoku.getGrid()[0][0]);
+
+        assertFalse(sudoku.setCell(0, 0, Sudoku.EMPTY_CELL - 1)); // number too small
+        assertEquals(Sudoku.EMPTY_CELL, sudoku.getGrid()[0][0]);
+    }
+
+    @Test
+    @DisplayName("should set cell with valid number")
+    void shouldSetCellWithValidNumber() {
+        assertTrue(sudoku.setCell(0, 0, 3)); // 3 is valid, see solution
+        assertEquals(3, sudoku.getGrid()[0][0]);
+    }
+
+    @ParameterizedTest
+    @MethodSource("allCellRowsAndColumnsForGrid")
+    @DisplayName("should set any cell with Sudoku.EMPTY_CELL")
+    void shouldSetAnyCellWithSudokuEmptyCell(final int row, final int column) {
+        assertTrue(sudoku.setCell(row, column, Sudoku.EMPTY_CELL));
+        assertEquals(Sudoku.EMPTY_CELL, sudoku.getGrid()[row][column]);
+    }
+
+    @Test
     @DisplayName("should be solved")
     void shouldBeSolved() {
-        assertTrue(cut.solve());
+        assertTrue(sudoku.solve());
         assertTrue(deepEquals(
                 solution,
-                cut.getGrid()
+                sudoku.getGrid()
         ));
     }
 
-    @Test
+    @ParameterizedTest
+    @MethodSource("allCellRowsAndColumnsForGrid")
     @DisplayName("should keep prefilled values after solve")
-    void shouldKeepPrefilledValuesAfterSolve() {
-        cut.solve();
-        final int[][] solvedGrid = cut.getGrid();
+    void shouldKeepPrefilledValuesAfterSolve(final int row, final int column) {
+        sudoku.solve();
+        final int[][] solvedGrid = sudoku.getGrid();
 
-        for (int row = 0; row < grid.length; row++) {
-            for (int column = 0; column < grid[row].length; column++) {
-
-                if (grid[row][column] != Sudoku.EMPTY_CELL) {
-                    assertEquals(grid[row][column], solvedGrid[row][column]);
-                }
-            }
+        if (grid[row][column] != Sudoku.EMPTY_CELL) {
+            assertEquals(grid[row][column], solvedGrid[row][column]);
         }
     }
 
-    @Test
+    @ParameterizedTest
+    @MethodSource("allCellRowsAndColumnsForGrid")
     @DisplayName("should only have values between 1 and Sudoku.GRID_SIZE after successful solve")
-    void shouldOnlyHaveValuesBetween1AndSudokuGridSizeAfterSuccessfulSolve() {
-        assumeTrue(cut.solve());
+    void shouldOnlyHaveValuesBetween1AndSudokuGridSizeAfterSuccessfulSolve(final int row, final int column) {
+        assumeTrue(sudoku.solve());
 
-        for (final int[] row : cut.getGrid()) {
-            for (final int cell : row) {
-                assertTrue(cell > 0);
-                assertTrue(cell <= cut.getGridSize());
-            }
-        }
+        final int cell = sudoku.getGrid()[row][column];
+
+        assertTrue(cell > 0);
+        assertTrue(cell <= sudoku.getGridSize());
     }
 }

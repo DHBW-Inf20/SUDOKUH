@@ -62,9 +62,18 @@ public class Sudoku {
     }
 
     public boolean setCell(final int row, final int column, final int value) {
-        if (value != EMPTY_CELL && value > gridSize) {
+
+        // empty cell is always ok
+        if (value == EMPTY_CELL) {
+            grid[row][column] = EMPTY_CELL;
+            return true;
+        }
+
+        // invalid number -> don't even check
+        if (value < 1 || value > gridSize) {
             return false;
         }
+
         final int previous = grid[row][column];
         grid[row][column] = value;
         if (constraintsFulfilled(new Cell(row, column))) {
