@@ -46,10 +46,9 @@ public class GUIPresenter {
             }
             case SOLVE -> {
                 if (sudoku.solve()) {
-                    int[][] grid = sudoku.getGrid();
-                    for (int i = 0; i < grid.length; i++) {
-                        for (int j = 0; j < grid[i].length; j++) {
-                            gui.setValue(i, j, grid[i][j]);
+                    for (int row = 0; row < sudoku.getGridSize(); row++) {
+                        for (int column = 0; column < sudoku.getGridSize(); column++) {
+                            gui.setValue(row, column, sudoku.getCell(row, column));
                         }
                     }
                 } else {

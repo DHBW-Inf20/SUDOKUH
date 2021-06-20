@@ -1,7 +1,14 @@
 package model;
 
-import static java.util.Arrays.copyOf;
-import static java.util.Arrays.fill;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Random;
+
+import static java.lang.Math.sqrt;
+import static java.util.Arrays.*;
+import static java.util.Collections.reverse;
+import static java.util.Collections.shuffle;
 
 public class Sudoku {
 
@@ -23,6 +30,9 @@ public class Sudoku {
     }
 
     public Sudoku(final int subGridSize) {
+        if (subGridSize < 0) {
+            throw new IllegalArgumentException("subGridSize has to be positive or 0!");
+        }
         this.subGridSize = subGridSize;
         gridSize = subGridSize * subGridSize;
         grid = new int[gridSize][gridSize];
@@ -31,20 +41,41 @@ public class Sudoku {
         }
     }
 
-    public Sudoku(final int[][] grid) throws IllegalArgumentException {
+    public Sudoku(final int subGridSize, final Random random) {
+        this(subGridSize);
+        if (random == null) {
+            throw new NullPointerException("You can not pass null for random!");
+        }
+        if (!solveInRandomOrder(random)) {
+            throw new IllegalStateException("Could not solve empty sudoku, something is wrong!");
+        }
+    }
+
+    public Sudoku(final int[][] grid) {
         this.gridSize = grid.length;
-        subGridSize = (int) Math.sqrt(gridSize);
+        subGridSize = (int) sqrt(gridSize);
+
+        if (subGridSize * subGridSize != gridSize) {
+            throw new IllegalArgumentException("Input sudoku did not have a size that is a square number!");
+        }
+
         this.grid = new int[grid.length][];
         for (int i = 0; i < grid.length; i++) {
             this.grid[i] = copyOf(grid[i], grid[i].length);
         }
         if (!isValid()) {
-            throw new IllegalArgumentException("input sudoku is not valid");
+            throw new IllegalArgumentException("Input sudoku is not valid!");
         }
     }
 
 
-    public int[][] getGrid() {
+    public Sudoku getCopy() {
+        return new Sudoku(grid);
+    }
+
+
+    // package-private for tests
+    int[][] getGrid() {
         return grid;
     }
 
@@ -56,6 +87,14 @@ public class Sudoku {
         return gridSize;
     }
 
+    public int getNumberOfCells() {
+        return gridSize * gridSize;
+    }
+
+
+    public int getCell(final int row, final int column) {
+        return grid[row][column];
+    }
 
     public void resetCell(final int row, final int column) {
         setCell(row, column, EMPTY_CELL);
@@ -69,27 +108,36 @@ public class Sudoku {
             return true;
         }
 
-        // invalid number -> don't even check
+        // invalid number -> don't check further
         if (value < 1 || value > gridSize) {
             return false;
         }
 
-        final int previous = grid[row][column];
+        final int previousCellValue = grid[row][column];
         grid[row][column] = value;
-        if (constraintsFulfilled(new Cell(row, column))) {
+        if (constraintsFulfilled(row, column)) {
             return true;
         } else {
-            grid[row][column] = previous;
+            grid[row][column] = previousCellValue; // undo setting invalid number
             return false;
         }
     }
 
 
     public boolean solve() {
-        return solveInternal(getNextEmptyCell(0, 0));
+        return solveInternal(getNextEmptyCell(0, 0), false, null);
     }
 
-    private boolean solveInternal(final Cell currentCell) {
+    public boolean solveInReverseOrder() {
+        return solveInternal(getNextEmptyCell(0, 0), true, null);
+    }
+
+    // package-private for tests
+    boolean solveInRandomOrder(final Random random) {
+        return solveInternal(getNextEmptyCell(0, 0), false, random);
+    }
+
+    private boolean solveInternal(final Cell currentCell, final boolean inReverseOrder, final Random random) {
 
         if (currentCell == null) {
             return true; // all cells are filled (only valid fills happen) -> found solution
@@ -100,12 +148,24 @@ public class Sudoku {
         final int nextCellRow = (nextCellColumn == 0) ? currentCell.row + 1 : currentCell.row;
         final Cell nextEmptyCell = getNextEmptyCell(nextCellRow, nextCellColumn); // start with next cell (current is empty)
 
+        final List<Integer> numbers = new ArrayList<>(gridSize);
+
         for (int number = 1; number <= gridSize; number++) {
+            numbers.add(number);
+        }
+
+        if (random != null) {
+            shuffle(numbers, random);
+        } else if (inReverseOrder) {
+            reverse(numbers);
+        }
+
+        for (final int number : numbers) {
             grid[currentCell.row][currentCell.column] = number; // choose next number
 
-            // number was valid and recursive solve was successful -> found solution
-            if (constraintsFulfilled(currentCell) && solveInternal(nextEmptyCell)) {
-                return true;
+            if (constraintsFulfilled(currentCell.row, currentCell.column) && // number was valid and
+                    solveInternal(nextEmptyCell, inReverseOrder, random)) {  // recursive solve was successful
+                return true;                                                 // -> found solution
             }
         }
 
@@ -118,40 +178,42 @@ public class Sudoku {
         for (int row = startRow; row < gridSize; row++) {
 
             // start column with startColumn (but only in first iteration of outer loop)
-            for (int column = (row == startRow) ? startColumn : 0; column < gridSize; column++) {
+            for (int column = (row == startRow ? startColumn : 0); column < gridSize; column++) {
 
                 if (grid[row][column] == EMPTY_CELL) {
                     return new Cell(row, column);
                 }
             }
         }
-        return null; // startRow >= GRID_SIZE or reached end
+        return null; // reached end and did not find an empty cell
     }
 
-    private boolean constraintsFulfilled(final Cell cell) {
+    private boolean constraintsFulfilled(final int row, final int column) {
 
         // check for appearance of grid[row][column] in same row/column -> if one was found immediately return false
         for (int index = 0; index < gridSize; index++) {
-            if ((cell.row != index && grid[cell.row][cell.column] == grid[index][cell.column]) ||     // grid[row][column] twice in row
-                    (cell.column != index && grid[cell.row][cell.column] == grid[cell.row][index])) { // grid[row][column] twice in column
+            if ((row != index && grid[row][column] == grid[index][column]) ||     // grid[row][column] twice in row
+                    (column != index && grid[row][column] == grid[row][index])) { // grid[row][column] twice in column
                 return false;
             }
         }
 
-        // row % SUB_GRID_SIZE maps row to value between 0 and SUB_GRID_SIZE - 1 (sudoku is split into sub-grids)
-        // the upper bound of one sub-grid is SUB_GRID_SIZE - 1 higher than lower bound
+        // sudoku is split into sub-grids: row % subGridSize maps row to value between 0 and subGridSize - 1
+        // -> row % subGridSize is the row-index in its sub-grid
+        // -> row - (row % subGridSize) is the row-index of the first cell in the sub-grid relative to the whole grid
+        final int rowLowerBoundInclusive = row - (row % subGridSize);
+        // the upper exclusive bound of a sub-grid is subGridSize higher than its lower inclusive bound
+        final int rowUpperBoundExclusive = rowLowerBoundInclusive + subGridSize;
         // same for column
-        final int rowLowerBound = cell.row - (cell.row % subGridSize);
-        final int rowUpperBound = rowLowerBound + subGridSize - 1;
-        final int columnLowerBound = cell.column - (cell.column % subGridSize);
-        final int columnUpperBound = columnLowerBound + subGridSize - 1;
+        final int columnLowerBoundInclusive = column - (column % subGridSize);
+        final int columnUpperBoundExclusive = columnLowerBoundInclusive + subGridSize;
 
-        for (int rowIndex = rowLowerBound; rowIndex <= rowUpperBound; rowIndex++) {
-            for (int columnIndex = columnLowerBound; columnIndex <= columnUpperBound; columnIndex++) {
+        for (int rowIndex = rowLowerBoundInclusive; rowIndex < rowUpperBoundExclusive; rowIndex++) {
+            for (int columnIndex = columnLowerBoundInclusive; columnIndex < columnUpperBoundExclusive; columnIndex++) {
 
-                if (!(cell.row == rowIndex && cell.column == columnIndex) &&           // don't check grid[row][column]
-                        grid[cell.row][cell.column] == grid[rowIndex][columnIndex]) { // grid[row][column] twice in sub-grid
-                    return false;
+                // don't check grid[row][column] == grid[row][column] (always true)
+                if (!(row == rowIndex && column == columnIndex) && grid[row][column] == grid[rowIndex][columnIndex]) {
+                    return false; // grid[row][column] twice in sub-grid
                 }
             }
         }
@@ -176,11 +238,36 @@ public class Sudoku {
                     continue; // empty cell is always ok
                 }
 
-                if (currentCell < 1 || currentCell > gridSize || !constraintsFulfilled(new Cell(row, column))) {
+                if (currentCell < 1 || currentCell > gridSize || !constraintsFulfilled(row, column)) {
                     return false;
                 }
             }
         }
         return true; // no rule was violated -> valid
+    }
+
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Sudoku sudoku = (Sudoku) o;
+        return subGridSize == sudoku.subGridSize && gridSize == sudoku.gridSize && deepEquals(grid, sudoku.grid);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(subGridSize, gridSize);
+        result = 31 * result + deepHashCode(grid);
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "Sudoku{" +
+                "grid=" + deepToString(grid) +
+                ", subGridSize=" + subGridSize +
+                ", gridSize=" + gridSize +
+                '}';
     }
 }

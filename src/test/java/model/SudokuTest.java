@@ -9,6 +9,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import static java.util.Arrays.deepEquals;
 import static org.junit.jupiter.api.Assertions.*;
@@ -18,6 +19,7 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 class SudokuTest {
 
     private Sudoku sudoku;
+    private Sudoku solution;
 
     // https://sudoku.tagesspiegel.de/files/2021/14062021_sudoku_hard.pdf
     private static final int[][] grid = {
@@ -35,7 +37,7 @@ class SudokuTest {
     };
 
     // https://sudoku.tagesspiegel.de/files/2021/14062021_solve_hard.pdf
-    private static final int[][] solution = {
+    private static final int[][] solutionGrid = {
             {3, 6, 2,/**/ 5, 8, 7,/**/ 1, 9, 4},
             {5, 9, 8,/**/ 2, 4, 1,/**/ 6, 3, 7},
             {4, 1, 7,/**/ 6, 9, 3,/**/ 8, 5, 2},
@@ -64,8 +66,9 @@ class SudokuTest {
 
 
     @BeforeEach
-    void createSudoku() {
+    void createSudokuAndSolution() {
         sudoku = new Sudoku(grid);
+        solution = new Sudoku(solutionGrid);
     }
 
 
@@ -102,20 +105,20 @@ class SudokuTest {
     @DisplayName("should not set cell with invalid number")
     void shouldNotSetCellWithInvalidNumber() {
         assertFalse(sudoku.setCell(0, 0, sudoku.getGridSize() + 1)); // number too big
-        assertEquals(Sudoku.EMPTY_CELL, sudoku.getGrid()[0][0]);
+        assertEquals(Sudoku.EMPTY_CELL, sudoku.getCell(0, 0));
 
         assertFalse(sudoku.setCell(0, 0, 2)); // 2 is already in same row, see grid
-        assertEquals(Sudoku.EMPTY_CELL, sudoku.getGrid()[0][0]);
+        assertEquals(Sudoku.EMPTY_CELL, sudoku.getCell(0, 0));
 
         assertFalse(sudoku.setCell(0, 0, Sudoku.EMPTY_CELL - 1)); // number too small
-        assertEquals(Sudoku.EMPTY_CELL, sudoku.getGrid()[0][0]);
+        assertEquals(Sudoku.EMPTY_CELL, sudoku.getCell(0, 0));
     }
 
     @Test
     @DisplayName("should set cell with valid number")
     void shouldSetCellWithValidNumber() {
         assertTrue(sudoku.setCell(0, 0, 3)); // 3 is valid, see solution
-        assertEquals(3, sudoku.getGrid()[0][0]);
+        assertEquals(3, sudoku.getCell(0, 0));
     }
 
     @ParameterizedTest
@@ -123,17 +126,28 @@ class SudokuTest {
     @DisplayName("should set any cell with Sudoku.EMPTY_CELL")
     void shouldSetAnyCellWithSudokuEmptyCell(final int row, final int column) {
         assertTrue(sudoku.setCell(row, column, Sudoku.EMPTY_CELL));
-        assertEquals(Sudoku.EMPTY_CELL, sudoku.getGrid()[row][column]);
+        assertEquals(Sudoku.EMPTY_CELL, sudoku.getCell(row, column));
     }
 
     @Test
     @DisplayName("should be solved")
     void shouldBeSolved() {
         assertTrue(sudoku.solve());
-        assertTrue(deepEquals(
-                solution,
-                sudoku.getGrid()
-        ));
+        assertEquals(solution, sudoku);
+    }
+
+    @Test
+    @DisplayName("should be solved in reverse order")
+    void shouldBeSolvedInReverseOrder() {
+        assertTrue(sudoku.solveInReverseOrder());
+        assertEquals(solution, sudoku);
+    }
+
+    @Test
+    @DisplayName("should be solved in random order")
+    void shouldBeSolvedInRandomOrder() {
+        assertTrue(sudoku.solveInRandomOrder(new Random()));
+        assertEquals(solution, sudoku);
     }
 
     @ParameterizedTest
@@ -141,10 +155,9 @@ class SudokuTest {
     @DisplayName("should keep prefilled values after solve")
     void shouldKeepPrefilledValuesAfterSolve(final int row, final int column) {
         sudoku.solve();
-        final int[][] solvedGrid = sudoku.getGrid();
 
         if (grid[row][column] != Sudoku.EMPTY_CELL) {
-            assertEquals(grid[row][column], solvedGrid[row][column]);
+            assertEquals(grid[row][column], sudoku.getCell(row, column));
         }
     }
 
@@ -154,7 +167,7 @@ class SudokuTest {
     void shouldOnlyHaveValuesBetween1AndSudokuGridSizeAfterSuccessfulSolve(final int row, final int column) {
         assumeTrue(sudoku.solve());
 
-        final int cell = sudoku.getGrid()[row][column];
+        final int cell = sudoku.getCell(row, column);
 
         assertTrue(cell > 0);
         assertTrue(cell <= sudoku.getGridSize());
