@@ -32,9 +32,9 @@ public class GUIPresenter {
                     int number = button.getValue();
                     boolean valid = sudoku.setCell(clickedCell.getRow(), clickedCell.getCol(), number);
                     if (valid) {
-                        clickedCell.setText(String.valueOf(number));
+                        gui.validInput(String.valueOf(number));
                     } else {
-                        // todo warning (invalid input for this cell)
+                        gui.invalidInput(String.valueOf(number));
                     }
                 }
             }
@@ -53,7 +53,7 @@ public class GUIPresenter {
                         }
                     }
                 } else {
-                    // todo warning (can not solve)
+                    gui.cannotSolveWarning();
                 }
             }
         }

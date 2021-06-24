@@ -3,9 +3,7 @@ package view;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.util.ArrayList;
 
 public class GUI extends JFrame {
@@ -24,19 +22,21 @@ public class GUI extends JFrame {
     // Color for field-borders
     private final Color borderColor;
 
+    private Container pane;
+    private JLabel warning;
+    private boolean warningSet;
+
     public GUI(int size, ActionListener buttonListener) {
         super("Sudoku");
-
-        setLocationRelativeTo(null);
-
 
         backgroundColor = Color.white;
         clickedColor = Color.decode("#dcedc9");
         markedColor = Color.decode("#f2ffe3");
         predefinedColor = Color.lightGray;
         borderColor = Color.darkGray;
+        warningSet = false;
 
-        Container pane = getContentPane();
+        pane = getContentPane();
         pane.setLayout(new BorderLayout());
 
         // Game overlay
@@ -56,6 +56,26 @@ public class GUI extends JFrame {
                 field.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mousePressed(MouseEvent e) {
+                        int clickedRow = clicked.getRow();
+                        int clickedCol = clicked.getCol();
+                        for (int k = 0; k < labels.get(clickedRow).size(); k++) {
+                            labels.get(clickedRow).get(k).setBackground(backgroundColor);
+                            if (labels.get(clickedRow).get(k).isPredefined()) labels.get(clickedRow).get(k).setBackground(predefinedColor);
+                        }
+                        for (int k = 0; k < labels.get(clickedRow).size(); k++) {
+                            labels.get(k).get(clickedCol).setBackground(backgroundColor);
+                            if (labels.get(k).get(clickedCol).isPredefined()) labels.get(k).get(clickedCol).setBackground(predefinedColor);
+                        }
+                        int rowLowerBound = clicked.getRow() - (clicked.getRow() % size);
+                        int rowUpperBound = rowLowerBound + size - 1;
+                        int columnLowerBound = clicked.getCol() - (clicked.getCol() % size);
+                        int columnUpperBound = columnLowerBound + size - 1;
+                        for (int k = rowLowerBound; k <= rowUpperBound; k++) {
+                            for (int l = columnLowerBound; l <= columnUpperBound; l++) {
+                                labels.get(k).get(l).setBackground(backgroundColor);
+                                if (labels.get(k).get(l).isPredefined()) labels.get(k).get(l).setBackground(predefinedColor);
+                            }
+                        }
                         if (clicked != null) {
                             if (clicked.isPredefined()) {
                                 clicked.setBackground(predefinedColor);
@@ -64,6 +84,26 @@ public class GUI extends JFrame {
                             }
                         }
                         clicked = field;
+                        clickedRow = clicked.getRow();
+                        clickedCol = clicked.getCol();
+                        for (int k = 0; k < labels.get(clickedRow).size(); k++) {
+                            labels.get(clickedRow).get(k).setBackground(markedColor);
+                            if (labels.get(clickedRow).get(k).isPredefined()) labels.get(clickedRow).get(k).setBackground(predefinedColor);
+                        }
+                        for (int k = 0; k < labels.get(clickedRow).size(); k++) {
+                            labels.get(k).get(clickedCol).setBackground(markedColor);
+                            if (labels.get(k).get(clickedCol).isPredefined()) labels.get(k).get(clickedCol).setBackground(predefinedColor);
+                        }
+                        rowLowerBound = clicked.getRow() - (clicked.getRow() % size);
+                        rowUpperBound = rowLowerBound + size - 1;
+                        columnLowerBound = clicked.getCol() - (clicked.getCol() % size);
+                        columnUpperBound = columnLowerBound + size - 1;
+                        for (int k = rowLowerBound; k <= rowUpperBound; k++) {
+                            for (int l = columnLowerBound; l <= columnUpperBound; l++) {
+                                labels.get(k).get(l).setBackground(markedColor);
+                                if (labels.get(k).get(l).isPredefined()) labels.get(k).get(l).setBackground(predefinedColor);
+                            }
+                        }
                         field.setBackground(clickedColor);
                     }
                 });
@@ -100,7 +140,6 @@ public class GUI extends JFrame {
             }
         }
 
-        // TODO Eigene Buttons mit value (int) zum Abfragen im Presenter (statt Stringvergleich)
         // Buttons for input
         JPanel buttonsPanel = new JPanel();
         buttonsPanel.setLayout(new GridLayout(size + 1, size));
@@ -124,8 +163,9 @@ public class GUI extends JFrame {
         clicked = labels.get(0).get(0);
         clicked.setBackground(clickedColor);
 
-        setSize(800, 600);
+        setSize(900, 700);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
     }
 
     // Definition of pre-defined elements -> cannot be changed
@@ -140,7 +180,38 @@ public class GUI extends JFrame {
 
     public void setValue(int row, int col, int value) {
         labels.get(row).get(col).setText(String.valueOf(value));
+        labels.get(row).get(col).setForeground(Color.black);
+        if(warningSet) {
+            pane.remove(warning);
+            pane.revalidate();
+            warningSet = false;
+        }
+    }
+
+    public void validInput(String input) {
+        clicked.setText(input);
+        clicked.setForeground(Color.black);
+    }
+
+    public void invalidInput(String input) {
+        clicked.setText(input);
+        clicked.setForeground(Color.red);
+    }
+
+    public void cannotSolveWarning() {
+        warning = new JLabel("Dieses Sudoku kann nicht gelöst werden!");
+        warning.setOpaque(true);
+        warning.setBackground(backgroundColor);
+        warning.setForeground(Color.red);
+        warning.setBorder(new LineBorder(borderColor, 1));
+        warning.setFont(new Font(getFont().getName(), Font.BOLD, 25));
+        warning.setHorizontalAlignment(SwingConstants.CENTER);
+        warning.setVerticalAlignment(SwingConstants.CENTER);
+
+        pane.add(warning, BorderLayout.NORTH);
+        pane.revalidate();
+        warningSet = true;
     }
 }
 
-// TODO MVC implementieren (Klassen umbennenen, Button-Klick-Events auslagern in Controller, GUI aktualisieren von Model)
+// TODO MVC für Main-GUI implementieren (Button-Klick-Events auslagern in Controller, GUI aktualisieren von Model)
