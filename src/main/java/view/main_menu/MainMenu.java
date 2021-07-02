@@ -1,7 +1,6 @@
 package view.main_menu;
 
 import presenter.GUIPresenter;
-import view.GUI;
 
 import javax.swing.*;
 import java.awt.*;

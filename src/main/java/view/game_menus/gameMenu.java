@@ -1,4 +1,7 @@
-package view;
+package view.game_menus;
+
+import view.CellLabel;
+import view.CustomButton;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -6,7 +9,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 
-public class GUI extends JFrame {
+public abstract class gameMenu extends JFrame {
 
     private ArrayList<ArrayList<CellLabel>> labels;
     private CellLabel clicked;
@@ -26,7 +29,7 @@ public class GUI extends JFrame {
     private JLabel guiText;
     private boolean textSet;
 
-    public GUI(int size, ActionListener buttonListener, String title) {
+    public gameMenu(int size, ActionListener buttonListener, String title) {
         super(title);
 
         backgroundColor = Color.white;
@@ -229,8 +232,8 @@ public class GUI extends JFrame {
     }
 }
 
-// TODO MVP für Main-GUI implementieren (Button-Klick-Events auslagern in Presenter)
-// TODO Aufteilen des GUI in Spiel-Menü (ggf. nochmal Unterteilung in Normal, Killer & Str8ts) & Lösen-Menü -> Erben von GUI
+// TODO MVP für Main-gameMenu implementieren (Button-Klick-Events auslagern in Presenter)
+// TODO Aufteilen des gameMenu in Spiel-Menü (ggf. nochmal Unterteilung in Normal, Killer & Str8ts) & Lösen-Menü -> Erben von gameMenu
 // TODO Implementieren von Tipp-Funktion in Lösen
 // TODO Implementieren von Blocken in Str8ts
 // TODO Implementieren von Generieren, Stift-, Tipp- & Überprüfen-Funktion in Spielen

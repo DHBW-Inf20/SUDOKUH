@@ -3,7 +3,7 @@ package presenter;
 import model.Sudoku;
 import view.CellLabel;
 import view.CustomButton;
-import view.GUI;
+import view.game_menus.gameMenu;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -11,21 +11,21 @@ import java.awt.event.ActionEvent;
 public class GUIPresenter {
 
     private final Sudoku sudoku;
-    private final GUI gui;
+    private final gameMenu gameMenu;
 
 
     public GUIPresenter(int size) {
         sudoku = new Sudoku(size);
 
-        gui = new GUI(size, this::handleButtonEvent, "Sudoku");
-        gui.setVisible(true);
+        gameMenu = new view.game_menus.solveMenu(size, this::handleButtonEvent, "Sudoku");
+        gameMenu.setVisible(true);
     }
 
 
     // ActionListener for numbers-buttons to provide a correct input
     private void handleButtonEvent(ActionEvent e) {
         CustomButton button = (CustomButton) e.getSource();
-        CellLabel clickedCell = gui.getClicked();
+        CellLabel clickedCell = gameMenu.getClicked();
 
         switch (button.getType()) {
             case NUMBER -> {
@@ -33,9 +33,9 @@ public class GUIPresenter {
                     int number = button.getValue();
                     boolean valid = sudoku.setCell(clickedCell.getRow(), clickedCell.getCol(), number);
                     if (valid) {
-                        gui.validInput(String.valueOf(number));
+                        gameMenu.validInput(String.valueOf(number));
                     } else {
-                        gui.invalidInput(String.valueOf(number));
+                        gameMenu.invalidInput(String.valueOf(number));
                     }
                 }
             }
@@ -47,14 +47,14 @@ public class GUIPresenter {
             }
             case SOLVE -> {
                 if (sudoku.solve()) {
-                    gui.resetGUIText();
+                    gameMenu.resetGUIText();
                     for (int row = 0; row < sudoku.getGridSize(); row++) {
                         for (int column = 0; column < sudoku.getGridSize(); column++) {
-                            gui.setValue(row, column, sudoku.getCell(row, column));
+                            gameMenu.setValue(row, column, sudoku.getCell(row, column));
                         }
                     }
                 } else {
-                    gui.setGUIText("Dieses Sudoku kann nicht gelöst werden!", Color.red);
+                    gameMenu.setGUIText("Dieses Sudoku kann nicht gelöst werden!", Color.red);
                 }
             }
         }
