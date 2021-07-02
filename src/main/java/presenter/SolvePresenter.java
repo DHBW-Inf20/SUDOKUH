@@ -1,8 +1,10 @@
 package presenter;
 
+import model.BasePuzzle;
 import model.Sudoku;
 import view.CellLabel;
 import view.CustomButton;
+import view.LabelPanel;
 import view.game_menus.GameMenu;
 import view.game_menus.SolveMenu;
 
@@ -26,14 +28,14 @@ public class SolvePresenter {
     // ActionListener for numbers-buttons to provide a correct input
     private void handleButtonEvent(ActionEvent e) {
         CustomButton button = (CustomButton) e.getSource();
-        CellLabel clickedCell = gameMenu.getClicked();
+        LabelPanel clickedCell = gameMenu.getClicked();
 
         switch (button.getType()) {
             case NUMBER -> {
                 if (!clickedCell.isPredefined()) {
                     int number = button.getValue();
-                    boolean valid = sudoku.setCell(clickedCell.getRow(), clickedCell.getCol(), number).isSuccess();
-                    if (valid) {
+                    BasePuzzle.SetResult valid = sudoku.setCell(clickedCell.getRow(), clickedCell.getCol(), number);
+                    if (valid.isSuccess()) {
                         gameMenu.validInput(String.valueOf(number));
                     } else {
                         gameMenu.invalidInput(String.valueOf(number));
@@ -43,7 +45,7 @@ public class SolvePresenter {
             case DELETE -> {
                 if (!clickedCell.isPredefined()) {
                     sudoku.resetCell(clickedCell.getRow(), clickedCell.getCol());
-                    clickedCell.setText("");
+                    clickedCell.getLabel().setText("");
                 }
             }
             case SOLVE -> {

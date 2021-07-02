@@ -3,11 +3,24 @@ package view.game_menus;
 import view.CustomButton;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionListener;
 
 public class PlayMenu extends GameMenu {
+
+    // Note-Mode active or not
+    private boolean noteMode;
+
     public PlayMenu(int size, ActionListener buttonListener, String title) {
         super(size, buttonListener, title);
+        noteMode = false;
+    }
+
+    // Definition of pre-defined elements -> cannot be changed
+    public void setPredefined(int row, int col, int value) {
+        labels.get(row).get(col).setText(String.valueOf(value));
+        labels.get(row).get(col).setPredefined(true);
+        labels.get(row).get(col).setBackground(predefinedColor);
     }
 
     @Override
@@ -21,5 +34,25 @@ public class PlayMenu extends GameMenu {
         CustomButton buttonPen = new CustomButton(CustomButton.Type.PEN);
         buttonsPanel.add(buttonPen);
         buttonPen.addActionListener(buttonListener);
+    }
+
+    public void changeNoteMode(CustomButton button) {
+        noteMode = !noteMode;
+        if(noteMode) {
+            button.setBackground(Color.green);
+            clicked.setNoteMode();
+        } else {
+            button.setBackground(Color.white);
+            clicked.setNormalMode();
+        }
+    }
+
+    public boolean getNoteMode() {
+        return noteMode;
+    }
+
+    public void setNote(int value) {
+        clicked.setNote(value);
+        pane.revalidate();
     }
 }
