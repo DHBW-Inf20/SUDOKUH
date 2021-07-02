@@ -17,6 +17,11 @@ public abstract class BasePuzzle {
 
     protected static record Cell(int row, int column) {}
 
+    public static record SetResult(boolean isSuccess, int conflictingRow, int conflictingColumn) {
+        public static SetResult Success = new SetResult(true, -1, -1);
+        public static SetResult InvalidValue = new SetResult(false, -1, -1);
+    }
+
 
     protected final int[][] grid;
     protected final int gridSize;
@@ -50,20 +55,42 @@ public abstract class BasePuzzle {
         setCell(row, column, EMPTY_CELL);
     }
 
-    public abstract boolean setCell(final int row, final int column, final int value);
+    public final SetResult setCell(final int row, final int column, final int value) {
+
+        // empty cell is always ok
+        if (value == EMPTY_CELL) {
+            grid[row][column] = EMPTY_CELL;
+            return SetResult.Success;
+        }
+
+        // invalid value -> don't check further
+        if (value < 1 || value > gridSize) {
+            return SetResult.InvalidValue;
+        }
+
+        final int previousCellValue = grid[row][column];
+        grid[row][column] = value;
+        final Cell conflictingCell = conflictingCell(new Cell(row, column));
+        if (conflictingCell == null) {
+            return SetResult.Success;
+        } else {
+            grid[row][column] = previousCellValue; // undo setting invalid number
+            return new SetResult(false, conflictingCell.row, conflictingCell.column);
+        }
+    }
 
 
     public final boolean solve() {
-        return solveInternal(getNextEmptyCell(new Cell(0, 0), true), false, null);
+        return solveInternal(getNextEmptyCellForSolve(new Cell(0, 0), true), false, null);
     }
 
     public final boolean solveInReverseOrder() {
-        return solveInternal(getNextEmptyCell(new Cell(0, 0), true), true, null);
+        return solveInternal(getNextEmptyCellForSolve(new Cell(0, 0), true), true, null);
     }
 
     // package-private for tests
     final boolean solveInRandomOrder(final Random random) {
-        return solveInternal(getNextEmptyCell(new Cell(0, 0), true), false, random);
+        return solveInternal(getNextEmptyCellForSolve(new Cell(0, 0), true), false, random);
     }
 
     private boolean solveInternal(final Cell currentCell, final boolean inReverseOrder, final Random random) {
@@ -73,7 +100,7 @@ public abstract class BasePuzzle {
         }
 
         // start with next cell (current is empty) -> call with inclusive = false
-        final Cell nextEmptyCell = getNextEmptyCell(currentCell, false);
+        final Cell nextEmptyCell = getNextEmptyCellForSolve(currentCell, false);
 
         final List<Integer> numbers = new ArrayList<>(gridSize);
 
@@ -90,7 +117,7 @@ public abstract class BasePuzzle {
         for (final int number : numbers) {
             grid[currentCell.row][currentCell.column] = number; // choose next number
 
-            if (constraintsFulfilled(currentCell) &&                         // number was valid and
+            if (conflictingCell(currentCell) == null &&                      // number was valid and
                     solveInternal(nextEmptyCell, inReverseOrder, random)) {  // recursive solve was successful
                 return true;                                                 // -> found solution
             }
@@ -101,16 +128,16 @@ public abstract class BasePuzzle {
     }
 
 
-    protected abstract Cell getNextEmptyCell(final Cell startCell, final boolean inclusive);
+    protected abstract Cell getNextEmptyCellForSolve(final Cell startCell, final boolean inclusive);
 
-    protected abstract boolean constraintsFulfilled(final Cell cell);
+    protected abstract Cell conflictingCell(final Cell cell);
 
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        BasePuzzle basePuzzle = (BasePuzzle) o;
+        final BasePuzzle basePuzzle = (BasePuzzle) o;
         return gridSize == basePuzzle.gridSize && deepEquals(grid, basePuzzle.grid);
     }
 

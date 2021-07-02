@@ -104,20 +104,27 @@ class SudokuTest {
     @Test
     @DisplayName("should not set cell with invalid number")
     void shouldNotSetCellWithInvalidNumber() {
-        assertFalse(sudoku.setCell(0, 0, sudoku.getGridSize() + 1)); // number too big
+        Sudoku.SetResult result;
+
+        result = sudoku.setCell(0, 0, sudoku.getGridSize() + 1); // number too big
+        assertSame(Sudoku.SetResult.InvalidValue, result);
         assertEquals(Sudoku.EMPTY_CELL, sudoku.getCell(0, 0));
 
-        assertFalse(sudoku.setCell(0, 0, 2)); // 2 is already in same row, see grid
+        result = sudoku.setCell(0, 0, 2); // 2 is already in same row, see grid
+        assertFalse(result.isSuccess());
+        assertEquals(0, result.conflictingRow());
+        assertEquals(2, result.conflictingColumn());
         assertEquals(Sudoku.EMPTY_CELL, sudoku.getCell(0, 0));
 
-        assertFalse(sudoku.setCell(0, 0, Sudoku.EMPTY_CELL - 1)); // number too small
+        result = sudoku.setCell(0, 0, Sudoku.EMPTY_CELL - 1); // number too small
+        assertSame(Sudoku.SetResult.InvalidValue, result);
         assertEquals(Sudoku.EMPTY_CELL, sudoku.getCell(0, 0));
     }
 
     @Test
     @DisplayName("should set cell with valid number")
     void shouldSetCellWithValidNumber() {
-        assertTrue(sudoku.setCell(0, 0, 3)); // 3 is valid, see solution
+        assertSame(Sudoku.SetResult.Success, sudoku.setCell(0, 0, 3)); // 3 is valid, see solution
         assertEquals(3, sudoku.getCell(0, 0));
     }
 
@@ -125,7 +132,7 @@ class SudokuTest {
     @MethodSource("allCellRowsAndColumnsForGrid")
     @DisplayName("should set any cell with Sudoku.EMPTY_CELL")
     void shouldSetAnyCellWithSudokuEmptyCell(final int row, final int column) {
-        assertTrue(sudoku.setCell(row, column, Sudoku.EMPTY_CELL));
+        assertSame(Sudoku.SetResult.Success, sudoku.setCell(row,column,Sudoku.EMPTY_CELL));
         assertEquals(Sudoku.EMPTY_CELL, sudoku.getCell(row, column));
     }
 

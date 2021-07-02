@@ -32,7 +32,7 @@ public class SolvePresenter {
             case NUMBER -> {
                 if (!clickedCell.isPredefined()) {
                     int number = button.getValue();
-                    boolean valid = sudoku.setCell(clickedCell.getRow(), clickedCell.getCol(), number);
+                    boolean valid = sudoku.setCell(clickedCell.getRow(), clickedCell.getCol(), number).isSuccess();
                     if (valid) {
                         gameMenu.validInput(String.valueOf(number));
                     } else {

@@ -67,32 +67,7 @@ public final class Sudoku extends BasePuzzle {
 
 
     @Override
-    public final boolean setCell(final int row, final int column, final int value) {
-
-        // empty cell is always ok
-        if (value == EMPTY_CELL) {
-            grid[row][column] = EMPTY_CELL;
-            return true;
-        }
-
-        // invalid number -> don't check further
-        if (value < 1 || value > gridSize) {
-            return false;
-        }
-
-        final int previousCellValue = grid[row][column];
-        grid[row][column] = value;
-        if (constraintsFulfilled(new Cell(row, column))) {
-            return true;
-        } else {
-            grid[row][column] = previousCellValue; // undo setting invalid number
-            return false;
-        }
-    }
-
-
-    @Override
-    protected final Cell getNextEmptyCell(final Cell startCell, final boolean inclusive) {
+    protected final Cell getNextEmptyCellForSolve(final Cell startCell, final boolean inclusive) {
         final int startRow = startCell.row(), startColumn = startCell.column();
         boolean firstCell = true;
 
@@ -117,14 +92,16 @@ public final class Sudoku extends BasePuzzle {
     }
 
     @Override
-    protected final boolean constraintsFulfilled(final Cell cell) {
+    protected final Cell conflictingCell(final Cell cell) {
         final int row = cell.row(), column = cell.column();
 
-        // check for appearance of grid[row][column] in same row/column -> if one was found immediately return false
+        // check for appearance of grid[row][column] in same row/column -> if one was found immediately return conflict
         for (int index = 0; index < gridSize; index++) {
-            if ((row != index && grid[row][column] == grid[index][column]) ||     // grid[row][column] twice in row
-                    (column != index && grid[row][column] == grid[row][index])) { // grid[row][column] twice in column
-                return false;
+            if (row != index && grid[row][column] == grid[index][column]) { // grid[row][column] twice in row
+                return new Cell(index, column);
+            }
+            if ((column != index && grid[row][column] == grid[row][index])) { // grid[row][column] twice in column
+                return new Cell(row, index);
             }
         }
 
@@ -143,12 +120,12 @@ public final class Sudoku extends BasePuzzle {
 
                 // don't check grid[row][column] == grid[row][column] (always true)
                 if (!(row == rowIndex && column == columnIndex) && grid[row][column] == grid[rowIndex][columnIndex]) {
-                    return false; // grid[row][column] twice in sub-grid
+                    return new Cell(rowIndex, columnIndex); // grid[row][column] twice in sub-grid
                 }
             }
         }
 
-        return true; // no rule was violated -> constraints fulfilled
+        return null; // no rule was violated -> no conflict
     }
 
 
@@ -169,7 +146,7 @@ public final class Sudoku extends BasePuzzle {
                     continue; // empty cell is always ok
                 }
 
-                if (currentCell < 1 || currentCell > gridSize || !constraintsFulfilled(new Cell(row, column))) {
+                if (currentCell < 1 || currentCell > gridSize || conflictingCell(new Cell(row, column)) != null) {
                     return false;
                 }
             }
@@ -179,11 +156,11 @@ public final class Sudoku extends BasePuzzle {
 
 
     @Override
-    public final boolean equals(Object o) {
+    public final boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
-        Sudoku sudoku = (Sudoku) o;
+        final Sudoku sudoku = (Sudoku) o;
         return subGridSize == sudoku.subGridSize;
     }
 
