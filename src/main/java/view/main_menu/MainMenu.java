@@ -1,6 +1,6 @@
 package view.main_menu;
 
-import presenter.GUIPresenter;
+import presenter.SolvePresenter;
 
 import javax.swing.*;
 import java.awt.*;
@@ -103,13 +103,19 @@ public class MainMenu extends JFrame {
                     startSolveMode(slider.getValue());
                 } else{
                     // START PLAY MODE
+                    startPlayMode(slider.getValue());
                 }
             }
         }
     }
 
     public void startSolveMode(int size){
-        new GUIPresenter(size);
+        new SolvePresenter(size);
+        dispose();
+    }
+
+    public void startPlayMode(int size){
+        new presenter.PlayPresenter(size);
         dispose();
     }
 }

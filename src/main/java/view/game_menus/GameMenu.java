@@ -9,7 +9,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 
-public abstract class gameMenu extends JFrame {
+public abstract class GameMenu extends JFrame {
 
     private ArrayList<ArrayList<CellLabel>> labels;
     private CellLabel clicked;
@@ -28,8 +28,9 @@ public abstract class gameMenu extends JFrame {
     private Container pane;
     private JLabel guiText;
     private boolean textSet;
+    private JLabel invalid;
 
-    public gameMenu(int size, ActionListener buttonListener, String title) {
+    public GameMenu(int size, ActionListener buttonListener, String title) {
         super(title);
 
         backgroundColor = Color.white;
@@ -110,6 +111,9 @@ public abstract class gameMenu extends JFrame {
                             }
                         }
                         field.setBackground(clickedColor);
+
+                        // Reset the value of an invalid cell
+                        if(invalid != null) invalid.setText("");
                     }
                 });
                 temp.add(field);
@@ -172,7 +176,7 @@ public abstract class gameMenu extends JFrame {
     }
 
     // Set buttons other than the standard ones
-    private void setCustomButtons(JPanel buttonsPanel, ActionListener buttonListener) {
+    public void setCustomButtons(JPanel buttonsPanel, ActionListener buttonListener) {
         CustomButton buttonSolve = new CustomButton(CustomButton.Type.SOLVE);
         buttonsPanel.add(buttonSolve);
         buttonSolve.addActionListener(buttonListener);
@@ -198,12 +202,14 @@ public abstract class gameMenu extends JFrame {
     public void validInput(String input) {
         clicked.setText(input);
         clicked.setForeground(Color.black);
+        invalid = null;
     }
 
     // Set a invalid input by user (only frontend)
     public void invalidInput(String input) {
         clicked.setText(input);
         clicked.setForeground(Color.red);
+        invalid = clicked;
     }
 
     // Print a text to the top of the gui
@@ -232,8 +238,8 @@ public abstract class gameMenu extends JFrame {
     }
 }
 
-// TODO MVP für Main-gameMenu implementieren (Button-Klick-Events auslagern in Presenter)
-// TODO Aufteilen des gameMenu in Spiel-Menü (ggf. nochmal Unterteilung in Normal, Killer & Str8ts) & Lösen-Menü -> Erben von gameMenu
+// TODO MVP für Main-GameMenu implementieren (Button-Klick-Events auslagern in Presenter)
+// TODO Aufteilen des GameMenu in Spiel-Menü (ggf. nochmal Unterteilung in Normal, Killer & Str8ts) & Lösen-Menü -> Erben von GameMenu
 // TODO Implementieren von Tipp-Funktion in Lösen
 // TODO Implementieren von Blocken in Str8ts
 // TODO Implementieren von Generieren, Stift-, Tipp- & Überprüfen-Funktion in Spielen

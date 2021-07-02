@@ -18,6 +18,9 @@ public class CustomButton extends JButton {
         switch (type) {
             case DELETE -> setText("Löschen");
             case SOLVE -> setText("Lösen");
+            case TIP -> setText("Tipp anzeigen");
+            case VERIFY -> setText("Ergebnis überprüfen");
+            case PEN -> setText("Notiz");
         }
     }
 
@@ -30,6 +33,6 @@ public class CustomButton extends JButton {
     }
 
     public enum Type {
-        NUMBER, DELETE, SOLVE
+        NUMBER, DELETE, SOLVE, TIP, VERIFY, PEN
     }
 }

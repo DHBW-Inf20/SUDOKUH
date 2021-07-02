@@ -12,7 +12,7 @@ public class Main {
 
         MainMenu menu = new MainMenu();
         menu.setLocationRelativeTo(null);
-//        gameMenu gui = new gameMenu(9);
+//        GameMenu gui = new GameMenu(9);
 //        gui.setSize(800,600);
 //        gui.setVisible(true);
 //        gui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

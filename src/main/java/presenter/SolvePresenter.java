@@ -3,21 +3,22 @@ package presenter;
 import model.Sudoku;
 import view.CellLabel;
 import view.CustomButton;
-import view.game_menus.gameMenu;
+import view.game_menus.GameMenu;
+import view.game_menus.SolveMenu;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 
-public class GUIPresenter {
+public class SolvePresenter {
 
     private final Sudoku sudoku;
-    private final gameMenu gameMenu;
+    private final GameMenu gameMenu;
 
 
-    public GUIPresenter(int size) {
+    public SolvePresenter(int size) {
         sudoku = new Sudoku(size);
 
-        gameMenu = new view.game_menus.solveMenu(size, this::handleButtonEvent, "Sudoku");
+        gameMenu = new SolveMenu(size, this::handleButtonEvent, "Sudoku lösen");
         gameMenu.setVisible(true);
     }
 
