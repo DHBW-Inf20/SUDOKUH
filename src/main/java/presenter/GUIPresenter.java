@@ -5,6 +5,7 @@ import view.CellLabel;
 import view.CustomButton;
 import view.GUI;
 
+import java.awt.*;
 import java.awt.event.ActionEvent;
 
 public class GUIPresenter {
@@ -16,7 +17,7 @@ public class GUIPresenter {
     public GUIPresenter(int size) {
         sudoku = new Sudoku(size);
 
-        gui = new GUI(size, this::handleButtonEvent);
+        gui = new GUI(size, this::handleButtonEvent, "Sudoku");
         gui.setVisible(true);
     }
 
@@ -46,13 +47,14 @@ public class GUIPresenter {
             }
             case SOLVE -> {
                 if (sudoku.solve()) {
+                    gui.resetGUIText();
                     for (int row = 0; row < sudoku.getGridSize(); row++) {
                         for (int column = 0; column < sudoku.getGridSize(); column++) {
                             gui.setValue(row, column, sudoku.getCell(row, column));
                         }
                     }
                 } else {
-                    gui.cannotSolveWarning();
+                    gui.setGUIText("Dieses Sudoku kann nicht gelöst werden!", Color.red);
                 }
             }
         }

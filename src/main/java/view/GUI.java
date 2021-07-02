@@ -16,25 +16,25 @@ public class GUI extends JFrame {
     // Color for field-background when clicked
     private final Color clickedColor;
     // Color for field-background when there mustn't be a duplicate to clicked field
-    private final Color markedColor; // TODO implementation of marking
+    private final Color markedColor;
     // Color for field-background when field is predefined
     private final Color predefinedColor;
     // Color for field-borders
     private final Color borderColor;
 
     private Container pane;
-    private JLabel warning;
-    private boolean warningSet;
+    private JLabel guiText;
+    private boolean textSet;
 
-    public GUI(int size, ActionListener buttonListener) {
-        super("Sudoku");
+    public GUI(int size, ActionListener buttonListener, String title) {
+        super(title);
 
         backgroundColor = Color.white;
         clickedColor = Color.decode("#dcedc9");
         markedColor = Color.decode("#f2ffe3");
         predefinedColor = Color.lightGray;
         borderColor = Color.darkGray;
-        warningSet = false;
+        textSet = false;
 
         pane = getContentPane();
         pane.setLayout(new BorderLayout());
@@ -56,6 +56,7 @@ public class GUI extends JFrame {
                 field.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mousePressed(MouseEvent e) {
+                        // Unmarking of possible conflicting cells
                         int clickedRow = clicked.getRow();
                         int clickedCol = clicked.getCol();
                         for (int k = 0; k < labels.get(clickedRow).size(); k++) {
@@ -84,6 +85,7 @@ public class GUI extends JFrame {
                             }
                         }
                         clicked = field;
+                        // Marking of possible conflicting cells
                         clickedRow = clicked.getRow();
                         clickedCol = clicked.getCol();
                         for (int k = 0; k < labels.get(clickedRow).size(); k++) {
@@ -151,9 +153,7 @@ public class GUI extends JFrame {
         CustomButton buttonDelete = new CustomButton(CustomButton.Type.DELETE);
         buttonsPanel.add(buttonDelete);
         buttonDelete.addActionListener(buttonListener);
-        CustomButton buttonSolve = new CustomButton(CustomButton.Type.SOLVE);
-        buttonsPanel.add(buttonSolve);
-        buttonSolve.addActionListener(buttonListener);
+        setCustomButtons(buttonsPanel, buttonListener);
 
         // Adding game overlay and buttons to the panel
         pane.add(outerPanel, BorderLayout.CENTER);
@@ -168,50 +168,70 @@ public class GUI extends JFrame {
         setLocationRelativeTo(null);
     }
 
+    // Set buttons other than the standard ones
+    private void setCustomButtons(JPanel buttonsPanel, ActionListener buttonListener) {
+        CustomButton buttonSolve = new CustomButton(CustomButton.Type.SOLVE);
+        buttonsPanel.add(buttonSolve);
+        buttonSolve.addActionListener(buttonListener);
+    }
+
     // Definition of pre-defined elements -> cannot be changed
     public void setPredefined(int row, int col, int value) {
-        // TODO: "Einlesen" aus vorgegebenem/generierten Sudoku -> Methodenaufruf aus Backend
-        labels.get(row).get(col).setText(value + "");
+        // TODO: "Einlesen" aus vorgegebenem/generierten Sudoku -> Methodenaufruf aus Backend (nur für Spiel-Modus relevant)
+        labels.get(row).get(col).setText(String.valueOf(value));
         labels.get(row).get(col).setPredefined(true);
         labels.get(row).get(col).setBackground(predefinedColor);
     }
 
     public CellLabel getClicked() { return clicked; }
 
+    // Set a value to a cell from backend
     public void setValue(int row, int col, int value) {
         labels.get(row).get(col).setText(String.valueOf(value));
         labels.get(row).get(col).setForeground(Color.black);
-        if(warningSet) {
-            pane.remove(warning);
-            pane.revalidate();
-            warningSet = false;
-        }
     }
 
+    // Set a valid input by user
     public void validInput(String input) {
         clicked.setText(input);
         clicked.setForeground(Color.black);
     }
 
+    // Set a invalid input by user (only frontend)
     public void invalidInput(String input) {
         clicked.setText(input);
         clicked.setForeground(Color.red);
     }
 
-    public void cannotSolveWarning() {
-        warning = new JLabel("Dieses Sudoku kann nicht gelöst werden!");
-        warning.setOpaque(true);
-        warning.setBackground(backgroundColor);
-        warning.setForeground(Color.red);
-        warning.setBorder(new LineBorder(borderColor, 1));
-        warning.setFont(new Font(getFont().getName(), Font.BOLD, 25));
-        warning.setHorizontalAlignment(SwingConstants.CENTER);
-        warning.setVerticalAlignment(SwingConstants.CENTER);
+    // Print a text to the top of the gui
+    public void setGUIText(String text, Color color) {
+        guiText = new JLabel(text);
+        guiText.setOpaque(true);
+        guiText.setBackground(backgroundColor);
+        guiText.setForeground(color);
+        guiText.setBorder(new LineBorder(borderColor, 1));
+        guiText.setFont(new Font(getFont().getName(), Font.BOLD, 25));
+        guiText.setHorizontalAlignment(SwingConstants.CENTER);
+        guiText.setVerticalAlignment(SwingConstants.CENTER);
 
-        pane.add(warning, BorderLayout.NORTH);
+        pane.add(guiText, BorderLayout.NORTH);
         pane.revalidate();
-        warningSet = true;
+        textSet = true;
+    }
+
+    // Removes the text from the top of the gui
+    public void resetGUIText() {
+        if(textSet) {
+            pane.remove(guiText);
+            pane.revalidate();
+            textSet = false;
+        }
     }
 }
 
-// TODO MVC für Main-GUI implementieren (Button-Klick-Events auslagern in Controller, GUI aktualisieren von Model)
+// TODO MVP für Main-GUI implementieren (Button-Klick-Events auslagern in Presenter)
+// TODO Aufteilen des GUI in Spiel-Menü (ggf. nochmal Unterteilung in Normal, Killer & Str8ts) & Lösen-Menü -> Erben von GUI
+// TODO Implementieren von Tipp-Funktion in Lösen
+// TODO Implementieren von Blocken in Str8ts
+// TODO Implementieren von Generieren, Stift-, Tipp- & Überprüfen-Funktion in Spielen
+// TODO Implementieren von Gruppen in Killer
