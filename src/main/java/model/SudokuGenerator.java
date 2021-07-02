@@ -24,7 +24,7 @@ public class SudokuGenerator {
         }
         shuffle(cells, random);
 
-        // reset each cell (but only if it still has a unique solution after reset)
+        // reset each cell (but only if there still is a unique solution after reset)
         for (final Cell cell : cells) {
             final int previousCellValue = randomSudoku.getCell(cell.row, cell.column);
             randomSudoku.resetCell(cell.row, cell.column);
@@ -44,4 +44,6 @@ public class SudokuGenerator {
         }
         return firstCopy.equals(secondCopy);
     }
+
+    private SudokuGenerator() {}
 }
