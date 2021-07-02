@@ -1,5 +1,6 @@
 package view.game_menus;
 
+import java.awt.*;
 import java.awt.event.ActionListener;
 
 public class SolveMenu extends GameMenu {
@@ -8,4 +9,11 @@ public class SolveMenu extends GameMenu {
         super(size, buttonListener, title);
     }
 
+    @Override
+    public void validInput(String input) {
+        clicked.setText(input);
+        clicked.setForeground(Color.black);
+        clicked.getLabel().setForeground(Color.black);
+        invalid = null;
+    }
 }

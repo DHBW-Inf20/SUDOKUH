@@ -1,10 +1,11 @@
 package presenter;
 
+import model.BasePuzzle;
 import model.Sudoku;
 import model.SudokuAndSolution;
 import model.SudokuGenerator;
-import view.CellLabel;
 import view.CustomButton;
+import view.LabelPanel;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -13,7 +14,7 @@ public class PlayPresenter {
 
     private final Sudoku sudoku;
     private final Sudoku solution;
-    private final view.game_menus.GameMenu gameMenu;
+    private final view.game_menus.PlayMenu gameMenu;
 
 
     public PlayPresenter(int size) {
@@ -49,18 +50,22 @@ public class PlayPresenter {
     // ActionListener for numbers-buttons to provide a correct input
     private void handleButtonEvent(ActionEvent e) {
         CustomButton button = (CustomButton) e.getSource();
-        CellLabel clickedCell = gameMenu.getClicked();
+        LabelPanel clickedCell = gameMenu.getClicked();
 
         switch (button.getType()) {
             case NUMBER -> {
+                int number = button.getValue();
                 if (!clickedCell.isPredefined()) {
-                    int number = button.getValue();
-                    boolean valid = sudoku.setCell(clickedCell.getRow(), clickedCell.getCol(), number).isSuccess();
-                    if (valid) {
-                        gameMenu.validInput(String.valueOf(number));
-                        this.verifySolution();
+                    if(gameMenu.getNoteMode()) {
+                        gameMenu.setNote(number);
                     } else {
-                        gameMenu.invalidInput(String.valueOf(number));
+                        BasePuzzle.SetResult valid = sudoku.setCell(clickedCell.getRow(), clickedCell.getCol(), number);
+                        if (valid.isSuccess()) {
+                            gameMenu.validInput(String.valueOf(number));
+                            this.verifySolution();
+                        } else {
+                            gameMenu.invalidInput(String.valueOf(number));
+                        }
                     }
                 }
             }
@@ -71,7 +76,14 @@ public class PlayPresenter {
                 }
             }
             case TIP -> {
+                gameMenu.validInput(String.valueOf(solution.getCell(clickedCell.getRow(), clickedCell.getCol())));
                 gameMenu.setPredefined(clickedCell.getRow(), clickedCell.getCol(), solution.getCell(clickedCell.getRow(),clickedCell.getCol()));
+                // TODO: Setcell gibt Setresult zurück: boolean und ggf. Zeile & Spalte -> Markieren von selbst eingegebenem Fehler
+                model.BasePuzzle.SetResult valid = sudoku.setCell(clickedCell.getRow(), clickedCell.getCol(), solution.getCell(clickedCell.getRow(),clickedCell.getCol()));
+                if(! valid.isSuccess()) {
+                    gameMenu.invalidInput(valid.conflictingRow(), valid.conflictingColumn());
+                }
+                this.verifySolution();
             }
             case VERIFY -> {
                 if (! this.verifySolution()) {
@@ -79,7 +91,7 @@ public class PlayPresenter {
                 }
             }
             case PEN -> {
-
+                gameMenu.changeNoteMode(button);
             }
         }
     }

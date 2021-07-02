@@ -2,6 +2,7 @@ package view.game_menus;
 
 import view.CellLabel;
 import view.CustomButton;
+import view.LabelPanel;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -11,35 +12,42 @@ import java.util.ArrayList;
 
 public abstract class GameMenu extends JFrame {
 
-    private ArrayList<ArrayList<CellLabel>> labels;
-    private CellLabel clicked;
+    protected ArrayList<ArrayList<LabelPanel>> labels;
+    protected LabelPanel clicked;
 
     // Color for field-background
-    private final Color backgroundColor;
+    protected final Color backgroundColor;
     // Color for field-background when clicked
-    private final Color clickedColor;
+    protected final Color clickedColor;
     // Color for field-background when there mustn't be a duplicate to clicked field
-    private final Color markedColor;
+    protected final Color markedColor;
     // Color for field-background when field is predefined
-    private final Color predefinedColor;
+    protected final Color predefinedColor;
+    // Color for field-background when field is predefined and possible conflicting to field
+    protected final Color predefinedMarkedColor;
     // Color for field-borders
-    private final Color borderColor;
+    protected final Color borderColor;
 
-    private Container pane;
-    private JLabel guiText;
-    private boolean textSet;
-    private JLabel invalid;
+    protected Container pane;
+    protected JLabel guiText;
+    protected boolean textSet;
+    protected CellLabel invalid;
+    protected ArrayList<ArrayList<JPanel>> panels;
+
+    protected static int size;
 
     public GameMenu(int size, ActionListener buttonListener, String title) {
         super(title);
 
         backgroundColor = Color.white;
-        clickedColor = Color.decode("#dcedc9");
+        clickedColor = Color.decode("#c5e1a5");
         markedColor = Color.decode("#f2ffe3");
         predefinedColor = Color.lightGray;
+        predefinedMarkedColor = Color.decode("#dcedc9");
         borderColor = Color.darkGray;
         textSet = false;
 
+        this.size = size;
         pane = getContentPane();
         pane.setLayout(new BorderLayout());
 
@@ -49,15 +57,16 @@ public abstract class GameMenu extends JFrame {
         // Creating matrix of Label-Elements ('labels') -> Creation in advance in order to get the right coordinates
         labels = new ArrayList<>();
         for (int i = 0; i < size * size; i++) {
-            ArrayList<CellLabel> temp = new ArrayList<>();
+            ArrayList<LabelPanel> temp = new ArrayList<>();
             for (int j = 0; j < size * size; j++) {
-                CellLabel field = new CellLabel(" ", i, j);
-                field.setOpaque(true);
+                CellLabel field = new CellLabel(" ");
+                LabelPanel labelPanel = new LabelPanel(field,i,j,size);
+                labelPanel.setOpaque(true);
                 field.setBackground(backgroundColor);
-                field.setBorder(new LineBorder(borderColor, 1));
+                labelPanel.setBorder(new LineBorder(borderColor, 1));
                 field.setHorizontalAlignment(SwingConstants.CENTER);
                 field.setVerticalAlignment(SwingConstants.CENTER);
-                field.addMouseListener(new MouseAdapter() {
+                labelPanel.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mousePressed(MouseEvent e) {
                         // Unmarking of possible conflicting cells
@@ -88,17 +97,17 @@ public abstract class GameMenu extends JFrame {
                                 clicked.setBackground(backgroundColor);
                             }
                         }
-                        clicked = field;
+                        clicked = labelPanel;
                         // Marking of possible conflicting cells
                         clickedRow = clicked.getRow();
                         clickedCol = clicked.getCol();
                         for (int k = 0; k < labels.get(clickedRow).size(); k++) {
                             labels.get(clickedRow).get(k).setBackground(markedColor);
-                            if (labels.get(clickedRow).get(k).isPredefined()) labels.get(clickedRow).get(k).setBackground(predefinedColor);
+                            if (labels.get(clickedRow).get(k).isPredefined()) labels.get(clickedRow).get(k).setBackground(predefinedMarkedColor);
                         }
                         for (int k = 0; k < labels.get(clickedRow).size(); k++) {
                             labels.get(k).get(clickedCol).setBackground(markedColor);
-                            if (labels.get(k).get(clickedCol).isPredefined()) labels.get(k).get(clickedCol).setBackground(predefinedColor);
+                            if (labels.get(k).get(clickedCol).isPredefined()) labels.get(k).get(clickedCol).setBackground(predefinedMarkedColor);
                         }
                         rowLowerBound = clicked.getRow() - (clicked.getRow() % size);
                         rowUpperBound = rowLowerBound + size - 1;
@@ -107,22 +116,22 @@ public abstract class GameMenu extends JFrame {
                         for (int k = rowLowerBound; k <= rowUpperBound; k++) {
                             for (int l = columnLowerBound; l <= columnUpperBound; l++) {
                                 labels.get(k).get(l).setBackground(markedColor);
-                                if (labels.get(k).get(l).isPredefined()) labels.get(k).get(l).setBackground(predefinedColor);
+                                if (labels.get(k).get(l).isPredefined()) labels.get(k).get(l).setBackground(predefinedMarkedColor);
                             }
                         }
-                        field.setBackground(clickedColor);
+                        clicked.setBackground(clickedColor);
 
                         // Reset the value of an invalid cell
                         if(invalid != null) invalid.setText("");
                     }
                 });
-                temp.add(field);
+                temp.add(labelPanel);
             }
             labels.add(temp);
         }
 
-        // Creating matrix of panels ('panels') -> Creation in advance in order to get the right coordinates
-        ArrayList<ArrayList<JPanel>> panels = new ArrayList<>();
+        // Initializing matrix of panels ('panels') -> Creation in advance in order to get the right coordinates
+        panels = new ArrayList<>();
         for (int i = 0; i < size; i++) {
             ArrayList<JPanel> temp = new ArrayList<>();
             for (int j = 0; j < size; j++) {
@@ -137,7 +146,7 @@ public abstract class GameMenu extends JFrame {
         // Filling the panels-matrix with values from the labels-matrix
         for (int row = 0; row < size * size; row++) {
             for (int col = 0; col < size * size; col++) {
-                CellLabel field = labels.get(row).get(col);
+                LabelPanel field = labels.get(row).get(col);
                 panels.get(row / size).get(col / size).add(field);
             }
         }
@@ -182,15 +191,7 @@ public abstract class GameMenu extends JFrame {
         buttonSolve.addActionListener(buttonListener);
     }
 
-    // Definition of pre-defined elements -> cannot be changed
-    public void setPredefined(int row, int col, int value) {
-        // TODO: "Einlesen" aus vorgegebenem/generierten Sudoku -> Methodenaufruf aus Backend (nur für Spiel-Modus relevant)
-        labels.get(row).get(col).setText(String.valueOf(value));
-        labels.get(row).get(col).setPredefined(true);
-        labels.get(row).get(col).setBackground(predefinedColor);
-    }
-
-    public CellLabel getClicked() { return clicked; }
+    public LabelPanel getClicked() { return clicked; }
 
     // Set a value to a cell from backend
     public void setValue(int row, int col, int value) {
@@ -202,6 +203,7 @@ public abstract class GameMenu extends JFrame {
     public void validInput(String input) {
         clicked.setText(input);
         clicked.setForeground(Color.black);
+        clicked.getLabel().setForeground(Color.black);
         invalid = null;
     }
 
@@ -209,7 +211,15 @@ public abstract class GameMenu extends JFrame {
     public void invalidInput(String input) {
         clicked.setText(input);
         clicked.setForeground(Color.red);
-        invalid = clicked;
+        clicked.getLabel().setForeground(Color.red);
+        invalid = clicked.getLabel();
+    }
+
+    // Set a invalid input by backend (tip function)
+    public void invalidInput(int row, int col) {
+        labels.get(row).get(col).setForeground(Color.red);
+        labels.get(row).get(col).getLabel().setForeground(Color.red);
+        invalid = labels.get(row).get(col).getLabel();
     }
 
     // Print a text to the top of the gui
@@ -238,9 +248,6 @@ public abstract class GameMenu extends JFrame {
     }
 }
 
-// TODO MVP für Main-GameMenu implementieren (Button-Klick-Events auslagern in Presenter)
-// TODO Aufteilen des GameMenu in Spiel-Menü (ggf. nochmal Unterteilung in Normal, Killer & Str8ts) & Lösen-Menü -> Erben von GameMenu
-// TODO Implementieren von Tipp-Funktion in Lösen
+// TODO Bei Sudoku lösen: Eingegebene Felder werden als predefined angezeigt (Eintragen & Löschen aber möglich)
 // TODO Implementieren von Blocken in Str8ts
-// TODO Implementieren von Generieren, Stift-, Tipp- & Überprüfen-Funktion in Spielen
 // TODO Implementieren von Gruppen in Killer
