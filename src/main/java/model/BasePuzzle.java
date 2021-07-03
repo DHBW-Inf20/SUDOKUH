@@ -80,16 +80,16 @@ public abstract class BasePuzzle {
 
 
     public final boolean solve() {
-        return solveInternal(getNextEmptyCellForSolve(new Cell(0, 0), true), false, null);
+        return solveInternal(getNextEmptyCellForSolve(0, 0, true), false, null);
     }
 
     public final boolean solveInReverseOrder() {
-        return solveInternal(getNextEmptyCellForSolve(new Cell(0, 0), true), true, null);
+        return solveInternal(getNextEmptyCellForSolve(0, 0, true), true, null);
     }
 
     // package-private for tests
     final boolean solveInRandomOrder(final Random random) {
-        return solveInternal(getNextEmptyCellForSolve(new Cell(0, 0), true), false, random);
+        return solveInternal(getNextEmptyCellForSolve(0, 0, true), false, random);
     }
 
     private boolean solveInternal(final Cell currentCell, final boolean inReverseOrder, final Random random) {
@@ -98,8 +98,7 @@ public abstract class BasePuzzle {
             return true; // all cells are filled (only valid fills happen) -> found solution
         }
 
-        // start with next cell (current is empty) -> call with inclusive = false
-        final Cell nextEmptyCell = getNextEmptyCellForSolve(currentCell, false);
+        final Cell nextEmptyCell = getNextEmptyCellForSolveExcluding(currentCell);
 
         final List<Integer> numbers = new ArrayList<>(gridSize);
 
@@ -128,7 +127,33 @@ public abstract class BasePuzzle {
     }
 
 
-    protected abstract Cell getNextEmptyCellForSolve(final Cell startCell, final boolean inclusive);
+    private Cell getNextEmptyCellForSolveExcluding(final Cell startCell) {
+        return getNextEmptyCellForSolve(startCell.row, startCell.column, false);
+    }
+
+    protected Cell getNextEmptyCellForSolve(final int startRow, final int startColumn, final boolean inclusive) {
+        boolean firstCell = true;
+
+        // start row with startRow
+        for (int row = startRow; row < gridSize; row++) {
+
+            // start column with startColumn (but only in first iteration of outer loop)
+            for (int column = (row == startRow ? startColumn : 0); column < gridSize; column++) {
+
+                // skip the first cell if not inclusive
+                if (firstCell) {
+                    firstCell = false;
+                    if (!inclusive) continue;
+                }
+
+                if (grid[row][column] == EMPTY_CELL) {
+                    return new Cell(row, column);
+                }
+            }
+        }
+        return null; // reached end and did not find an empty cell
+    }
+
 
     private boolean hasNoConflicts(final Cell cell) {
         return getConflictingCells(cell.row, cell.column, false).isEmpty();

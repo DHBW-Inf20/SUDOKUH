@@ -7,7 +7,7 @@ import static java.lang.Math.sqrt;
 import static java.util.Arrays.deepToString;
 import static java.util.Arrays.fill;
 import static java.util.Objects.hash;
-import static util.ArrayUtilities.deepCopyOf;
+import static util.Arrays.deepCopyOf;
 
 public final class Sudoku extends BasePuzzle {
 
@@ -67,31 +67,6 @@ public final class Sudoku extends BasePuzzle {
         return subGridSize;
     }
 
-
-    @Override
-    protected final Cell getNextEmptyCellForSolve(final Cell startCell, final boolean inclusive) {
-        final int startRow = startCell.row(), startColumn = startCell.column();
-        boolean firstCell = true;
-
-        // start row with startRow
-        for (int row = startRow; row < gridSize; row++) {
-
-            // start column with startColumn (but only in first iteration of outer loop)
-            for (int column = (row == startRow ? startColumn : 0); column < gridSize; column++) {
-
-                // skip the first cell if not inclusive
-                if (firstCell) {
-                    firstCell = false;
-                    if (!inclusive) continue;
-                }
-
-                if (grid[row][column] == EMPTY_CELL) {
-                    return new Cell(row, column);
-                }
-            }
-        }
-        return null; // reached end and did not find an empty cell
-    }
 
     @Override
     protected final Set<Cell> getConflictingCells(final int row, final int column, final boolean getAll) {
