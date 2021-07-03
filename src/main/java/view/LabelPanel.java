@@ -24,35 +24,37 @@ public class LabelPanel extends JPanel {
         this.col = col;
         this.size = size;
         notes = new ArrayList<>();
-        this.setLayout(new GridLayout(size,size));
+        this.setLayout(new GridLayout(size, size));
     }
 
     public void setNote(int value) {
-        if(! (this.labelValue == null)) {
-            if(! (this.labelValue.equals(""))) {
+        if (!(this.labelValue == null)) {
+            if (!(this.labelValue.equals(""))) {
                 this.removeAll();
                 this.labelValue = "";
             }
         }
-        if(notes.contains(value)) return;
-        if(state == State.LABEL) setNoteMode();
-        if(notes.isEmpty()) {
-            this.add(new JLabel(String.valueOf(value)),0);
+        if (notes.contains(value)) return;
+        if (state == State.LABEL) setNoteMode();
+
+        final String stringValue = Integer.toString(value);
+        if (notes.isEmpty()) {
+            this.add(new JLabel(stringValue), 0);
             notes.add(value);
-            System.out.println("added empty "+value);
+            System.out.println("added empty " + value);
             return;
         }
         for (int i = 0; i < notes.size(); i++) {
-            if(notes.get(i) > value) {
-                this.add(new JLabel(String.valueOf(value)),i);
+            if (notes.get(i) > value) {
+                this.add(new JLabel(stringValue), i);
                 notes.add(i, value);
-                System.out.println("added "+value+" to "+i);
+                System.out.println("added " + value + " to " + i);
                 return;
             }
         }
-        this.add(new JLabel(String.valueOf(value)), -1);
-        notes.add(notes.size()-1, value);
-        System.out.println("added full "+value);
+        this.add(new JLabel(stringValue), -1);
+        notes.add(notes.size() - 1, value);
+        System.out.println("added full " + value);
     }
 
     public boolean isPredefined() {
@@ -86,7 +88,7 @@ public class LabelPanel extends JPanel {
     public void setText(String value) {
         this.removeAll();
         notes = new ArrayList<>();
-        for (int i = 0; i < size/2; i++) {
+        for (int i = 0; i < size / 2; i++) {
             this.add(new JLabel());
         }
         this.add(label);

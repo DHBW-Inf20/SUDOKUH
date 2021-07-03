@@ -122,7 +122,7 @@ public abstract class GameMenu extends JFrame {
                         clicked.setBackground(clickedColor);
 
                         // Reset the value of an invalid cell
-                        if(invalid != null) invalid.setText("");
+                        if (invalid != null) invalid.setText("");
                     }
                 });
                 temp.add(labelPanel);
@@ -195,8 +195,12 @@ public abstract class GameMenu extends JFrame {
 
     // Set a value to a cell from backend
     public void setValue(int row, int col, int value) {
-        labels.get(row).get(col).setText(String.valueOf(value));
+        labels.get(row).get(col).setText(Integer.toString(value));
         labels.get(row).get(col).setForeground(Color.black);
+    }
+
+    public void validInput(int input) {
+        validInput(Integer.toString(input));
     }
 
     // Set a valid input by user
@@ -205,6 +209,10 @@ public abstract class GameMenu extends JFrame {
         clicked.setForeground(Color.black);
         clicked.getLabel().setForeground(Color.black);
         invalid = null;
+    }
+
+    public void invalidInput(int input) {
+        invalidInput(Integer.toString(input));
     }
 
     // Set a invalid input by user (only frontend)
@@ -240,7 +248,7 @@ public abstract class GameMenu extends JFrame {
 
     // Removes the text from the top of the gui
     public void resetGUIText() {
-        if(textSet) {
+        if (textSet) {
             pane.remove(guiText);
             pane.revalidate();
             textSet = false;

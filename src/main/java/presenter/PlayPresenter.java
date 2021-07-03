@@ -1,6 +1,7 @@
 package presenter;
 
-import model.BasePuzzle;
+import model.BasePuzzle.Cell;
+import model.BasePuzzle.SetResult;
 import model.Sudoku;
 import model.SudokuAndSolution;
 import model.SudokuGenerator;
@@ -9,6 +10,7 @@ import view.LabelPanel;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.util.Set;
 
 public class PlayPresenter {
 
@@ -31,9 +33,9 @@ public class PlayPresenter {
     private void setPredefinedCells() {
         for (int i = 0; i < sudoku.getGridSize(); i++) {
             for (int j = 0; j < sudoku.getGridSize(); j++) {
-                int value = sudoku.getCell(i,j);
-                if(value != Sudoku.EMPTY_CELL) {
-                    gameMenu.setPredefined(i,j,value);
+                int value = sudoku.getCell(i, j);
+                if (value != Sudoku.EMPTY_CELL) {
+                    gameMenu.setPredefined(i, j, value);
                 }
             }
         }
@@ -56,15 +58,19 @@ public class PlayPresenter {
             case NUMBER -> {
                 int number = button.getValue();
                 if (!clickedCell.isPredefined()) {
-                    if(gameMenu.getNoteMode()) {
+                    if (gameMenu.getNoteMode()) {
                         gameMenu.setNote(number);
                     } else {
-                        BasePuzzle.SetResult valid = sudoku.setCell(clickedCell.getRow(), clickedCell.getCol(), number);
-                        if (valid.isSuccess()) {
-                            gameMenu.validInput(String.valueOf(number));
+                        final SetResult result = sudoku.setCell(clickedCell.getRow(), clickedCell.getCol(), number);
+                        if (result == SetResult.INVALID_VALUE) {
+                            throw new IllegalStateException("Tried to set a cell to a number that was out of the valid range: " + number);
+                        } else if (result.isSuccess()) {
+                            gameMenu.validInput(number);
                             this.verifySolution();
                         } else {
-                            gameMenu.invalidInput(String.valueOf(number));
+                            // TODO show conflicts
+                            final Set<Cell> conflicts = result.conflictingCells();
+                            gameMenu.invalidInput(number);
                         }
                     }
                 }
@@ -76,23 +82,27 @@ public class PlayPresenter {
                 }
             }
             case TIP -> {
-                gameMenu.validInput(String.valueOf(solution.getCell(clickedCell.getRow(), clickedCell.getCol())));
-                gameMenu.setPredefined(clickedCell.getRow(), clickedCell.getCol(), solution.getCell(clickedCell.getRow(),clickedCell.getCol()));
+                gameMenu.validInput(solution.getCell(clickedCell.getRow(), clickedCell.getCol()));
+                gameMenu.setPredefined(clickedCell.getRow(), clickedCell.getCol(), solution.getCell(clickedCell.getRow(), clickedCell.getCol()));
                 // TODO: Setcell gibt Setresult zurück: boolean und ggf. Zeile & Spalte -> Markieren von selbst eingegebenem Fehler
-                model.BasePuzzle.SetResult valid = sudoku.setCell(clickedCell.getRow(), clickedCell.getCol(), solution.getCell(clickedCell.getRow(),clickedCell.getCol()));
-                if(! valid.isSuccess()) {
-                    gameMenu.invalidInput(valid.conflictingRow(), valid.conflictingColumn());
+                final SetResult result = sudoku.setCell(clickedCell.getRow(), clickedCell.getCol(), solution.getCell(clickedCell.getRow(), clickedCell.getCol()));
+                if (!result.isSuccess()) {
+                    // TODO show conflicts
+                    final Set<Cell> conflicts = result.conflictingCells();
+                    if (!conflicts.isEmpty()) {
+                        // can be any conflict (no order guaranteed) -> TODO show all
+                        final Cell randomConflict = conflicts.iterator().next();
+                        gameMenu.invalidInput(randomConflict.row(), randomConflict.column());
+                    }
                 }
                 this.verifySolution();
             }
             case VERIFY -> {
-                if (! this.verifySolution()) {
+                if (!this.verifySolution()) {
                     gameMenu.setGUIText("Diese Lösung ist falsch oder unvollständig!", Color.red);
                 }
             }
-            case PEN -> {
-                gameMenu.changeNoteMode(button);
-            }
+            case PEN -> gameMenu.changeNoteMode(button);
         }
     }
 }

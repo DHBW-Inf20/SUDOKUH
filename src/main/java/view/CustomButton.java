@@ -12,10 +12,10 @@ public class CustomButton extends JButton {
     }
 
     public CustomButton(int value, Type type) {
-        super(String.valueOf(value));
         this.value = value;
         this.type = type;
         switch (type) {
+            case NUMBER -> setText(Integer.toString(value));
             case DELETE -> setText("Löschen");
             case SOLVE -> setText("Lösen");
             case TIP -> setText("Tipp anzeigen");

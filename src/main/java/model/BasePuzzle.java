@@ -1,13 +1,10 @@
 package model;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 import static java.util.Arrays.deepEquals;
 import static java.util.Arrays.deepHashCode;
-import static java.util.Collections.reverse;
-import static java.util.Collections.shuffle;
+import static java.util.Collections.*;
 import static java.util.Objects.hash;
 
 public abstract class BasePuzzle {
@@ -15,11 +12,11 @@ public abstract class BasePuzzle {
     public static final int EMPTY_CELL = 0;
 
 
-    protected static record Cell(int row, int column) {}
+    public static final record Cell(int row, int column) {}
 
-    public static record SetResult(boolean isSuccess, int conflictingRow, int conflictingColumn) {
-        public static SetResult Success = new SetResult(true, -1, -1);
-        public static SetResult InvalidValue = new SetResult(false, -1, -1);
+    public static final record SetResult(boolean isSuccess, Set<Cell> conflictingCells) {
+        public static final SetResult SUCCESS = new SetResult(true, emptySet());
+        public static final SetResult INVALID_VALUE = new SetResult(false, emptySet());
     }
 
 
@@ -60,22 +57,24 @@ public abstract class BasePuzzle {
         // empty cell is always ok
         if (value == EMPTY_CELL) {
             grid[row][column] = EMPTY_CELL;
-            return SetResult.Success;
+            return SetResult.SUCCESS;
         }
 
         // invalid value -> don't check further
         if (value < 1 || value > gridSize) {
-            return SetResult.InvalidValue;
+            return SetResult.INVALID_VALUE;
         }
 
         final int previousCellValue = grid[row][column];
         grid[row][column] = value;
-        final Cell conflictingCell = conflictingCell(new Cell(row, column));
-        if (conflictingCell == null) {
-            return SetResult.Success;
+
+        final Set<Cell> conflictingCells = getConflictingCells(row, column, true);
+
+        if (conflictingCells.isEmpty()) {
+            return SetResult.SUCCESS;
         } else {
             grid[row][column] = previousCellValue; // undo setting invalid number
-            return new SetResult(false, conflictingCell.row, conflictingCell.column);
+            return new SetResult(false, conflictingCells);
         }
     }
 
@@ -117,20 +116,73 @@ public abstract class BasePuzzle {
         for (final int number : numbers) {
             grid[currentCell.row][currentCell.column] = number; // choose next number
 
-            if (conflictingCell(currentCell) == null &&                      // number was valid and
-                    solveInternal(nextEmptyCell, inReverseOrder, random)) {  // recursive solve was successful
-                return true;                                                 // -> found solution
+            //        no conflicts          &&         recursive solve was successful                 -> found solution
+            if (hasNoConflicts(currentCell) && solveInternal(nextEmptyCell, inReverseOrder, random)) {
+                return true;
             }
         }
 
-        grid[currentCell.row][currentCell.column] = EMPTY_CELL; // no number was valid -> undo and go back in recursion
+        // no number was valid -> undo and go back in recursion
+        grid[currentCell.row][currentCell.column] = EMPTY_CELL;
         return false;
     }
 
 
     protected abstract Cell getNextEmptyCellForSolve(final Cell startCell, final boolean inclusive);
 
-    protected abstract Cell conflictingCell(final Cell cell);
+    private boolean hasNoConflicts(final Cell cell) {
+        return getConflictingCells(cell.row, cell.column, false).isEmpty();
+    }
+
+    protected abstract Set<Cell> getConflictingCells(final int row, final int column, final boolean getAll);
+
+    protected final Set<Cell> getConflictingCellsInSameRowOrColumn(final int row, final int column,
+                                                                   final boolean getAll) {
+        final Set<Cell> conflicts = getAll ? new HashSet<>() : new HashSet<>(1);
+
+        // check for appearance of grid[row][column] in same row/column
+        for (int index = 0; index < gridSize; index++) {
+            if (row != index && grid[row][column] == grid[index][column]) { // grid[row][column] twice in row
+                conflicts.add(new Cell(index, column));
+                if (!getAll) {
+                    return conflicts;
+                }
+            }
+            if ((column != index && grid[row][column] == grid[row][index])) { // grid[row][column] twice in column
+                conflicts.add(new Cell(row, index));
+                if (!getAll) {
+                    return conflicts;
+                }
+            }
+        }
+        return conflicts;
+    }
+
+
+    protected boolean isInvalid() {
+        if (grid.length != gridSize) {
+            return true; // wrong amount of rows
+        }
+
+        for (int row = 0; row < gridSize; row++) {
+            if (grid[row].length != gridSize) {
+                return true; // wrong amount of columns
+            }
+
+            for (int column = 0; column < gridSize; column++) {
+                final int currentCell = grid[row][column];
+
+                if (currentCell == EMPTY_CELL) {
+                    continue; // empty cell is always ok
+                }
+
+                if (currentCell < 1 || currentCell > gridSize || !getConflictingCells(row, column, false).isEmpty()) {
+                    return true;
+                }
+            }
+        }
+        return false; // no rule was violated -> valid
+    }
 
 
     @Override

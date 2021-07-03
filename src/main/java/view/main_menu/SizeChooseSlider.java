@@ -12,9 +12,9 @@ public class SizeChooseSlider extends JSlider{
         setPaintTicks(true);
         setPaintLabels(true);
         Hashtable<Integer, JLabel> labels = new Hashtable<>();
-        labels.put(2, new JLabel(String.valueOf(4)));
-        labels.put(3, new JLabel(String.valueOf(9)));
-        labels.put(4, new JLabel(String.valueOf(16)));
+        labels.put(2, new JLabel("4"));
+        labels.put(3, new JLabel("9"));
+        labels.put(4, new JLabel("16"));
         setLabelTable(labels);
         setBounds(70, 325, 200, 50);
     }

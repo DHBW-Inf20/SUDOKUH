@@ -18,7 +18,7 @@ public class PlayMenu extends GameMenu {
 
     // Definition of pre-defined elements -> cannot be changed
     public void setPredefined(int row, int col, int value) {
-        labels.get(row).get(col).setText(String.valueOf(value));
+        labels.get(row).get(col).setText(Integer.toString(value));
         labels.get(row).get(col).setPredefined(true);
         labels.get(row).get(col).setBackground(predefinedColor);
     }
@@ -38,7 +38,7 @@ public class PlayMenu extends GameMenu {
 
     public void changeNoteMode(CustomButton button) {
         noteMode = !noteMode;
-        if(noteMode) {
+        if (noteMode) {
             button.setBackground(Color.green);
             clicked.setNoteMode();
         } else {

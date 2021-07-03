@@ -1,8 +1,8 @@
 package presenter;
 
-import model.BasePuzzle;
+import model.BasePuzzle.Cell;
+import model.BasePuzzle.SetResult;
 import model.Sudoku;
-import view.CellLabel;
 import view.CustomButton;
 import view.LabelPanel;
 import view.game_menus.GameMenu;
@@ -10,6 +10,7 @@ import view.game_menus.SolveMenu;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.util.Set;
 
 public class SolvePresenter {
 
@@ -34,11 +35,15 @@ public class SolvePresenter {
             case NUMBER -> {
                 if (!clickedCell.isPredefined()) {
                     int number = button.getValue();
-                    BasePuzzle.SetResult valid = sudoku.setCell(clickedCell.getRow(), clickedCell.getCol(), number);
-                    if (valid.isSuccess()) {
-                        gameMenu.validInput(String.valueOf(number));
+                    final SetResult result = sudoku.setCell(clickedCell.getRow(), clickedCell.getCol(), number);
+                    if (result == SetResult.INVALID_VALUE) {
+                        throw new IllegalStateException("Tried to set a cell to a number that was out of the valid range: " + number);
+                    } else if (result.isSuccess()) {
+                        gameMenu.validInput(number);
                     } else {
-                        gameMenu.invalidInput(String.valueOf(number));
+                        // TODO show conflicts
+                        final Set<Cell> conflicts = result.conflictingCells();
+                        gameMenu.invalidInput(number);
                     }
                 }
             }

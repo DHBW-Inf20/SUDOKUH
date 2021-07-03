@@ -1,6 +1,7 @@
 package model;
 
 import java.util.Random;
+import java.util.Set;
 
 import static java.lang.Math.sqrt;
 import static java.util.Arrays.deepToString;
@@ -42,7 +43,8 @@ public final class Sudoku extends BasePuzzle {
         }
     }
 
-    public Sudoku(final int[][] grid) {
+    // package-private for tests
+    Sudoku(final int[][] grid) {
         super(deepCopyOf(grid), grid.length);
         subGridSize = (int) sqrt(gridSize);
 
@@ -50,7 +52,7 @@ public final class Sudoku extends BasePuzzle {
             throw new IllegalArgumentException("Input sudoku did not have a size that is a square number!");
         }
 
-        if (!isValid()) {
+        if (isInvalid()) {
             throw new IllegalArgumentException("Input sudoku is not valid!");
         }
     }
@@ -92,17 +94,11 @@ public final class Sudoku extends BasePuzzle {
     }
 
     @Override
-    protected final Cell conflictingCell(final Cell cell) {
-        final int row = cell.row(), column = cell.column();
+    protected final Set<Cell> getConflictingCells(final int row, final int column, final boolean getAll) {
 
-        // check for appearance of grid[row][column] in same row/column -> if one was found immediately return conflict
-        for (int index = 0; index < gridSize; index++) {
-            if (row != index && grid[row][column] == grid[index][column]) { // grid[row][column] twice in row
-                return new Cell(index, column);
-            }
-            if ((column != index && grid[row][column] == grid[row][index])) { // grid[row][column] twice in column
-                return new Cell(row, index);
-            }
+        final Set<Cell> conflicts = getConflictingCellsInSameRowOrColumn(row, column, getAll);
+        if (!getAll && !conflicts.isEmpty()) {
+            return conflicts;
         }
 
         // sudoku is split into sub-grids: row % subGridSize maps row to value between 0 and subGridSize - 1
@@ -120,38 +116,15 @@ public final class Sudoku extends BasePuzzle {
 
                 // don't check grid[row][column] == grid[row][column] (always true)
                 if (!(row == rowIndex && column == columnIndex) && grid[row][column] == grid[rowIndex][columnIndex]) {
-                    return new Cell(rowIndex, columnIndex); // grid[row][column] twice in sub-grid
+                    conflicts.add(new Cell(rowIndex, columnIndex)); // grid[row][column] twice in sub-grid
+                    if (!getAll) {
+                        return conflicts;
+                    }
                 }
             }
         }
 
-        return null; // no rule was violated -> no conflict
-    }
-
-
-    private boolean isValid() {
-        if (grid.length != gridSize) {
-            return false; // wrong amount of rows
-        }
-
-        for (int row = 0; row < gridSize; row++) {
-            if (grid[row].length != gridSize) {
-                return false; // wrong amount of columns
-            }
-
-            for (int column = 0; column < gridSize; column++) {
-                final int currentCell = grid[row][column];
-
-                if (currentCell == EMPTY_CELL) {
-                    continue; // empty cell is always ok
-                }
-
-                if (currentCell < 1 || currentCell > gridSize || conflictingCell(new Cell(row, column)) != null) {
-                    return false;
-                }
-            }
-        }
-        return true; // no rule was violated -> valid
+        return conflicts;
     }
 
 
@@ -172,9 +145,9 @@ public final class Sudoku extends BasePuzzle {
     @Override
     public final String toString() {
         return "Sudoku{" +
-                "grid=" + deepToString(grid) +
-                ", subGridSize=" + subGridSize +
+                "subGridSize=" + subGridSize +
                 ", gridSize=" + gridSize +
+                ", grid=" + deepToString(grid) +
                 '}';
     }
 }
