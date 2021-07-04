@@ -3,7 +3,7 @@ package util;
 import static java.lang.reflect.Array.newInstance;
 import static java.util.Arrays.copyOf;
 
-public class Arrays {
+public final class Arrays {
 
     public static int[][] deepCopyOf(final int[][] original) {
         final int[][] copy = new int[original.length][];

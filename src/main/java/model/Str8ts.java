@@ -10,8 +10,6 @@ import static util.Arrays.twoLevelCopyOf;
 
 public final class Str8ts extends BasePuzzle {
 
-    public static final int GRID_SIZE = 9;
-
     public enum Color {
         BLACK, WHITE;
 
@@ -23,6 +21,9 @@ public final class Str8ts extends BasePuzzle {
             };
         }
     }
+
+
+    public static final int GRID_SIZE = 9;
 
 
     private final Color[][] colors;
@@ -63,6 +64,10 @@ public final class Str8ts extends BasePuzzle {
     public final boolean setColor(final int row, final int column, final Color color) {
         if (color == null) {
             throw new NullPointerException("Tried to set color to null!");
+        }
+
+        if (colors[row][column] == color) {
+            return true;
         }
 
         return switch (color) {
@@ -114,15 +119,14 @@ public final class Str8ts extends BasePuzzle {
 
         final int straightRowStartInclusive = getLastWhiteIndex(row, column, false, true);
         final int straightRowEndInclusive = getLastWhiteIndex(row, column, true, true);
-        final int straightColumnStartInclusive = getLastWhiteIndex(row, column, false, false);
-        final int straightColumnEndInclusive = getLastWhiteIndex(row, column, true, false);
-
         addStraightConflictsTo(conflicts, straightRowStartInclusive, straightRowEndInclusive, row, column, true, getAll);
 
         if (!getAll && !conflicts.isEmpty()) {
             return conflicts;
         }
 
+        final int straightColumnStartInclusive = getLastWhiteIndex(row, column, false, false);
+        final int straightColumnEndInclusive = getLastWhiteIndex(row, column, true, false);
         addStraightConflictsTo(conflicts, straightColumnStartInclusive, straightColumnEndInclusive, column, row, false, getAll);
 
         return conflicts;

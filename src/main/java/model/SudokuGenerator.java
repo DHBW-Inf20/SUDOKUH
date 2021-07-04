@@ -1,14 +1,14 @@
 package model;
 
+import model.BasePuzzle.Cell;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 import static java.util.Collections.shuffle;
 
-public class SudokuGenerator {
-
-    private static record Cell(int row, int column) {}
+public final class SudokuGenerator {
 
     public static SudokuAndSolution generateSudokuAndSolution(final int subGridSize) {
         final Random random = new Random();
@@ -26,10 +26,10 @@ public class SudokuGenerator {
 
         // reset each cell (but only if there still is a unique solution after reset)
         for (final Cell cell : cells) {
-            final int previousCellValue = randomSudoku.getCell(cell.row, cell.column);
-            randomSudoku.resetCell(cell.row, cell.column);
+            final int previousCellValue = randomSudoku.getCell(cell.row(), cell.column());
+            randomSudoku.resetCell(cell.row(), cell.column());
             if (!canBeSolvedInOnlyOneWay(randomSudoku)) {
-                randomSudoku.setCell(cell.row, cell.column, previousCellValue);
+                randomSudoku.setCell(cell.row(), cell.column(), previousCellValue);
             }
         }
 

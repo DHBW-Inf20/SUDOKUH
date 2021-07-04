@@ -9,15 +9,15 @@ import static java.util.Objects.hash;
 
 public abstract class BasePuzzle {
 
-    public static final int EMPTY_CELL = 0;
-
-
     public static final record Cell(int row, int column) {}
 
     public static final record SetResult(boolean isSuccess, Set<Cell> conflictingCells) {
         public static final SetResult SUCCESS = new SetResult(true, emptySet());
         public static final SetResult INVALID_VALUE = new SetResult(false, emptySet());
     }
+
+
+    public static final int EMPTY_CELL = 0;
 
 
     protected final int[][] grid;
