@@ -1,7 +1,7 @@
 package presenter;
 
-import model.BasePuzzle.Cell;
-import model.BasePuzzle.SetResult;
+import model.AbstractPuzzle.Cell;
+import model.AbstractPuzzle.SetResult;
 import model.Sudoku;
 import model.SudokuAndSolution;
 import model.SudokuGenerator;

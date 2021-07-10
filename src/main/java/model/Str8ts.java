@@ -3,12 +3,13 @@ package model;
 import java.util.Set;
 
 import static java.util.Arrays.*;
+import static java.util.Objects.requireNonNull;
 import static model.Str8ts.Color.BLACK;
 import static model.Str8ts.Color.WHITE;
 import static util.Arrays.deepCopyOf;
 import static util.Arrays.twoLevelCopyOf;
 
-public final class Str8ts extends BasePuzzle {
+public final class Str8ts extends AbstractPuzzle {
 
     public enum Color {
         BLACK, WHITE;
@@ -51,6 +52,12 @@ public final class Str8ts extends BasePuzzle {
     }
 
 
+    @Override
+    public final Str8ts getCopy() {
+        return new Str8ts(grid, colors);
+    }
+
+
     // package-private for tests
     final Color[][] getColors() {
         return colors;
@@ -62,9 +69,7 @@ public final class Str8ts extends BasePuzzle {
     }
 
     public final boolean setColor(final int row, final int column, final Color color) {
-        if (color == null) {
-            throw new NullPointerException("Tried to set color to null!");
-        }
+        requireNonNull(color, "Tried to set color to null!");
 
         if (colors[row][column] == color) {
             return true;

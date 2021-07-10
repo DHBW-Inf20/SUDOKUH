@@ -20,7 +20,7 @@ public class SudokuGeneratorTest {
         final Sudoku secondCopy = sudokuAndSolution.sudoku().getCopy();
         final Sudoku thirdCopy = sudokuAndSolution.sudoku().getCopy();
 
-        assumeTrue(firstCopy.solve());
+        assumeTrue(firstCopy.solveInNormalOrder());
         assumeTrue(secondCopy.solveInReverseOrder());
         assumeTrue(thirdCopy.solveInRandomOrder(new Random()));
 

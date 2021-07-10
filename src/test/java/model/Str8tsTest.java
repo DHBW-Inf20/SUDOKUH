@@ -289,10 +289,10 @@ public class Str8tsTest {
     @Test
     @DisplayName("should be solved")
     void shouldBeSolved() {
-        assertTrue(gentleStr8ts.solve());
+        assertTrue(gentleStr8ts.solveInNormalOrder());
         assertEquals(gentleSolution, gentleStr8ts);
 
-        assertTrue(veryHardStr8ts.solve());
+        assertTrue(veryHardStr8ts.solveInNormalOrder());
         assertEquals(veryHardSolution, veryHardStr8ts);
     }
 
@@ -322,12 +322,12 @@ public class Str8tsTest {
     @MethodSource("allCellRowsAndColumnsForGrid")
     @DisplayName("should keep prefilled values after solve")
     void shouldKeepPrefilledValuesAfterSolve(final int row, final int column) {
-        gentleStr8ts.solve();
+        gentleStr8ts.solveInNormalOrder();
         if (gentleGrid[row][column] != Str8ts.EMPTY_CELL) {
             assertEquals(gentleGrid[row][column], gentleStr8ts.getCell(row, column));
         }
 
-        veryHardStr8ts.solve();
+        veryHardStr8ts.solveInNormalOrder();
         if (veryHardGrid[row][column] != Str8ts.EMPTY_CELL) {
             assertEquals(veryHardGrid[row][column], veryHardStr8ts.getCell(row, column));
         }

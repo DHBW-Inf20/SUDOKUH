@@ -7,7 +7,7 @@ import static java.util.Arrays.deepHashCode;
 import static java.util.Collections.*;
 import static java.util.Objects.hash;
 
-public abstract class BasePuzzle {
+public abstract class AbstractPuzzle {
 
     public static final record Cell(int row, int column) {}
 
@@ -15,6 +15,8 @@ public abstract class BasePuzzle {
         public static final SetResult SUCCESS = new SetResult(true, emptySet());
         public static final SetResult INVALID_VALUE = new SetResult(false, emptySet());
     }
+
+    public enum SolveResult {NO_SOLUTION, MULTIPLE_SOLUTIONS, ONE_SOLUTION}
 
 
     public static final int EMPTY_CELL = 0;
@@ -24,10 +26,13 @@ public abstract class BasePuzzle {
     protected final int gridSize;
 
 
-    protected BasePuzzle(final int[][] grid, final int gridSize) {
+    protected AbstractPuzzle(final int[][] grid, final int gridSize) {
         this.grid = grid;
         this.gridSize = gridSize;
     }
+
+
+    public abstract AbstractPuzzle getCopy();
 
 
     // package-private for tests
@@ -79,7 +84,18 @@ public abstract class BasePuzzle {
     }
 
 
-    public final boolean solve() {
+    public final SolveResult solve() {
+        final AbstractPuzzle copy = getCopy();
+        if (!solveInNormalOrder()) {
+            return SolveResult.NO_SOLUTION;
+        }
+        if (!copy.solveInReverseOrder()) {
+            throw new IllegalStateException("Unable to solve copy while original could be solved");
+        }
+        return this.equals(copy) ? SolveResult.ONE_SOLUTION : SolveResult.MULTIPLE_SOLUTIONS;
+    }
+
+    public final boolean solveInNormalOrder() {
         return solveInternal(getNextEmptyCellForSolve(0, 0, true), false, null);
     }
 
@@ -214,8 +230,8 @@ public abstract class BasePuzzle {
     public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        final BasePuzzle basePuzzle = (BasePuzzle) o;
-        return gridSize == basePuzzle.gridSize && deepEquals(grid, basePuzzle.grid);
+        final AbstractPuzzle abstractPuzzle = (AbstractPuzzle) o;
+        return gridSize == abstractPuzzle.gridSize && deepEquals(grid, abstractPuzzle.grid);
     }
 
     @Override

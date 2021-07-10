@@ -9,7 +9,7 @@ import static java.util.Arrays.fill;
 import static java.util.Objects.hash;
 import static util.Arrays.deepCopyOf;
 
-public final class Sudoku extends BasePuzzle {
+public final class Sudoku extends AbstractPuzzle {
 
     public static final int DEFAULT_SUB_GRID_SIZE = 3;
     public static final int DEFAULT_GRID_SIZE = DEFAULT_SUB_GRID_SIZE * DEFAULT_SUB_GRID_SIZE;
@@ -58,6 +58,7 @@ public final class Sudoku extends BasePuzzle {
     }
 
 
+    @Override
     public final Sudoku getCopy() {
         return new Sudoku(grid);
     }

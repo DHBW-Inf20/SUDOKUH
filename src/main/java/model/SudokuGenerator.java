@@ -1,6 +1,6 @@
 package model;
 
-import model.BasePuzzle.Cell;
+import model.AbstractPuzzle.Cell;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +39,7 @@ public final class SudokuGenerator {
     private static boolean canBeSolvedInOnlyOneWay(final Sudoku sudoku) {
         final Sudoku firstCopy = sudoku.getCopy();
         final Sudoku secondCopy = sudoku.getCopy();
-        if (!(firstCopy.solve() && secondCopy.solveInReverseOrder())) {
+        if (!(firstCopy.solveInNormalOrder() && secondCopy.solveInReverseOrder())) {
             return false;
         }
         return firstCopy.equals(secondCopy);

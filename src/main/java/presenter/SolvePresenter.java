@@ -1,7 +1,7 @@
 package presenter;
 
-import model.BasePuzzle.Cell;
-import model.BasePuzzle.SetResult;
+import model.AbstractPuzzle.Cell;
+import model.AbstractPuzzle.SetResult;
 import model.Sudoku;
 import view.CustomButton;
 import view.LabelPanel;
@@ -54,15 +54,17 @@ public class SolvePresenter {
                 }
             }
             case SOLVE -> {
-                if (sudoku.solve()) {
-                    gameMenu.resetGUIText();
-                    for (int row = 0; row < sudoku.getGridSize(); row++) {
-                        for (int column = 0; column < sudoku.getGridSize(); column++) {
-                            gameMenu.setValue(row, column, sudoku.getCell(row, column));
+                switch (sudoku.solve()) {
+                    case NO_SOLUTION -> gameMenu.setGUIText("Dieses Sudoku kann nicht gelöst werden!", Color.red);
+                    // todo handle cases differently (for example warning when solution is not unique)
+                    case MULTIPLE_SOLUTIONS, ONE_SOLUTION -> {
+                        gameMenu.resetGUIText();
+                        for (int row = 0; row < sudoku.getGridSize(); row++) {
+                            for (int column = 0; column < sudoku.getGridSize(); column++) {
+                                gameMenu.setValue(row, column, sudoku.getCell(row, column));
+                            }
                         }
                     }
-                } else {
-                    gameMenu.setGUIText("Dieses Sudoku kann nicht gelöst werden!", Color.red);
                 }
             }
         }

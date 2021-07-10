@@ -147,7 +147,7 @@ class SudokuTest {
     @Test
     @DisplayName("should be solved")
     void shouldBeSolved() {
-        assertTrue(sudoku.solve());
+        assertTrue(sudoku.solveInNormalOrder());
         assertEquals(solution, sudoku);
     }
 
@@ -169,7 +169,7 @@ class SudokuTest {
     @MethodSource("allCellRowsAndColumnsForGrid")
     @DisplayName("should keep prefilled values after solve")
     void shouldKeepPrefilledValuesAfterSolve(final int row, final int column) {
-        sudoku.solve();
+        sudoku.solveInNormalOrder();
 
         if (grid[row][column] != Sudoku.EMPTY_CELL) {
             assertEquals(grid[row][column], sudoku.getCell(row, column));
@@ -180,7 +180,7 @@ class SudokuTest {
     @MethodSource("allCellRowsAndColumnsForGrid")
     @DisplayName("should only have values between 1 and Sudoku.GRID_SIZE after successful solve")
     void shouldOnlyHaveValuesBetween1AndSudokuGridSizeAfterSuccessfulSolve(final int row, final int column) {
-        assumeTrue(sudoku.solve());
+        assumeTrue(sudoku.solveInNormalOrder());
 
         final int cell = sudoku.getCell(row, column);
 
