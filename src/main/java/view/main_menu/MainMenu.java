@@ -1,6 +1,7 @@
 package view.main_menu;
 
 import presenter.SolvePresenter;
+import presenter.SolveStr8tsPresenter;
 
 import javax.swing.*;
 import java.awt.*;

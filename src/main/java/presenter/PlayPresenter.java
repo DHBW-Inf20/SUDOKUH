@@ -1,5 +1,6 @@
 package presenter;
 
+import model.AbstractPuzzle;
 import model.AbstractPuzzle.Cell;
 import model.AbstractPuzzle.SetResult;
 import model.Sudoku;
@@ -14,9 +15,9 @@ import java.util.Set;
 
 public class PlayPresenter {
 
-    private final Sudoku sudoku;
-    private final Sudoku solution;
-    private final view.game_menus.PlayMenu gameMenu;
+    protected final AbstractPuzzle sudoku;
+    protected final AbstractPuzzle solution;
+    protected final view.game_menus.PlayMenu gameMenu;
 
 
     public PlayPresenter(int size) {
@@ -28,6 +29,24 @@ public class PlayPresenter {
         gameMenu.setVisible(true);
 
         this.setPredefinedCells();
+    }
+
+    public PlayPresenter(int size, String gamemode) {
+        if(gamemode.equals("Str8ts")) {
+            SudokuAndSolution sudokuAndSolution = SudokuGenerator.generateSudokuAndSolution(size);
+            sudoku = sudokuAndSolution.sudoku();
+            solution = sudokuAndSolution.solution();
+            gameMenu = new view.game_menus.PlayStr8tsMenu(size, this::handleButtonEvent, "Str8ts lösen");
+            gameMenu.setVisible(true);
+            this.setPredefinedCells();
+        } else {
+            SudokuAndSolution sudokuAndSolution = SudokuGenerator.generateSudokuAndSolution(size);
+            sudoku = sudokuAndSolution.sudoku();
+            solution = sudokuAndSolution.solution();
+            gameMenu = new view.game_menus.PlayMenu(size, this::handleButtonEvent, "Killer lösen");
+            gameMenu.setVisible(true);
+            this.setPredefinedCells();
+        }
     }
 
     private void setPredefinedCells() {

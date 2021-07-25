@@ -9,7 +9,7 @@ import java.awt.event.ActionListener;
 public class PlayMenu extends GameMenu {
 
     // Note-Mode active or not
-    private boolean noteMode;
+    protected boolean noteMode;
 
     public PlayMenu(int size, ActionListener buttonListener, String title) {
         super(size, buttonListener, title);
@@ -36,6 +36,12 @@ public class PlayMenu extends GameMenu {
         buttonPen.addActionListener(buttonListener);
     }
 
+    @Override
+    // Delete a value from a cell
+    public void resetCell() {
+        clicked.setText("");
+    }
+
     public void changeNoteMode(CustomButton button) {
         noteMode = !noteMode;
         if (noteMode) {
@@ -55,4 +61,9 @@ public class PlayMenu extends GameMenu {
         clicked.setNote(value);
         pane.revalidate();
     }
+
+    @Override
+    public void changeColor() {}
+
+    public void setColor(int row, int col, model.Str8ts.Color color) {}
 }

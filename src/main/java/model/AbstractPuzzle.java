@@ -225,6 +225,8 @@ public abstract class AbstractPuzzle {
         return false; // no rule was violated -> valid
     }
 
+    public abstract Str8ts.Color getColor(final int row, final int column);
+
 
     @Override
     public boolean equals(final Object o) {

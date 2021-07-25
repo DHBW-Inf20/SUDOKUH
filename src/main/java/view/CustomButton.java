@@ -21,6 +21,7 @@ public class CustomButton extends JButton {
             case TIP -> setText("Tipp anzeigen");
             case VERIFY -> setText("Ergebnis überprüfen");
             case PEN -> setText("Notiz");
+            case CHANGECOLOR -> setText("Farbe wechseln");
         }
     }
 
@@ -33,6 +34,6 @@ public class CustomButton extends JButton {
     }
 
     public enum Type {
-        NUMBER, DELETE, SOLVE, TIP, VERIFY, PEN
+        NUMBER, DELETE, SOLVE, TIP, VERIFY, PEN, CHANGECOLOR
     }
 }

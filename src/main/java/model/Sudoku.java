@@ -126,4 +126,7 @@ public final class Sudoku extends AbstractPuzzle {
                 ", grid=" + deepToString(grid) +
                 '}';
     }
+
+    @Override
+    public Str8ts.Color getColor(final int row, final int column) {return null;}
 }

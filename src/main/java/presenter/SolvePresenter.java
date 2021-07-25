@@ -1,12 +1,15 @@
 package presenter;
 
+import model.AbstractPuzzle;
 import model.AbstractPuzzle.Cell;
 import model.AbstractPuzzle.SetResult;
+import model.Str8ts;
 import model.Sudoku;
 import view.CustomButton;
 import view.LabelPanel;
 import view.game_menus.GameMenu;
 import view.game_menus.SolveMenu;
+import view.game_menus.SolveStr8tsMenu;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -14,8 +17,8 @@ import java.util.Set;
 
 public class SolvePresenter {
 
-    private final Sudoku sudoku;
-    private final GameMenu gameMenu;
+    protected final AbstractPuzzle sudoku;
+    protected final GameMenu gameMenu;
 
 
     public SolvePresenter(int size) {
@@ -25,9 +28,20 @@ public class SolvePresenter {
         gameMenu.setVisible(true);
     }
 
+    public SolvePresenter(int size, String gamemode) {
+        if(gamemode.equals("Str8ts")) {
+            sudoku = new Str8ts();
+            gameMenu = new SolveStr8tsMenu(size, this::handleButtonEvent, "Str8ts lösen");
+            gameMenu.setVisible(true);
+        } else {
+            sudoku = new Str8ts();
+            gameMenu = new SolveMenu(size, this::handleButtonEvent, "Killer lösen");
+            gameMenu.setVisible(true);
+        }
+    }
 
     // ActionListener for numbers-buttons to provide a correct input
-    private void handleButtonEvent(ActionEvent e) {
+    protected void handleButtonEvent(ActionEvent e) {
         CustomButton button = (CustomButton) e.getSource();
         LabelPanel clickedCell = gameMenu.getClicked();
 
@@ -41,8 +55,10 @@ public class SolvePresenter {
                     } else if (result.isSuccess()) {
                         gameMenu.validInput(number);
                     } else {
-                        // TODO show conflicts
                         final Set<Cell> conflicts = result.conflictingCells();
+                        for(Cell c : conflicts) {
+                            gameMenu.highlightConflicts(c);
+                        }
                         gameMenu.invalidInput(number);
                     }
                 }
@@ -50,7 +66,7 @@ public class SolvePresenter {
             case DELETE -> {
                 if (!clickedCell.isPredefined()) {
                     sudoku.resetCell(clickedCell.getRow(), clickedCell.getCol());
-                    clickedCell.getLabel().setText("");
+                    gameMenu.resetCell();
                 }
             }
             case SOLVE -> {
