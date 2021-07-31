@@ -35,7 +35,7 @@ public final class Str8ts extends AbstractPuzzle {
         for (final int[] row : grid) {
             fill(row, EMPTY_CELL);
         }
-        colors = new Color[GRID_SIZE][GRID_SIZE];
+        colors = new Color[gridSize][gridSize];
         for (final Color[] row : colors) {
             fill(row, WHITE);
         }
@@ -45,33 +45,31 @@ public final class Str8ts extends AbstractPuzzle {
     Str8ts(final int[][] grid, final Color[][] colors) {
         super(deepCopyOf(grid), grid.length);
         this.colors = twoLevelCopyOf(colors);
-
-        if (isInvalid()) {
+        if (gridSize != GRID_SIZE || isInvalid()) {
             throw new IllegalArgumentException("Input Str8ts is not valid!");
         }
     }
 
 
     @Override
-    public final Str8ts getCopy() {
+    protected Str8ts getCopy() {
         return new Str8ts(grid, colors);
     }
 
 
     // package-private for tests
-    final Color[][] getColors() {
+    Color[][] getColors() {
         return colors;
     }
 
 
-    public final Color getColor(final int row, final int column) {
+    public Color getColor(final int row, final int column) {
         return colors[row][column];
     }
 
-    public final boolean setColor(final int row, final int column, final Color color) {
-        requireNonNull(color, "Tried to set color to null!");
+    public boolean setColor(final int row, final int column, final Color color) {
 
-        if (colors[row][column] == color) {
+        if (colors[row][column] == requireNonNull(color)) {
             return true;
         }
 
@@ -95,8 +93,10 @@ public final class Str8ts extends AbstractPuzzle {
 
 
     @Override
-    protected final Cell getNextEmptyCellForSolve(int startRow, int startColumn, final boolean inclusive) {
+    protected Cell getNextEmptyCellForSolve(int startRow, int startColumn, final boolean inclusive) {
+
         Cell cell = super.getNextEmptyCellForSolve(startRow, startColumn, inclusive);
+
         while (cell != null) {
             startRow = cell.row();
             startColumn = cell.column();
@@ -105,14 +105,15 @@ public final class Str8ts extends AbstractPuzzle {
             }
             cell = super.getNextEmptyCellForSolve(startRow, startColumn, false);
         }
+
         return null; // reached end and did not find an empty white cell
     }
 
 
     @Override
-    protected final Set<Cell> getConflictingCells(final int row, final int column, final boolean getAll) {
+    protected Set<Cell> getConflictingCells(final int row, final int column, final boolean getAll) {
 
-        final Set<Cell> conflicts = getConflictingCellsInSameRowOrColumn(row, column, getAll);
+        final Set<Cell> conflicts = super.getConflictingCells(row, column, getAll);
         if (!getAll && !conflicts.isEmpty()) {
             return conflicts;
         }
@@ -140,9 +141,11 @@ public final class Str8ts extends AbstractPuzzle {
     private int getLastWhiteIndex(final int startRow, final int startColumn, final boolean increment,
                                   final boolean inRow) {
         int result = inRow ? startRow : startColumn;
+
         while (increment ? ++result < gridSize : --result >= 0) {
             if (colors[inRow ? result : startRow][inRow ? startColumn : result] != WHITE) break;
         }
+
         return increment ? result - 1 : result + 1; // undo last inc-/decrement from while loop condition
     }
 
@@ -193,7 +196,13 @@ public final class Str8ts extends AbstractPuzzle {
 
 
     @Override
-    protected final boolean isInvalid() {
+    protected boolean hasToValidateBeforeSolve() {
+        return false;
+    }
+
+    @Override
+    protected boolean isInvalid() {
+
         if (colors.length != gridSize || super.isInvalid()) {
             return true; // wrong amount of rows in colors or grid is invalid
         }
@@ -209,28 +218,25 @@ public final class Str8ts extends AbstractPuzzle {
                 }
             }
         }
+
         return false; // no rule was violated -> valid
     }
 
 
     @Override
-    public final boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        Str8ts str8ts = (Str8ts) o;
-        return deepEquals(colors, str8ts.colors);
+    protected boolean isEqualTo(final AbstractPuzzle other) {
+        return deepEquals(this.colors, ((Str8ts) other).colors);
     }
 
     @Override
-    public final int hashCode() {
+    public int hashCode() {
         int result = super.hashCode();
         result = 31 * result + deepHashCode(colors);
         return result;
     }
 
     @Override
-    public final String toString() {
+    public String toString() {
         return "Str8ts{" +
                 "gridSize=" + gridSize +
                 ", grid=" + deepToString(grid) +

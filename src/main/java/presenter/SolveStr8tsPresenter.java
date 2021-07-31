@@ -61,9 +61,7 @@ public class SolveStr8tsPresenter extends SolvePresenter {
                     gameMenu.setGUIText("Dieses Sudoku kann nicht gelöst werden!", Color.red);
                 }
             }
-            case CHANGECOLOR -> {
-                gameMenu.changeColor();
-            }
+            case CHANGECOLOR -> gameMenu.changeColor();
         }
     }
 }

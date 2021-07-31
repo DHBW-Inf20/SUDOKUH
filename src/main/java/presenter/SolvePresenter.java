@@ -32,12 +32,11 @@ public class SolvePresenter {
         if(gamemode.equals("Str8ts")) {
             sudoku = new Str8ts();
             gameMenu = new SolveStr8tsMenu(size, this::handleButtonEvent, "Str8ts lösen");
-            gameMenu.setVisible(true);
         } else {
             sudoku = new Str8ts();
             gameMenu = new SolveMenu(size, this::handleButtonEvent, "Killer lösen");
-            gameMenu.setVisible(true);
         }
+        gameMenu.setVisible(true);
     }
 
     // ActionListener for numbers-buttons to provide a correct input

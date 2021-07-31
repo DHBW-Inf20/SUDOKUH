@@ -28,9 +28,7 @@ public class PlayStr8tsMenu extends PlayMenu {
                 labels.get(row).get(col).setBackground(Color.black);
                 labels.get(row).get(col).setForeground(Color.white);
             }
-            case WHITE -> {
-                labels.get(row).get(col).setBackground(Color.white);
-            }
+            case WHITE -> labels.get(row).get(col).setBackground(Color.white);
         }
     }
 }

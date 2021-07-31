@@ -6,6 +6,7 @@ import static java.util.Arrays.deepEquals;
 import static java.util.Arrays.deepHashCode;
 import static java.util.Collections.*;
 import static java.util.Objects.hash;
+import static java.util.Objects.requireNonNull;
 
 public abstract class AbstractPuzzle {
 
@@ -16,7 +17,7 @@ public abstract class AbstractPuzzle {
         public static final SetResult INVALID_VALUE = new SetResult(false, emptySet());
     }
 
-    public enum SolveResult {NO_SOLUTION, MULTIPLE_SOLUTIONS, ONE_SOLUTION}
+    public enum SolveResult {NOT_IN_VALID_STATE_FOR_SOLVE, NO_SOLUTION, MULTIPLE_SOLUTIONS, ONE_SOLUTION}
 
 
     public static final int EMPTY_CELL = 0;
@@ -32,7 +33,7 @@ public abstract class AbstractPuzzle {
     }
 
 
-    public abstract AbstractPuzzle getCopy();
+    protected abstract AbstractPuzzle getCopy();
 
 
     // package-private for tests
@@ -85,13 +86,21 @@ public abstract class AbstractPuzzle {
 
 
     public final SolveResult solve() {
+
+        if (hasToValidateBeforeSolve() && isInvalid()) {
+            return SolveResult.NOT_IN_VALID_STATE_FOR_SOLVE;
+        }
+
         final AbstractPuzzle copy = getCopy();
+
         if (!solveInNormalOrder()) {
             return SolveResult.NO_SOLUTION;
         }
+
         if (!copy.solveInReverseOrder()) {
             throw new IllegalStateException("Unable to solve copy while original could be solved");
         }
+
         return this.equals(copy) ? SolveResult.ONE_SOLUTION : SolveResult.MULTIPLE_SOLUTIONS;
     }
 
@@ -105,7 +114,7 @@ public abstract class AbstractPuzzle {
 
     // package-private for tests
     final boolean solveInRandomOrder(final Random random) {
-        return solveInternal(getNextEmptyCellForSolve(0, 0, true), false, random);
+        return solveInternal(getNextEmptyCellForSolve(0, 0, true), false, requireNonNull(random));
     }
 
     private boolean solveInternal(final Cell currentCell, final boolean inReverseOrder, final Random random) {
@@ -114,7 +123,9 @@ public abstract class AbstractPuzzle {
             return true; // all cells are filled (only valid fills happen) -> found solution
         }
 
-        final Cell nextEmptyCell = getNextEmptyCellForSolveExcluding(currentCell);
+        final int currentRow = currentCell.row, currentColumn = currentCell.column;
+
+        final Cell nextEmptyCell = getNextEmptyCellForSolve(currentRow, currentColumn, false);
 
         final List<Integer> numbers = new ArrayList<>(gridSize);
 
@@ -129,25 +140,22 @@ public abstract class AbstractPuzzle {
         }
 
         for (final int number : numbers) {
-            grid[currentCell.row][currentCell.column] = number; // choose next number
+            grid[currentRow][currentColumn] = number; // choose next number
 
-            //        no conflicts          &&         recursive solve was successful                 -> found solution
-            if (hasNoConflicts(currentCell) && solveInternal(nextEmptyCell, inReverseOrder, random)) {
-                return true;
+            if (getConflictingCells(currentRow, currentColumn, false).isEmpty() // no conflicts
+                    && solveInternal(nextEmptyCell, inReverseOrder, random)) {        // && recursive solve successful
+                return true;                                                          // -> found solution
             }
         }
 
         // no number was valid -> undo and go back in recursion
-        grid[currentCell.row][currentCell.column] = EMPTY_CELL;
+        grid[currentRow][currentColumn] = EMPTY_CELL;
         return false;
     }
 
 
-    private Cell getNextEmptyCellForSolveExcluding(final Cell startCell) {
-        return getNextEmptyCellForSolve(startCell.row, startCell.column, false);
-    }
-
     protected Cell getNextEmptyCellForSolve(final int startRow, final int startColumn, final boolean inclusive) {
+
         boolean firstCell = true;
 
         // start row with startRow
@@ -167,18 +175,13 @@ public abstract class AbstractPuzzle {
                 }
             }
         }
+
         return null; // reached end and did not find an empty cell
     }
 
 
-    private boolean hasNoConflicts(final Cell cell) {
-        return getConflictingCells(cell.row, cell.column, false).isEmpty();
-    }
+    protected Set<Cell> getConflictingCells(final int row, final int column, final boolean getAll) {
 
-    protected abstract Set<Cell> getConflictingCells(final int row, final int column, final boolean getAll);
-
-    protected final Set<Cell> getConflictingCellsInSameRowOrColumn(final int row, final int column,
-                                                                   final boolean getAll) {
         final Set<Cell> conflicts = getAll ? new HashSet<>() : new HashSet<>(1);
 
         // check for appearance of grid[row][column] in same row/column
@@ -196,11 +199,15 @@ public abstract class AbstractPuzzle {
                 }
             }
         }
+
         return conflicts;
     }
 
 
+    protected abstract boolean hasToValidateBeforeSolve();
+
     protected boolean isInvalid() {
+
         if (grid.length != gridSize) {
             return true; // wrong amount of rows
         }
@@ -222,19 +229,20 @@ public abstract class AbstractPuzzle {
                 }
             }
         }
+
         return false; // no rule was violated -> valid
     }
 
-    public abstract Str8ts.Color getColor(final int row, final int column);
-
 
     @Override
-    public boolean equals(final Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        final AbstractPuzzle abstractPuzzle = (AbstractPuzzle) o;
-        return gridSize == abstractPuzzle.gridSize && deepEquals(grid, abstractPuzzle.grid);
+    public final boolean equals(final Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        final AbstractPuzzle other = (AbstractPuzzle) obj;
+        return this.gridSize == other.gridSize && deepEquals(this.grid, other.grid) && this.isEqualTo(other);
     }
+
+    protected abstract boolean isEqualTo(final AbstractPuzzle other);
 
     @Override
     public int hashCode() {

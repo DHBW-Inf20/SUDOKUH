@@ -119,7 +119,6 @@ public class Str8tsTest {
     };
 
 
-    @SuppressWarnings("unused")
     static List<Arguments> allCellRowsAndColumnsForGrid() {
         final int size = gentleGrid.length;
         List<Arguments> list = new ArrayList<>();
@@ -163,41 +162,6 @@ public class Str8tsTest {
                 colors,
                 new Str8ts().getColors()
         ));
-    }
-
-    @Test
-    @DisplayName("should be created with grid equal to but not same as specified one")
-    void shouldBeCreatedWithGridEqualToButNotSameAsSpecifiedOne() {
-        assertNotSame(gentleGrid, gentleStr8ts.getGrid());
-        assertTrue(deepEquals(
-                gentleGrid,
-                gentleStr8ts.getGrid()
-        ));
-        assertNotSame(gentleSolutionGrid, gentleSolution.getGrid());
-        assertTrue(deepEquals(
-                gentleSolutionGrid,
-                gentleSolution.getGrid()
-        ));
-        assertNotSame(veryHardGrid, veryHardStr8ts.getGrid());
-        assertTrue(deepEquals(
-                veryHardGrid,
-                veryHardStr8ts.getGrid()
-        ));
-        assertNotSame(veryHardSolutionGrid, veryHardSolution.getGrid());
-        assertTrue(deepEquals(
-                veryHardSolutionGrid,
-                veryHardSolution.getGrid()
-        ));
-    }
-
-    @Test
-    @DisplayName("should not be created with invalid grid and colors")
-    void shouldNotBeCreatedWithInvalidGridAndColors() {
-        assertThrows(
-                IllegalArgumentException.class,
-                () -> new Str8ts(new int[][]{{-1}, {1, 2}},
-                        new Str8ts.Color[][]{{Str8ts.Color.BLACK}, {Str8ts.Color.WHITE, null}})
-        );
     }
 
     @Test

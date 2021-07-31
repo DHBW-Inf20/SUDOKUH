@@ -37,16 +37,14 @@ public class PlayPresenter {
             sudoku = sudokuAndSolution.sudoku();
             solution = sudokuAndSolution.solution();
             gameMenu = new view.game_menus.PlayStr8tsMenu(size, this::handleButtonEvent, "Str8ts lösen");
-            gameMenu.setVisible(true);
-            this.setPredefinedCells();
         } else {
             SudokuAndSolution sudokuAndSolution = SudokuGenerator.generateSudokuAndSolution(size);
             sudoku = sudokuAndSolution.sudoku();
             solution = sudokuAndSolution.solution();
             gameMenu = new view.game_menus.PlayMenu(size, this::handleButtonEvent, "Killer lösen");
-            gameMenu.setVisible(true);
-            this.setPredefinedCells();
         }
+        gameMenu.setVisible(true);
+        this.setPredefinedCells();
     }
 
     private void setPredefinedCells() {

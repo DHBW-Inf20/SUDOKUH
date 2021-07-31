@@ -52,7 +52,6 @@ class SudokuTest {
     };
 
 
-    @SuppressWarnings("unused")
     static List<Arguments> allCellRowsAndColumnsForGrid() {
         final int size = grid.length;
         List<Arguments> list = new ArrayList<>();
@@ -80,30 +79,6 @@ class SudokuTest {
                 new int[Sudoku.DEFAULT_GRID_SIZE][Sudoku.DEFAULT_GRID_SIZE],
                 new Sudoku().getGrid()
         ));
-    }
-
-    @Test
-    @DisplayName("should be created with grid equal to but not same as specified one")
-    void shouldBeCreatedWithGridEqualToButNotSameAsSpecifiedOne() {
-        assertNotSame(grid, sudoku.getGrid());
-        assertTrue(deepEquals(
-                grid,
-                sudoku.getGrid()
-        ));
-        assertNotSame(solutionGrid, solution.getGrid());
-        assertTrue(deepEquals(
-                solutionGrid,
-                solution.getGrid()
-        ));
-    }
-
-    @Test
-    @DisplayName("should not be created with invalid grid")
-    void shouldNotBeCreatedWithInvalidGrid() {
-        assertThrows(
-                IllegalArgumentException.class,
-                () -> new Sudoku(new int[][]{{-1}, {1, 2}})
-        );
     }
 
     @Test
