@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Random;
 
 import static java.util.Collections.shuffle;
+import static model.AbstractPuzzle.SolveResult;
 
 public final class SudokuGenerator {
 
@@ -28,21 +29,12 @@ public final class SudokuGenerator {
         for (final Cell cell : cells) {
             final int previousCellValue = randomSudoku.getCell(cell.row(), cell.column());
             randomSudoku.resetCell(cell.row(), cell.column());
-            if (!canBeSolvedInOnlyOneWay(randomSudoku)) {
+            if (randomSudoku.getCopy().solve() != SolveResult.ONE_SOLUTION) {
                 randomSudoku.setCell(cell.row(), cell.column(), previousCellValue);
             }
         }
 
         return new SudokuAndSolution(randomSudoku, solution);
-    }
-
-    private static boolean canBeSolvedInOnlyOneWay(final Sudoku sudoku) {
-        final Sudoku firstCopy = sudoku.getCopy();
-        final Sudoku secondCopy = sudoku.getCopy();
-        if (!(firstCopy.solveInNormalOrder() && secondCopy.solveInReverseOrder())) {
-            return false;
-        }
-        return firstCopy.equals(secondCopy);
     }
 
     private SudokuGenerator() {}

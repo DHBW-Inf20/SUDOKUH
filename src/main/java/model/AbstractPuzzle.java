@@ -10,14 +10,59 @@ import static java.util.Objects.requireNonNull;
 
 public abstract class AbstractPuzzle {
 
+    /**
+     * A cell in the grid of a Puzzle.
+     */
     public static final record Cell(int row, int column) {}
 
+    /**
+     * Result of {@link #setCell(int, int, int) setCell()}.
+     *
+     * @param isSuccess        whether the {@link #setCell(int, int, int) setCell()} operation was successful
+     * @param conflictingCells a {@link Set} of {@link Cell cells} that are responsible for the
+     *                         {@link #setCell(int, int, int) setCell()} operation to fail
+     */
+
     public static final record SetResult(boolean isSuccess, Set<Cell> conflictingCells) {
+
+        /**
+         * Constant that {@link #setCell(int, int, int) setCell()} always returns on success and can therefore be
+         * used for identity comparison.
+         */
         public static final SetResult SUCCESS = new SetResult(true, emptySet());
+
+        /**
+         * Constant that {@link #setCell(int, int, int) setCell()} always returns when you pass an invalid value for
+         * {@code value} and can therefore be used for identity comparison.
+         */
         public static final SetResult INVALID_VALUE = new SetResult(false, emptySet());
     }
 
-    public enum SolveResult {NOT_IN_VALID_STATE_FOR_SOLVE, NO_SOLUTION, MULTIPLE_SOLUTIONS, ONE_SOLUTION}
+    /**
+     * Result of {@link #solve()}.
+     */
+    public enum SolveResult {
+
+        /**
+         * The Puzzle is in a state that is not ready for being solved (e.g. missing groups in a {@link Killer}).
+         */
+        NOT_IN_VALID_STATE_FOR_SOLVE,
+
+        /**
+         * The Puzzle is not solvable.
+         */
+        NO_SOLUTION,
+
+        /**
+         * The Puzzle was solved, but there was more than one way to do so.
+         */
+        MULTIPLE_SOLUTIONS,
+
+        /**
+         * The Puzzle was solved and there was exactly one way to do so.
+         */
+        ONE_SOLUTION,
+    }
 
 
     public static final int EMPTY_CELL = 0;
@@ -50,14 +95,31 @@ public abstract class AbstractPuzzle {
     }
 
 
+    /**
+     * Returns the value of the cell in the specified {@code row} and {@code column}.
+     */
     public final int getCell(final int row, final int column) {
         return grid[row][column];
     }
 
+    /**
+     * Sets the value of the cell in the specified {@code row} and {@code column} to {@link #EMPTY_CELL}.
+     */
     public final void resetCell(final int row, final int column) {
         setCell(row, column, EMPTY_CELL);
     }
 
+    /**
+     * Trys to set the value of the cell in the specified {@code row} and {@code column} to {@code value}.
+     * <p>This will not work if {@code value} leads to conflicts with other cells or you try to pass something for
+     * {@code value} that is neither {@link #EMPTY_CELL} nor in the valid range from {@code 1} to
+     * {@link #getGridSize() gridSize} (both inclusive).</p>
+     *
+     * @return {@link SetResult#SUCCESS SetResult.SUCCESS} if successful,
+     * {@link SetResult#INVALID_VALUE SetResult.INVALID_VALUE} if you try to use a {@code value} that is out of range or
+     * another instance of {@link SetResult} that contains the {@link SetResult#conflictingCells() conflictingCells}
+     * that are responsible for the operation to fail
+     */
     public final SetResult setCell(final int row, final int column, final int value) {
 
         // empty cell is always ok
@@ -85,6 +147,18 @@ public abstract class AbstractPuzzle {
     }
 
 
+    /**
+     * Trys to solve the Puzzle.
+     * <p>If the solve was successful, the Puzzle will be in a solved state, otherwise the sate will be the same as
+     * before.</p>
+     *
+     * @return {@link SolveResult#NOT_IN_VALID_STATE_FOR_SOLVE SolveResult.NOT_IN_VALID_STATE_FOR_SOLVE} if this Puzzle
+     * is in a state that is not ready for being solved (e.g. missing groups in a {@link Killer}),
+     * {@link SolveResult#NO_SOLUTION SolveResult.NO_SOLUTION} if this Puzzle is not solvable,
+     * {@link SolveResult#MULTIPLE_SOLUTIONS SolveResult.MULTIPLE_SOLUTIONS} if this Puzzle was solved but there was
+     * more than one way to do so or {@link SolveResult#ONE_SOLUTION SolveResult.ONE_SOLUTION} if this Puzzle was solved
+     * and there was exactly one way to do so
+     */
     public final SolveResult solve() {
 
         if (hasToValidateBeforeSolve() && isInvalid()) {
@@ -104,20 +178,37 @@ public abstract class AbstractPuzzle {
         return this.equals(copy) ? SolveResult.ONE_SOLUTION : SolveResult.MULTIPLE_SOLUTIONS;
     }
 
-    public final boolean solveInNormalOrder() {
-        return solveInternal(getNextEmptyCellForSolve(0, 0, true), false, null);
+    // package-private for tests
+    final boolean solveInNormalOrder() {
+        return solveInternal(getNextEmptyCellForSolve(0, 0, true), getNumbersForSolve(false), null);
     }
 
-    public final boolean solveInReverseOrder() {
-        return solveInternal(getNextEmptyCellForSolve(0, 0, true), true, null);
+    // package-private for tests
+    final boolean solveInReverseOrder() {
+        return solveInternal(getNextEmptyCellForSolve(0, 0, true), getNumbersForSolve(true), null);
     }
 
     // package-private for tests
     final boolean solveInRandomOrder(final Random random) {
-        return solveInternal(getNextEmptyCellForSolve(0, 0, true), false, requireNonNull(random));
+        return solveInternal(getNextEmptyCellForSolve(0, 0, true), getNumbersForSolve(false), requireNonNull(random));
     }
 
-    private boolean solveInternal(final Cell currentCell, final boolean inReverseOrder, final Random random) {
+    private ArrayList<Integer> getNumbersForSolve(final boolean inReverseOrder) {
+        // get all numbers that are an option for filling a cell
+        final ArrayList<Integer> numbers = new ArrayList<>(gridSize);
+        if (inReverseOrder) {
+            for (int number = gridSize; number >= 1; number--) {
+                numbers.add(number);
+            }
+        } else {
+            for (int number = 1; number <= gridSize; number++) {
+                numbers.add(number);
+            }
+        }
+        return numbers;
+    }
+
+    private boolean solveInternal(final Cell currentCell, final ArrayList<Integer> numbers, final Random random) {
 
         if (currentCell == null) {
             return true; // all cells are filled (only valid fills happen) -> found solution
@@ -127,24 +218,19 @@ public abstract class AbstractPuzzle {
 
         final Cell nextEmptyCell = getNextEmptyCellForSolve(currentRow, currentColumn, false);
 
-        final List<Integer> numbers = new ArrayList<>(gridSize);
-
-        for (int number = 1; number <= gridSize; number++) {
-            numbers.add(number);
-        }
-
+        // shuffle when solving in random order
         if (random != null) {
             shuffle(numbers, random);
-        } else if (inReverseOrder) {
-            reverse(numbers);
         }
 
         for (final int number : numbers) {
             grid[currentRow][currentColumn] = number; // choose next number
 
-            if (getConflictingCells(currentRow, currentColumn, false).isEmpty() // no conflicts
-                    && solveInternal(nextEmptyCell, inReverseOrder, random)) {        // && recursive solve successful
-                return true;                                                          // -> found solution
+            // no conflicts && recursive solve successful -> found solution
+            // copy numbers when solving in random order (shuffle in recursion would otherwise impact iteration here)
+            if (getConflictingCells(currentRow, currentColumn, false).isEmpty()
+                    && solveInternal(nextEmptyCell, random == null ? numbers : new ArrayList<>(numbers), random)) {
+                return true;
             }
         }
 
@@ -156,7 +242,7 @@ public abstract class AbstractPuzzle {
 
     protected Cell getNextEmptyCellForSolve(final int startRow, final int startColumn, final boolean inclusive) {
 
-        boolean firstCell = true;
+        boolean lookingAtFirstCell = true;
 
         // start row with startRow
         for (int row = startRow; row < gridSize; row++) {
@@ -165,8 +251,8 @@ public abstract class AbstractPuzzle {
             for (int column = (row == startRow ? startColumn : 0); column < gridSize; column++) {
 
                 // skip the first cell if not inclusive
-                if (firstCell) {
-                    firstCell = false;
+                if (lookingAtFirstCell) {
+                    lookingAtFirstCell = false;
                     if (!inclusive) continue;
                 }
 
@@ -182,17 +268,19 @@ public abstract class AbstractPuzzle {
 
     protected Set<Cell> getConflictingCells(final int row, final int column, final boolean getAll) {
 
-        final Set<Cell> conflicts = getAll ? new HashSet<>() : new HashSet<>(1);
+        final Set<Cell> conflicts = getAll ? new HashSet<>() : new HashSet<>(1); // only need 1 when !getAll
 
         // check for appearance of grid[row][column] in same row/column
         for (int index = 0; index < gridSize; index++) {
-            if (row != index && grid[row][column] == grid[index][column]) { // grid[row][column] twice in row
+            // grid[row][column] twice in row
+            if (row != index && grid[row][column] == grid[index][column]) {
                 conflicts.add(new Cell(index, column));
                 if (!getAll) {
                     return conflicts;
                 }
             }
-            if ((column != index && grid[row][column] == grid[row][index])) { // grid[row][column] twice in column
+            // grid[row][column] twice in column
+            if ((column != index && grid[row][column] == grid[row][index])) {
                 conflicts.add(new Cell(row, index));
                 if (!getAll) {
                     return conflicts;
@@ -204,8 +292,15 @@ public abstract class AbstractPuzzle {
     }
 
 
+    // used to determine if there are requirements that need to be fulfilled before solving can be done
+    // those are then checked by isInvalid()
     protected abstract boolean hasToValidateBeforeSolve();
 
+    /**
+     * Returns {@code false} if and only if {@link #grid} is a square with {@link #gridSize} {@code *} {@link #gridSize}
+     * cells, every cell is either {@link #EMPTY_CELL} or in the valid range from {@code 1} to {@link #gridSize}
+     * (both inclusive) and there are no {@link #getConflictingCells(int, int, boolean) conflicts}.
+     */
     protected boolean isInvalid() {
 
         if (grid.length != gridSize) {

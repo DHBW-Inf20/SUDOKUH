@@ -55,11 +55,12 @@ public abstract class AbstractSudoku extends AbstractPuzzle {
         final int columnLowerBoundInclusive = column - (column % subGridSize);
         final int columnUpperBoundExclusive = columnLowerBoundInclusive + subGridSize;
 
+        // check for duplicates of current cell in sub-grid
         for (int rowIndex = rowLowerBoundInclusive; rowIndex < rowUpperBoundExclusive; rowIndex++) {
             for (int columnIndex = columnLowerBoundInclusive; columnIndex < columnUpperBoundExclusive; columnIndex++) {
 
                 // don't check grid[row][column] == grid[row][column] (always true)
-                if (!(row == rowIndex && column == columnIndex) && grid[row][column] == grid[rowIndex][columnIndex]) {
+                if ((row != rowIndex || column != columnIndex) && grid[row][column] == grid[rowIndex][columnIndex]) {
                     conflicts.add(new Cell(rowIndex, columnIndex)); // grid[row][column] twice in sub-grid
                     if (!getAll) {
                         return conflicts;

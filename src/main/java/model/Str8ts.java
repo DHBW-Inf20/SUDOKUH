@@ -11,6 +11,10 @@ import static util.Arrays.twoLevelCopyOf;
 
 public final class Str8ts extends AbstractPuzzle {
 
+    /**
+     * The color of a {@link model.AbstractPuzzle.Cell cell} in a Str8ts.
+     * <p>Can only be {@link #BLACK black} or {@link #WHITE white}.</p>
+     */
     public enum Color {
         BLACK, WHITE;
 
@@ -30,6 +34,10 @@ public final class Str8ts extends AbstractPuzzle {
     private final Color[][] colors;
 
 
+    /**
+     * Creates an empty Str8ts with {@link #GRID_SIZE} for its {@link #getGridSize() gridSize}.
+     * The {@link Color color} of every cell is set to {@link Color#WHITE white}.
+     */
     public Str8ts() {
         super(new int[GRID_SIZE][GRID_SIZE], GRID_SIZE);
         for (final int[] row : grid) {
@@ -41,7 +49,7 @@ public final class Str8ts extends AbstractPuzzle {
         }
     }
 
-    // package-private for tests
+    // package-private constructor for tests
     Str8ts(final int[][] grid, final Color[][] colors) {
         super(deepCopyOf(grid), grid.length);
         this.colors = twoLevelCopyOf(colors);
@@ -63,19 +71,31 @@ public final class Str8ts extends AbstractPuzzle {
     }
 
 
+    /**
+     * Returns the {@link Color color} of the cell in the specified {@code row} and {@code column}.
+     */
     public Color getColor(final int row, final int column) {
         return colors[row][column];
     }
 
+    /**
+     * Trys to set the {@link Color color} of the cell in the specified {@code row} and {@code column}.
+     * <p>This will not work if you try to change the color from {@link Color#BLACK black} to {@link Color#WHITE white}
+     * and the cell value of the previously black cell (that was excluded from straights) makes a straight impossible.
+     * </p>
+     *
+     * @return {@code true} if successful, {@code false} otherwise
+     * @throws NullPointerException if {@code color} is {@code null}
+     */
     public boolean setColor(final int row, final int column, final Color color) {
 
         if (colors[row][column] == requireNonNull(color)) {
-            return true;
+            return true; // color did not change
         }
 
         return switch (color) {
             case WHITE -> {
-                colors[row][column] = color;
+                colors[row][column] = WHITE;
                 if (getConflictingCells(row, column, false).isEmpty()) {
                     yield true;
                 } else {
@@ -84,8 +104,8 @@ public final class Str8ts extends AbstractPuzzle {
                 }
             }
             case BLACK -> {
-                // black is always valid
-                colors[row][column] = color;
+                // black is always ok
+                colors[row][column] = BLACK;
                 yield true;
             }
         };
@@ -97,11 +117,12 @@ public final class Str8ts extends AbstractPuzzle {
 
         Cell cell = super.getNextEmptyCellForSolve(startRow, startColumn, inclusive);
 
+        // continuously get the next empty cell until its color is white (black cells must not be filled)
         while (cell != null) {
             startRow = cell.row();
             startColumn = cell.column();
             if (colors[startRow][startColumn] == WHITE) {
-                return cell;
+                return cell; // found a white empty cell
             }
             cell = super.getNextEmptyCellForSolve(startRow, startColumn, false);
         }
@@ -114,15 +135,12 @@ public final class Str8ts extends AbstractPuzzle {
     protected Set<Cell> getConflictingCells(final int row, final int column, final boolean getAll) {
 
         final Set<Cell> conflicts = super.getConflictingCells(row, column, getAll);
-        if (!getAll && !conflicts.isEmpty()) {
+        if ((!getAll && !conflicts.isEmpty()) || colors[row][column] == BLACK) {
+            // black cells don't have to be in a straight so there cannot exist any further conflicts
             return conflicts;
         }
 
-        // black cells don't have to be in a straight -> return already detected conflicts
-        if (colors[row][column] == BLACK) {
-            return conflicts;
-        }
-
+        // find limits of horizontal straight and add its conflicts to the set of conflicts
         final int straightRowStartInclusive = getLastWhiteIndex(row, column, false, true);
         final int straightRowEndInclusive = getLastWhiteIndex(row, column, true, true);
         addStraightConflictsTo(conflicts, straightRowStartInclusive, straightRowEndInclusive, row, column, true, getAll);
@@ -131,6 +149,7 @@ public final class Str8ts extends AbstractPuzzle {
             return conflicts;
         }
 
+        // find limits of vertical straight and add its conflicts to the set of conflicts
         final int straightColumnStartInclusive = getLastWhiteIndex(row, column, false, false);
         final int straightColumnEndInclusive = getLastWhiteIndex(row, column, true, false);
         addStraightConflictsTo(conflicts, straightColumnStartInclusive, straightColumnEndInclusive, column, row, false, getAll);
@@ -149,7 +168,7 @@ public final class Str8ts extends AbstractPuzzle {
         return increment ? result - 1 : result + 1; // undo last inc-/decrement from while loop condition
     }
 
-    private void addStraightConflictsTo(final Set<Cell> conflictsSoFar, final int straightStartIndexInclusive,
+    private void addStraightConflictsTo(final Set<Cell> conflicts, final int straightStartIndexInclusive,
                                         final int straightEndIndexInclusive, final int startIndex,
                                         final int otherIndex, final boolean inRow, final boolean addAll) {
         // only one cell -> always a straight
@@ -157,8 +176,10 @@ public final class Str8ts extends AbstractPuzzle {
             return;
         }
 
+        // occurrences[n] == true -> cell value n + 1 already occurred in this straight
         final boolean[] occurrences = new boolean[gridSize];
 
+        // fill occurrences
         for (int index = straightStartIndexInclusive; index <= straightEndIndexInclusive; index++) {
             final int cell = grid[inRow ? index : otherIndex][inRow ? otherIndex : index];
 
@@ -170,26 +191,31 @@ public final class Str8ts extends AbstractPuzzle {
             occurrences[cell - 1] = true;
         }
 
-        boolean alreadyOneOccurrence = false;
-        boolean reachedLastOccurrence = false;
+        boolean alreadyOneOccurrence = false; // whether iteration over occurrences has seen true
+        boolean reachedLastOccurrence = false; // whether iteration over occurrences has seen false after seeing true
         for (final boolean occurrence : occurrences) { // in order 1, 2, ..., gridSize
-            if (occurrence) {
-                // occurrence after reaching seemingly last occurrence -> no straight
-                if (reachedLastOccurrence) {
+
+            if (occurrence) { // sees true
+
+                if (reachedLastOccurrence) { // sees true and has seen false after true -> no straight
+
+                    // add cells in this straight to conflicts (except current cell)
                     for (int index = straightStartIndexInclusive; index <= straightEndIndexInclusive; index++) {
                         if (index != startIndex) {
-                            conflictsSoFar.add(new Cell(inRow ? index : otherIndex, inRow ? otherIndex : index));
+                            conflicts.add(new Cell(inRow ? index : otherIndex, inRow ? otherIndex : index));
                             if (!addAll) {
                                 return;
                             }
                         }
                     }
-                    return;
+                    return; // return after adding conflicts
+
                 } else {
-                    alreadyOneOccurrence = true;
+                    alreadyOneOccurrence = true; // has seen true
                 }
-            } else if (alreadyOneOccurrence) {
-                reachedLastOccurrence = true;
+
+            } else if (alreadyOneOccurrence) { // sees false and has seen true
+                reachedLastOccurrence = true; // has seen false after true
             }
         }
     }
@@ -197,9 +223,17 @@ public final class Str8ts extends AbstractPuzzle {
 
     @Override
     protected boolean hasToValidateBeforeSolve() {
+        // there are no requirements for the structure that MUST be fulfilled in order to solve a Str8ts
+        // (could e.g. also solve an empty Str8ts with only white colors)
         return false;
     }
 
+    /**
+     * Returns {@code false} if and only if {@link #grid} and {@link #colors} are squares with {@link #gridSize}
+     * {@code *} {@link #gridSize} cells, every cell is either {@link #EMPTY_CELL} or in the valid range from {@code 1}
+     * to {@link #gridSize} (both inclusive), every color is not {@code null} and there are no
+     * {@link #getConflictingCells(int, int, boolean) conflicts}.
+     */
     @Override
     protected boolean isInvalid() {
 

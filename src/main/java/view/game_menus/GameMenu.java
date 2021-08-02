@@ -291,7 +291,6 @@ public abstract class GameMenu extends JFrame {
 // TODO (Fabian) Main-Menü: Jeweils Auswahl von Str8ts, normal & Killer
 // TODO (Philipp) Implementieren von Blocken in Str8ts (Spielen + Lösen)
 // TODO (Philipp+Luca) Verbinden von Frontend Str8ts mit Backend Str8ts
-// TODO (Luca/(ggf. Fabian)) Backend Killer
 // TODO (Philipp/(ggf. Fabian)) Frontend: Implementieren von Gruppen in Killer
 // TODO (wer Zeit hat) GUIs schöner gestalten, ggf. auch von User anpassbar
 // (TODO Zeitmessung mit Option zu Pausieren)
