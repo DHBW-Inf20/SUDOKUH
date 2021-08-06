@@ -39,7 +39,7 @@ public final class Str8ts extends AbstractPuzzle {
      * The {@link Color color} of every cell is set to {@link Color#WHITE white}.
      */
     public Str8ts() {
-        super(new int[GRID_SIZE][GRID_SIZE], GRID_SIZE);
+        super(new int[GRID_SIZE][GRID_SIZE]);
         for (final int[] row : grid) {
             fill(row, EMPTY_CELL);
         }
@@ -51,7 +51,7 @@ public final class Str8ts extends AbstractPuzzle {
 
     // package-private constructor for tests
     Str8ts(final int[][] grid, final Color[][] colors) {
-        super(deepCopyOf(grid), grid.length);
+        super(deepCopyOf(grid));
         this.colors = twoLevelCopyOf(colors);
         if (gridSize != GRID_SIZE || isInvalid()) {
             throw new IllegalArgumentException("Input Str8ts is not valid!");

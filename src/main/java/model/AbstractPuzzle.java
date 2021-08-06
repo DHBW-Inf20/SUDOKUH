@@ -72,9 +72,9 @@ public abstract class AbstractPuzzle {
     protected final int gridSize;
 
 
-    protected AbstractPuzzle(final int[][] grid, final int gridSize) {
+    protected AbstractPuzzle(final int[][] grid) {
         this.grid = grid;
-        this.gridSize = gridSize;
+        this.gridSize = grid.length;
     }
 
 
