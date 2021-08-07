@@ -16,8 +16,9 @@ public class LabelPanel extends JPanel {
     private final int size;
     String labelValue;
     private ArrayList<Integer> notes;
+    private Color primaryTextColor;
 
-    public LabelPanel(CellLabel lab, int row, int col, int size) {
+    public LabelPanel(CellLabel lab, int row, int col, int size, Color primTextColor) {
         label = lab;
         state = State.LABEL;
         this.row = row;
@@ -25,6 +26,7 @@ public class LabelPanel extends JPanel {
         this.size = size;
         notes = new ArrayList<>();
         this.setLayout(new GridLayout(size, size));
+        primaryTextColor = primTextColor;
     }
 
     public void setNote(int value) {
@@ -38,19 +40,21 @@ public class LabelPanel extends JPanel {
         if (state == State.LABEL) setNoteMode();
 
         final String stringValue = Integer.toString(value);
+        JLabel label = new JLabel(stringValue);
+        label.setForeground(primaryTextColor);
         if (notes.isEmpty()) {
-            this.add(new JLabel(stringValue), 0);
+            this.add(label, 0);
             notes.add(value);
             return;
         }
         for (int i = 0; i < notes.size(); i++) {
             if (notes.get(i) > value) {
-                this.add(new JLabel(stringValue), i);
+                this.add(label, i);
                 notes.add(i, value);
                 return;
             }
         }
-        this.add(new JLabel(stringValue), -1);
+        this.add(label, -1);
         notes.add(notes.size() - 1, value);
     }
 

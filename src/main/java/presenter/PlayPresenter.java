@@ -20,12 +20,12 @@ public class PlayPresenter {
     protected final view.game_menus.PlayMenu gameMenu;
 
 
-    public PlayPresenter(int size) {
+    public PlayPresenter(int size, String theme) {
         SudokuAndSolution sudokuAndSolution = SudokuGenerator.generateSudokuAndSolution(size);
         sudoku = sudokuAndSolution.sudoku();
         solution = sudokuAndSolution.solution();
 
-        gameMenu = new view.game_menus.PlayMenu(size, this::handleButtonEvent, "Sudoku");
+        gameMenu = new view.game_menus.PlayMenu(size, this::handleButtonEvent, "Sudoku", theme);
         gameMenu.setVisible(true);
 
         this.setPredefinedCells();
@@ -69,8 +69,10 @@ public class PlayPresenter {
                             gameMenu.validInput(number);
                             this.verifySolution();
                         } else {
-                            // TODO show conflicts
                             final Set<Cell> conflicts = result.conflictingCells();
+                            for(Cell c : conflicts) {
+                                gameMenu.highlightConflicts(c);
+                            }
                             gameMenu.invalidInput(number);
                         }
                     }

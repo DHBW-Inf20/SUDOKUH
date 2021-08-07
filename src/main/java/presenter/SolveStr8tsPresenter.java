@@ -10,8 +10,8 @@ import java.awt.event.ActionEvent;
 import java.util.Set;
 
 public class SolveStr8tsPresenter extends SolvePresenter {
-    public SolveStr8tsPresenter(int size) {
-        super(size, util.Mode.STRAITS_SOLVE);
+    public SolveStr8tsPresenter(int size, String theme) {
+        super(size, util.Mode.STRAITS_SOLVE, theme);
     }
 
     @Override

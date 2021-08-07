@@ -1,5 +1,7 @@
 package view.game_menus;
 
+import model.AbstractPuzzle;
+import model.Str8ts;
 import view.CustomButton;
 import view.LabelPanel;
 
@@ -12,8 +14,8 @@ public class SolveStr8tsMenu extends SolveMenu {
 
     private ArrayList<ArrayList<model.Str8ts.Color>> colors;
 
-    public SolveStr8tsMenu(int size, ActionListener buttonListener, String title) {
-        super(size, buttonListener, title);
+    public SolveStr8tsMenu(int size, ActionListener buttonListener, String title, String theme) {
+        super(size, buttonListener, title, theme);
         colors = new ArrayList<>();
         for (int i = 0; i < size*size; i++) {
             ArrayList<model.Str8ts.Color> temp = new ArrayList<>();
@@ -42,13 +44,13 @@ public class SolveStr8tsMenu extends SolveMenu {
         model.Str8ts.Color color = colors.get(row).get(col);
         switch(color) {
             case WHITE -> {
-                labels.get(row).get(col).setBackground(Color.black);
-                labels.get(row).get(col).getLabel().setForeground(Color.white);
+                labels.get(row).get(col).setBackground(secondaryBackgroundColor);
+                labels.get(row).get(col).getLabel().setForeground(secondaryTextColor);
                 colors.get(row).set(col, model.Str8ts.Color.BLACK);
             }
             case BLACK -> {
-                labels.get(row).get(col).setBackground(Color.white);
-                labels.get(row).get(col).getLabel().setForeground(Color.black);
+                labels.get(row).get(col).setBackground(primaryBackgroundColor);
+                labels.get(row).get(col).getLabel().setForeground(primaryTextColor);
                 colors.get(row).set(col, model.Str8ts.Color.WHITE);
             }
         }
@@ -60,19 +62,19 @@ public class SolveStr8tsMenu extends SolveMenu {
         int clickedRow = clicked.getRow();
         int clickedCol = clicked.getCol();
         for (int k = 0; k < labels.get(clickedRow).size(); k++) {
-            labels.get(clickedRow).get(k).setBackground(backgroundColor);
+            labels.get(clickedRow).get(k).setBackground(primaryBackgroundColor);
             if(inputs.contains(labels.get(clickedRow).get(k))) labels.get(clickedRow).get(k).setBackground(predefinedColor);
-            if(colors.get(clickedRow).get(k) == model.Str8ts.Color.BLACK) {
-                labels.get(clickedRow).get(k).setBackground(Color.BLACK);
-                labels.get(clickedRow).get(k).getLabel().setForeground(Color.WHITE);
+            if(colors.get(clickedRow).get(k) == Str8ts.Color.BLACK) {
+                labels.get(clickedRow).get(k).setBackground(secondaryBackgroundColor);
+                labels.get(clickedRow).get(k).getLabel().setForeground(secondaryTextColor);
             }
         }
         for (int k = 0; k < labels.get(clickedRow).size(); k++) {
-            labels.get(k).get(clickedCol).setBackground(backgroundColor);
+            labels.get(k).get(clickedCol).setBackground(primaryBackgroundColor);
             if(inputs.contains(labels.get(k).get(clickedCol))) labels.get(k).get(clickedCol).setBackground(predefinedColor);
-            if(colors.get(k).get(clickedCol) == model.Str8ts.Color.BLACK) {
-                labels.get(k).get(clickedCol).setBackground(Color.BLACK);
-                labels.get(k).get(clickedCol).getLabel().setForeground(Color.WHITE);
+            if(colors.get(k).get(clickedCol) == Str8ts.Color.BLACK) {
+                labels.get(k).get(clickedCol).setBackground(secondaryBackgroundColor);
+                labels.get(k).get(clickedCol).getLabel().setForeground(secondaryTextColor);
             }
         }
         int rowLowerBound = clicked.getRow() - (clicked.getRow() % gridSize);
@@ -81,22 +83,22 @@ public class SolveStr8tsMenu extends SolveMenu {
         int columnUpperBound = columnLowerBound + gridSize - 1;
         for (int k = rowLowerBound; k <= rowUpperBound; k++) {
             for (int l = columnLowerBound; l <= columnUpperBound; l++) {
-                labels.get(k).get(l).setBackground(backgroundColor);
+                labels.get(k).get(l).setBackground(primaryBackgroundColor);
                 if(inputs.contains(labels.get(k).get(l))) labels.get(k).get(l).setBackground(predefinedColor);
-                if(colors.get(k).get(l) == model.Str8ts.Color.BLACK) {
-                    labels.get(k).get(l).setBackground(Color.BLACK);
-                    labels.get(k).get(l).getLabel().setForeground(Color.WHITE);
+                if(colors.get(k).get(l) == Str8ts.Color.BLACK) {
+                    labels.get(k).get(l).setBackground(secondaryBackgroundColor);
+                    labels.get(k).get(l).getLabel().setForeground(secondaryTextColor);
                 }
             }
         }
         if (clicked != null) {
-            if (colors.get(clickedRow).get(clickedCol) == model.Str8ts.Color.BLACK) {
-                clicked.setBackground(Color.BLACK);
-                clicked.getLabel().setForeground(Color.WHITE);
+            if (colors.get(clickedRow).get(clickedCol) == Str8ts.Color.BLACK) {
+                clicked.setBackground(secondaryBackgroundColor);
+                clicked.getLabel().setForeground(secondaryTextColor);
             } else if (inputs.contains(clicked)) {
                 clicked.setBackground(predefinedColor);
             } else {
-                clicked.setBackground(backgroundColor);
+                clicked.setBackground(primaryBackgroundColor);
             }
         }
         clicked = labelPanel;
@@ -106,17 +108,17 @@ public class SolveStr8tsMenu extends SolveMenu {
         for (int k = 0; k < labels.get(clickedRow).size(); k++) {
             labels.get(clickedRow).get(k).setBackground(markedColor);
             if(inputs.contains(labels.get(clickedRow).get(k))) labels.get(clickedRow).get(k).setBackground(predefinedMarkedColor);
-            if(colors.get(clickedRow).get(k) == model.Str8ts.Color.BLACK) {
-                labels.get(clickedRow).get(k).setBackground(Color.BLACK);
-                labels.get(clickedRow).get(k).getLabel().setForeground(Color.WHITE);
+            if(colors.get(clickedRow).get(k) == Str8ts.Color.BLACK) {
+                labels.get(clickedRow).get(k).setBackground(secondaryBackgroundColor);
+                labels.get(clickedRow).get(k).getLabel().setForeground(secondaryTextColor);
             }
         }
         for (int k = 0; k < labels.get(clickedRow).size(); k++) {
             labels.get(k).get(clickedCol).setBackground(markedColor);
             if(inputs.contains(labels.get(k).get(clickedCol))) labels.get(k).get(clickedCol).setBackground(predefinedMarkedColor);
-            if(colors.get(k).get(clickedCol) == model.Str8ts.Color.BLACK) {
-                labels.get(k).get(clickedCol).setBackground(Color.BLACK);
-                labels.get(k).get(clickedCol).getLabel().setForeground(Color.WHITE);
+            if(colors.get(k).get(clickedCol) == Str8ts.Color.BLACK) {
+                labels.get(k).get(clickedCol).setBackground(secondaryBackgroundColor);
+                labels.get(k).get(clickedCol).getLabel().setForeground(secondaryTextColor);
             }
         }
         rowLowerBound = clicked.getRow() - (clicked.getRow() % gridSize);
@@ -127,9 +129,9 @@ public class SolveStr8tsMenu extends SolveMenu {
             for (int l = columnLowerBound; l <= columnUpperBound; l++) {
                 labels.get(k).get(l).setBackground(markedColor);
                 if(inputs.contains(labels.get(k).get(l))) labels.get(k).get(l).setBackground(predefinedMarkedColor);
-                if(colors.get(k).get(l) == model.Str8ts.Color.BLACK) {
-                    labels.get(k).get(l).setBackground(Color.BLACK);
-                    labels.get(k).get(l).getLabel().setForeground(Color.WHITE);
+                if(colors.get(k).get(l) == Str8ts.Color.BLACK) {
+                    labels.get(k).get(l).setBackground(secondaryBackgroundColor);
+                    labels.get(k).get(l).getLabel().setForeground(secondaryTextColor);
                 }
             }
         }
@@ -138,8 +140,8 @@ public class SolveStr8tsMenu extends SolveMenu {
         // Reset the value of an invalid cell
         if (invalid != null) invalid.setText("");
         if(! conflicts.isEmpty()) {
-            for(model.AbstractPuzzle.Cell c : conflicts) {
-                labels.get(c.row()).get(c.column()).getLabel().setForeground(Color.black);
+            for(AbstractPuzzle.Cell c : conflicts) {
+                labels.get(c.row()).get(c.column()).getLabel().setForeground(primaryTextColor);
             }
         }
     }
@@ -149,9 +151,9 @@ public class SolveStr8tsMenu extends SolveMenu {
     public void setValue(int row, int col, int value) {
         labels.get(row).get(col).setText(Integer.toString(value));
         if(colors.get(row).get(col) == model.Str8ts.Color.BLACK) {
-            labels.get(row).get(col).setForeground(Color.white);
+            labels.get(row).get(col).setForeground(secondaryTextColor);
         } else {
-            labels.get(row).get(col).setForeground(Color.black);
+            labels.get(row).get(col).setForeground(primaryTextColor);
             if(inputs.contains(labels.get(row).get(col))) labels.get(row).get(col).setBackground(predefinedColor);
         }
     }
@@ -160,11 +162,11 @@ public class SolveStr8tsMenu extends SolveMenu {
     public void validInput(String input) {
         clicked.setText(input);
         if(colors.get(clicked.getRow()).get(clicked.getCol()) == model.Str8ts.Color.BLACK) {
-            clicked.setForeground(Color.white);
-            clicked.getLabel().setForeground(Color.white);
+            clicked.setForeground(secondaryTextColor);
+            clicked.getLabel().setForeground(secondaryTextColor);
         } else {
-            clicked.setForeground(Color.black);
-            clicked.getLabel().setForeground(Color.black);
+            clicked.setForeground(primaryTextColor);
+            clicked.getLabel().setForeground(primaryTextColor);
         }
         inputs.add(clicked);
         invalid = null;

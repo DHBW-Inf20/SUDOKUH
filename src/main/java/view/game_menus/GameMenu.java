@@ -1,5 +1,6 @@
 package view.game_menus;
 
+import model.AbstractPuzzle;
 import model.Killer;
 import view.CellLabel;
 import view.CustomButton;
@@ -29,17 +30,25 @@ public abstract class GameMenu extends JFrame {
      * Various {@link Color colors} for the game menu.
      */
     // Color for field-background
-    protected final Color backgroundColor;
+    protected Color primaryBackgroundColor;
+    // Color for field-background (secondary)
+    protected Color secondaryBackgroundColor;
     // Color for field-background when clicked
-    protected final Color clickedColor;
+    protected Color clickedColor;
     // Color for field-background when there mustn't be a duplicate to clicked field
-    protected final Color markedColor;
+    protected Color markedColor;
     // Color for field-background when field is predefined
-    protected final Color predefinedColor;
+    protected Color predefinedColor;
     // Color for field-background when field is predefined and possible conflicting to field
-    protected final Color predefinedMarkedColor;
+    protected Color predefinedMarkedColor;
     // Color for field-borders
-    protected final Color borderColor;
+    protected Color borderColor;
+    // Color for text
+    protected Color primaryTextColor;
+    // Color for text (secondary)
+    protected Color secondaryTextColor;
+    // Color for text if there is an error
+    protected Color errorTextColor;
 
     /**
      * The whole {@link Container menu}.
@@ -64,34 +73,37 @@ public abstract class GameMenu extends JFrame {
      */
     protected static int size;
 
-    public GameMenu(int gridSize, ActionListener buttonListener, String title) {
+    public GameMenu(int gridSize, ActionListener buttonListener, String title, String theme) {
         super(title);
 
-        backgroundColor = Color.white;
-        clickedColor = Color.decode("#c5e1a5");
-        markedColor = Color.decode("#f2ffe3");
-        predefinedColor = Color.lightGray;
-        predefinedMarkedColor = Color.decode("#dcedc9");
-        borderColor = Color.darkGray;
+        setColors(theme);
+
         textSet = false;
         conflicts = new HashSet<>();
 
         size = gridSize;
         pane = getContentPane();
         pane.setLayout(new BorderLayout());
+        pane.setBackground(primaryBackgroundColor);
+        pane.setForeground(primaryTextColor);
 
         // Game overlay
         JPanel outerPanel = new JPanel();
         outerPanel.setLayout(new GridLayout(gridSize, gridSize));
+        outerPanel.setBackground(primaryBackgroundColor);
+        outerPanel.setForeground(primaryTextColor);
         // Creating matrix of Label-Elements ('labels') -> Creation in advance in order to get the right coordinates
         labels = new ArrayList<>();
         for (int i = 0; i < gridSize * gridSize; i++) {
             ArrayList<LabelPanel> temp = new ArrayList<>();
             for (int j = 0; j < gridSize * gridSize; j++) {
                 CellLabel field = new CellLabel(" ");
-                LabelPanel labelPanel = new LabelPanel(field,i,j,gridSize);
+                LabelPanel labelPanel = new LabelPanel(field,i,j,gridSize, primaryTextColor);
                 labelPanel.setOpaque(true);
-                field.setBackground(backgroundColor);
+                labelPanel.setBackground(primaryBackgroundColor);
+                labelPanel.setForeground(primaryTextColor);
+                field.setBackground(primaryBackgroundColor);
+                field.setForeground(primaryTextColor);
                 labelPanel.setBorder(new LineBorder(borderColor, 1));
                 field.setHorizontalAlignment(SwingConstants.CENTER);
                 field.setVerticalAlignment(SwingConstants.CENTER);
@@ -112,6 +124,8 @@ public abstract class GameMenu extends JFrame {
             ArrayList<JPanel> temp = new ArrayList<>();
             for (int j = 0; j < gridSize; j++) {
                 JPanel panel = new JPanel();
+                panel.setBackground(primaryBackgroundColor);
+                panel.setForeground(primaryTextColor);
                 panel.setLayout(new GridLayout(gridSize, gridSize));
                 panel.setBorder(new LineBorder(borderColor, 2));
                 temp.add(panel);
@@ -137,12 +151,18 @@ public abstract class GameMenu extends JFrame {
         // Buttons for input
         JPanel buttonsPanel = new JPanel();
         buttonsPanel.setLayout(new GridLayout(gridSize + 1, gridSize));
+        buttonsPanel.setBackground(primaryBackgroundColor);
+        buttonsPanel.setForeground(primaryTextColor);
         for (int i = 1; i <= gridSize * gridSize; i++) {
             CustomButton button = new CustomButton(i, CustomButton.Type.NUMBER);
+            button.setForeground(primaryTextColor);
+            button.setBackground(primaryBackgroundColor);
             buttonsPanel.add(button);
             button.addActionListener(buttonListener);
         }
         CustomButton buttonDelete = new CustomButton(CustomButton.Type.DELETE);
+        buttonDelete.setForeground(primaryTextColor);
+        buttonDelete.setBackground(primaryBackgroundColor);
         buttonsPanel.add(buttonDelete);
         buttonDelete.addActionListener(buttonListener);
         setCustomButtons(buttonsPanel, buttonListener);
@@ -158,6 +178,36 @@ public abstract class GameMenu extends JFrame {
         setSize(900, 700);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
+    }
+
+    private void setColors(String theme) {
+        switch(theme) {
+            case "dark": {
+                primaryBackgroundColor = Color.darkGray;
+                secondaryBackgroundColor = Color.lightGray;
+                clickedColor = Color.decode("#5ba122");
+                markedColor = Color.decode("#8bc34a");
+                predefinedColor = Color.gray;
+                predefinedMarkedColor = Color.decode("#78b53a");
+                primaryTextColor = Color.white;
+                secondaryTextColor = Color.darkGray;
+                errorTextColor = Color.red;
+                borderColor = Color.white;
+                break;
+            }
+            default: {
+                primaryBackgroundColor = Color.white;
+                secondaryBackgroundColor = Color.black;
+                clickedColor = Color.decode("#c5e1a5");
+                markedColor = Color.decode("#f2ffe3");
+                predefinedColor = Color.lightGray;
+                predefinedMarkedColor = Color.decode("#dcedc9");
+                primaryTextColor = Color.black;
+                secondaryTextColor = Color.white;
+                errorTextColor = Color.red;
+                borderColor = Color.darkGray;
+            }
+        }
     }
 
     /**
@@ -178,6 +228,8 @@ public abstract class GameMenu extends JFrame {
      */
     public void setCustomButtons(JPanel buttonsPanel, ActionListener buttonListener) {
         CustomButton buttonSolve = new CustomButton(CustomButton.Type.SOLVE);
+        buttonSolve.setForeground(primaryTextColor);
+        buttonSolve.setBackground(primaryBackgroundColor);
         buttonsPanel.add(buttonSolve);
         buttonSolve.addActionListener(buttonListener);
     }
@@ -187,11 +239,13 @@ public abstract class GameMenu extends JFrame {
         int clickedRow = clicked.getRow();
         int clickedCol = clicked.getCol();
         for (int k = 0; k < labels.get(clickedRow).size(); k++) {
-            labels.get(clickedRow).get(k).setBackground(backgroundColor);
+            labels.get(clickedRow).get(k).setBackground(primaryBackgroundColor);
+            labels.get(clickedRow).get(k).setForeground(primaryTextColor);
             if (labels.get(clickedRow).get(k).isPredefined()) labels.get(clickedRow).get(k).setBackground(predefinedColor);
         }
         for (int k = 0; k < labels.get(clickedRow).size(); k++) {
-            labels.get(k).get(clickedCol).setBackground(backgroundColor);
+            labels.get(k).get(clickedCol).setBackground(primaryBackgroundColor);
+            labels.get(k).get(clickedCol).setForeground(primaryTextColor);
             if (labels.get(k).get(clickedCol).isPredefined()) labels.get(k).get(clickedCol).setBackground(predefinedColor);
         }
         int rowLowerBound = clicked.getRow() - (clicked.getRow() % gridSize);
@@ -200,15 +254,18 @@ public abstract class GameMenu extends JFrame {
         int columnUpperBound = columnLowerBound + gridSize - 1;
         for (int k = rowLowerBound; k <= rowUpperBound; k++) {
             for (int l = columnLowerBound; l <= columnUpperBound; l++) {
-                labels.get(k).get(l).setBackground(backgroundColor);
+                labels.get(k).get(l).setBackground(primaryBackgroundColor);
+                labels.get(k).get(l).setForeground(primaryTextColor);
                 if (labels.get(k).get(l).isPredefined()) labels.get(k).get(l).setBackground(predefinedColor);
             }
         }
         if (clicked != null) {
             if (clicked.isPredefined()) {
                 clicked.setBackground(predefinedColor);
+                clicked.setForeground(primaryTextColor);
             } else {
-                clicked.setBackground(backgroundColor);
+                clicked.setBackground(primaryBackgroundColor);
+                clicked.setForeground(primaryTextColor);
             }
         }
         clicked = labelPanel;
@@ -218,10 +275,12 @@ public abstract class GameMenu extends JFrame {
         for (int k = 0; k < labels.get(clickedRow).size(); k++) {
             labels.get(clickedRow).get(k).setBackground(markedColor);
             if (labels.get(clickedRow).get(k).isPredefined()) labels.get(clickedRow).get(k).setBackground(predefinedMarkedColor);
+            labels.get(clickedRow).get(k).setForeground(primaryTextColor);
         }
         for (int k = 0; k < labels.get(clickedRow).size(); k++) {
             labels.get(k).get(clickedCol).setBackground(markedColor);
             if (labels.get(k).get(clickedCol).isPredefined()) labels.get(k).get(clickedCol).setBackground(predefinedMarkedColor);
+            labels.get(k).get(clickedCol).setForeground(primaryTextColor);
         }
         rowLowerBound = clicked.getRow() - (clicked.getRow() % gridSize);
         rowUpperBound = rowLowerBound + gridSize - 1;
@@ -231,15 +290,17 @@ public abstract class GameMenu extends JFrame {
             for (int l = columnLowerBound; l <= columnUpperBound; l++) {
                 labels.get(k).get(l).setBackground(markedColor);
                 if (labels.get(k).get(l).isPredefined()) labels.get(k).get(l).setBackground(predefinedMarkedColor);
+                labels.get(k).get(l).setForeground(primaryTextColor);
             }
         }
         clicked.setBackground(clickedColor);
+        clicked.setForeground(primaryTextColor);
 
         // Reset the value of an invalid cell
         if (invalid != null) invalid.setText("");
         if(! conflicts.isEmpty()) {
-            for(model.AbstractPuzzle.Cell c : conflicts) {
-                labels.get(c.row()).get(c.column()).getLabel().setForeground(Color.black);
+            for(AbstractPuzzle.Cell c : conflicts) {
+                labels.get(c.row()).get(c.column()).getLabel().setForeground(primaryTextColor);
             }
         }
     }
@@ -249,7 +310,7 @@ public abstract class GameMenu extends JFrame {
     // Set a value to a cell from backend
     public void setValue(int row, int col, int value) {
         labels.get(row).get(col).setText(Integer.toString(value));
-        labels.get(row).get(col).setForeground(Color.black);
+        labels.get(row).get(col).setForeground(primaryTextColor);
     }
 
     // Delete a value from a cell
@@ -264,12 +325,12 @@ public abstract class GameMenu extends JFrame {
     // Set a valid input by user
     public void validInput(String input) {
         clicked.setText(input);
-        clicked.setForeground(Color.black);
-        clicked.getLabel().setForeground(Color.black);
+        clicked.setForeground(primaryTextColor);
+        clicked.getLabel().setForeground(primaryTextColor);
         invalid = null;
         if(! conflicts.isEmpty()) {
             for(model.AbstractPuzzle.Cell c : conflicts) {
-                labels.get(c.row()).get(c.column()).getLabel().setForeground(Color.black);
+                labels.get(c.row()).get(c.column()).getLabel().setForeground(primaryTextColor);
             }
         }
         conflicts = new HashSet<>();
@@ -282,15 +343,15 @@ public abstract class GameMenu extends JFrame {
     // Set a invalid input by user (only frontend)
     public void invalidInput(String input) {
         clicked.setText(input);
-        clicked.setForeground(Color.red);
-        clicked.getLabel().setForeground(Color.red);
+        clicked.setForeground(errorTextColor);
+        clicked.getLabel().setForeground(errorTextColor);
         invalid = clicked.getLabel();
     }
 
     // Set a invalid input by backend (tip function)
     public void invalidInput(int row, int col) {
-        labels.get(row).get(col).setForeground(Color.red);
-        labels.get(row).get(col).getLabel().setForeground(Color.red);
+        labels.get(row).get(col).setForeground(errorTextColor);
+        labels.get(row).get(col).getLabel().setForeground(errorTextColor);
         invalid = labels.get(row).get(col).getLabel();
     }
 
@@ -298,7 +359,7 @@ public abstract class GameMenu extends JFrame {
     public void setGUIText(String text, Color color) {
         guiText = new JLabel(text);
         guiText.setOpaque(true);
-        guiText.setBackground(backgroundColor);
+        guiText.setBackground(primaryBackgroundColor);
         guiText.setForeground(color);
         guiText.setBorder(new LineBorder(borderColor, 1));
         guiText.setFont(new Font(getFont().getName(), Font.BOLD, 25));

@@ -15,6 +15,8 @@ public class MainMenu extends JFrame {
 
     Mode mode;
 
+    String theme = "dark";
+
     JButton playSudokuButton, solveSudokuButton, solveKillerButton, solveStraitsButton, settingsButton, startButton, backButton;
 
     SizeChooseSlider slider;
@@ -128,16 +130,16 @@ public class MainMenu extends JFrame {
         private void startGame(int size) {
             switch (mode) {
                 case SUDOKU_SOLVE:
-                    new presenter.SolveSudokuPresenter(size);
+                    new presenter.SolveSudokuPresenter(size, theme);
                     break;
                 case SUDOKU_PLAY:
-                    new presenter.PlayPresenter(size);
+                    new presenter.PlayPresenter(size, theme);
                     break;
                 case KILLER_SOLVE:
-                    new presenter.SolveKillerPresenter(size);
+                    new presenter.SolveKillerPresenter(size, theme);
                     break;
                 case STRAITS_SOLVE:
-                    new presenter.SolveStr8tsPresenter(size);
+                    new presenter.SolveStr8tsPresenter(size, theme);
                     break;
             }
             dispose();
