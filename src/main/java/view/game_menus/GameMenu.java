@@ -78,16 +78,16 @@ public abstract class GameMenu extends JFrame {
         super(title);
 
         Themes t = new Themes(theme);
-        primaryBackgroundColor = t.primaryBackgroundColor;
-        secondaryBackgroundColor = t.secondaryBackgroundColor;
-        clickedColor = t.clickedColor;
-        markedColor = t.markedColor;
-        predefinedColor = t.predefinedColor;
-        predefinedMarkedColor = t.predefinedMarkedColor;
-        primaryTextColor = t.primaryTextColor;
-        secondaryTextColor = t.secondaryTextColor;
-        errorTextColor = t.errorTextColor;
-        borderColor = t.borderColor;
+        primaryBackgroundColor = t.getPrimaryBackgroundColor();
+        secondaryBackgroundColor = t.getSecondaryBackgroundColor();
+        clickedColor = t.getClickedColor();
+        markedColor = t.getMarkedColor();
+        predefinedColor = t.getPredefinedColor();
+        predefinedMarkedColor = t.getPredefinedMarkedColor();
+        primaryTextColor = t.getPrimaryTextColor();
+        secondaryTextColor = t.getSecondaryTextColor();
+        errorTextColor = t.getErrorTextColor();
+        borderColor = t.getBorderColor();
 
         textSet = false;
         conflicts = new HashSet<>();

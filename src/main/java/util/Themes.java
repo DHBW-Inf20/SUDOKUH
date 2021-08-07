@@ -3,25 +3,25 @@ package util;
 import java.awt.*;
 
 public class Themes {
-    public static Color primaryBackgroundColor;
+    private Color primaryBackgroundColor;
     // Color for field-background (secondary)
-    public static Color secondaryBackgroundColor;
+    private Color secondaryBackgroundColor;
     // Color for field-background when clicked
-    public static Color clickedColor;
+    private Color clickedColor;
     // Color for field-background when there mustn't be a duplicate to clicked field
-    public static Color markedColor;
+    private Color markedColor;
     // Color for field-background when field is predefined
-    public static Color predefinedColor;
+    private Color predefinedColor;
     // Color for field-background when field is predefined and possible conflicting to field
-    public static Color predefinedMarkedColor;
+    private Color predefinedMarkedColor;
     // Color for field-borders
-    public static Color borderColor;
+    private Color borderColor;
     // Color for text
-    public static Color primaryTextColor;
+    private Color primaryTextColor;
     // Color for text (secondary)
-    public static Color secondaryTextColor;
+    private Color secondaryTextColor;
     // Color for text if there is an error
-    public static Color errorTextColor;
+    private Color errorTextColor;
 
     public Themes(String theme) {
         switch (theme) {
@@ -51,5 +51,45 @@ public class Themes {
                 borderColor = Color.darkGray;
             }
         }
+    }
+
+    public Color getPrimaryBackgroundColor() {
+        return primaryBackgroundColor;
+    }
+
+    public Color getSecondaryBackgroundColor() {
+        return secondaryBackgroundColor;
+    }
+
+    public Color getClickedColor() {
+        return clickedColor;
+    }
+
+    public Color getMarkedColor() {
+        return markedColor;
+    }
+
+    public Color getPredefinedColor() {
+        return predefinedColor;
+    }
+
+    public Color getPredefinedMarkedColor() {
+        return predefinedMarkedColor;
+    }
+
+    public Color getBorderColor() {
+        return borderColor;
+    }
+
+    public Color getPrimaryTextColor() {
+        return primaryTextColor;
+    }
+
+    public Color getSecondaryTextColor() {
+        return secondaryTextColor;
+    }
+
+    public Color getErrorTextColor() {
+        return errorTextColor;
     }
 }
