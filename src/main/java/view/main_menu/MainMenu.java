@@ -128,6 +128,9 @@ public class MainMenu extends JFrame {
         }
 
         private void startGame(int size) {
+            try {
+                UIManager.setLookAndFeel(new javax.swing.plaf.metal.MetalLookAndFeel());
+            } catch(Exception e) {}
             switch (mode) {
                 case SUDOKU_SOLVE -> new presenter.SolveSudokuPresenter(size, theme);
                 case SUDOKU_PLAY -> new presenter.PlayPresenter(size, theme);

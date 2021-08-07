@@ -1,5 +1,6 @@
 package view.game_menus;
 
+import util.Themes;
 import view.CellLabel;
 import view.CustomButton;
 import view.LabelPanel;
@@ -76,7 +77,17 @@ public abstract class GameMenu extends JFrame {
     public GameMenu(int gridSize, ActionListener buttonListener, String title, String theme) {
         super(title);
 
-        setColors(theme);
+        Themes t = new Themes(theme);
+        primaryBackgroundColor = t.primaryBackgroundColor;
+        secondaryBackgroundColor = t.secondaryBackgroundColor;
+        clickedColor = t.clickedColor;
+        markedColor = t.markedColor;
+        predefinedColor = t.predefinedColor;
+        predefinedMarkedColor = t.predefinedMarkedColor;
+        primaryTextColor = t.primaryTextColor;
+        secondaryTextColor = t.secondaryTextColor;
+        errorTextColor = t.errorTextColor;
+        borderColor = t.borderColor;
 
         textSet = false;
         conflicts = new HashSet<>();
@@ -157,12 +168,14 @@ public abstract class GameMenu extends JFrame {
             CustomButton button = new CustomButton(i, NUMBER);
             button.setForeground(primaryTextColor);
             button.setBackground(primaryBackgroundColor);
+            button.setOpaque(true);
             buttonsPanel.add(button);
             button.addActionListener(buttonListener);
         }
         CustomButton buttonDelete = new CustomButton(DELETE);
         buttonDelete.setForeground(primaryTextColor);
         buttonDelete.setBackground(primaryBackgroundColor);
+        buttonDelete.setOpaque(true);
         buttonsPanel.add(buttonDelete);
         buttonDelete.addActionListener(buttonListener);
         setCustomButtons(buttonsPanel, buttonListener);
@@ -175,39 +188,9 @@ public abstract class GameMenu extends JFrame {
         clicked = labels.get(0).get(0);
         clicked.setBackground(clickedColor);
 
-        setSize(900, 700);
+        setSize(1200, 900);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
-    }
-
-    private void setColors(String theme) {
-        switch(theme) {
-            case "dark": {
-                primaryBackgroundColor = Color.darkGray;
-                secondaryBackgroundColor = Color.lightGray;
-                clickedColor = Color.decode("#5ba122");
-                markedColor = Color.decode("#8bc34a");
-                predefinedColor = Color.gray;
-                predefinedMarkedColor = Color.decode("#78b53a");
-                primaryTextColor = Color.white;
-                secondaryTextColor = Color.darkGray;
-                errorTextColor = Color.red;
-                borderColor = Color.white;
-                break;
-            }
-            default: {
-                primaryBackgroundColor = Color.white;
-                secondaryBackgroundColor = Color.black;
-                clickedColor = Color.decode("#c5e1a5");
-                markedColor = Color.decode("#f2ffe3");
-                predefinedColor = Color.lightGray;
-                predefinedMarkedColor = Color.decode("#dcedc9");
-                primaryTextColor = Color.black;
-                secondaryTextColor = Color.white;
-                errorTextColor = Color.red;
-                borderColor = Color.darkGray;
-            }
-        }
     }
 
     /**
@@ -230,6 +213,7 @@ public abstract class GameMenu extends JFrame {
         CustomButton buttonSolve = new CustomButton(SOLVE);
         buttonSolve.setForeground(primaryTextColor);
         buttonSolve.setBackground(primaryBackgroundColor);
+        buttonSolve.setOpaque(true);
         buttonsPanel.add(buttonSolve);
         buttonSolve.addActionListener(buttonListener);
     }
@@ -388,12 +372,11 @@ public abstract class GameMenu extends JFrame {
 
 // TODO (Fabian) Tastatureingaben
 // TODO (Fabian) Mit Tastatureingaben: Nach Eingabe einer Zahl gleich ein Feld weiter gehen
-// TODO (Fabian) Main-Menü: Jeweils Auswahl von Str8ts, normal & Killer
-// TODO (Philipp+Luca) Verbinden von Frontend Str8ts mit Backend Str8ts
 // TODO (Fabian) Frontend: Implementieren von Gruppen in Killer
-// TODO (Fabian+Luca) Frontend: Implementieren von Gruppen in Killer
-// TODO (wer Zeit hat) GUIs schöner gestalten, ggf. auch von User anpassbar
+// TODO (Fabian+Luca) Verbinden von Backend+Frontend Killer
+// TODO (Philipp) GUIs schöner gestalten, ggf. auch von User anpassbar
 // TODO (Alle) Code aufräumen & Dokumentation
 // (TODO Zeitmessung mit Option zu Pausieren)
+// (TODO Tipp-Limit)
 // (TODO von Untermenüs zurück in Mainmenu)
 // (TODO Rückgängig-Funktion)

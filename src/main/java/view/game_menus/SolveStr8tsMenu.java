@@ -31,9 +31,15 @@ public class SolveStr8tsMenu extends SolveMenu {
     // Set buttons other than the standard ones
     public void setCustomButtons(JPanel buttonsPanel, ActionListener buttonListener) {
         CustomButton buttonSolve = new CustomButton(SOLVE);
+        buttonSolve.setForeground(primaryTextColor);
+        buttonSolve.setBackground(primaryBackgroundColor);
+        buttonSolve.setOpaque(true);
         buttonsPanel.add(buttonSolve);
         buttonSolve.addActionListener(buttonListener);
         CustomButton buttonChangeColor = new CustomButton(CHANGECOLOR);
+        buttonChangeColor.setForeground(primaryTextColor);
+        buttonChangeColor.setBackground(primaryBackgroundColor);
+        buttonChangeColor.setOpaque(true);
         buttonsPanel.add(buttonChangeColor);
         buttonChangeColor.addActionListener(buttonListener);
     }
