@@ -18,7 +18,7 @@ public class PlayStr8tsMenu extends PlayMenu {
         }
     }
 
-    @Override
+    //@Override
     // Definition of pre-defined colored elements -> cannot be changed
     public void setColor(int row, int col, model.Str8ts.Color color) {
         labels.get(row).get(col).setPredefined(true);

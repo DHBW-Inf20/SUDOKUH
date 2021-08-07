@@ -3,6 +3,7 @@ package presenter;
 import model.AbstractPuzzle;
 import view.CustomButton;
 import view.LabelPanel;
+import view.game_menus.SolveStr8tsMenu;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -10,13 +11,7 @@ import java.util.Set;
 
 public class SolveStr8tsPresenter extends SolvePresenter {
     public SolveStr8tsPresenter(int size) {
-        super(size, "Str8ts lösen");
-
-        this.setColoredCells();
-    }
-
-    public void setColoredCells() {
-
+        super(size, "Str8ts");
     }
 
     @Override
@@ -61,7 +56,7 @@ public class SolveStr8tsPresenter extends SolvePresenter {
                     gameMenu.setGUIText("Dieses Sudoku kann nicht gelöst werden!", Color.red);
                 }
             }
-            case CHANGECOLOR -> gameMenu.changeColor();
+            case CHANGECOLOR -> ((SolveStr8tsMenu) gameMenu).changeColor();
         }
     }
 }
