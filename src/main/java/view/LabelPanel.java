@@ -41,20 +41,17 @@ public class LabelPanel extends JPanel {
         if (notes.isEmpty()) {
             this.add(new JLabel(stringValue), 0);
             notes.add(value);
-            System.out.println("added empty " + value);
             return;
         }
         for (int i = 0; i < notes.size(); i++) {
             if (notes.get(i) > value) {
                 this.add(new JLabel(stringValue), i);
                 notes.add(i, value);
-                System.out.println("added " + value + " to " + i);
                 return;
             }
         }
         this.add(new JLabel(stringValue), -1);
         notes.add(notes.size() - 1, value);
-        System.out.println("added full " + value);
     }
 
     public boolean isPredefined() {

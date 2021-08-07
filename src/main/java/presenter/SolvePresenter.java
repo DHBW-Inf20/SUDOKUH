@@ -15,26 +15,32 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.Set;
 
-public class SolvePresenter {
+public abstract class SolvePresenter {
 
     protected final AbstractPuzzle sudoku;
     protected final GameMenu gameMenu;
 
-
-    public SolvePresenter(int size) {
-        sudoku = new Sudoku(size);
-
-        gameMenu = new SolveMenu(size, this::handleButtonEvent, "Sudoku lösen");
-        gameMenu.setVisible(true);
-    }
-
-    public SolvePresenter(int size, String gamemode) {
-        if(gamemode.equals("Str8ts")) {
-            sudoku = new Str8ts();
-            gameMenu = new SolveStr8tsMenu(size, this::handleButtonEvent, "Str8ts lösen");
-        } else {
-            sudoku = new Str8ts();
-            gameMenu = new SolveMenu(size, this::handleButtonEvent, "Killer lösen");
+    public SolvePresenter(int size, util.Mode gamemode) {
+        switch(gamemode) {
+            case SUDOKU_SOLVE: {
+                sudoku = new Sudoku();
+                gameMenu = new SolveMenu(size, this::handleButtonEvent, "Sudoku lösen");
+                break;
+            }
+            case STRAITS_SOLVE: {
+                sudoku = new Str8ts();
+                gameMenu = new SolveStr8tsMenu(size, this::handleButtonEvent, "Str8ts lösen");
+                break;
+            }
+            case KILLER_SOLVE: {
+                sudoku = new Str8ts();
+                gameMenu = new SolveMenu(size, this::handleButtonEvent, "Killer lösen");
+                break;
+            }
+            default: {
+                sudoku = new Sudoku();
+                gameMenu = new SolveMenu(size, this::handleButtonEvent, "Sudoku lösen");
+            }
         }
         gameMenu.setVisible(true);
     }

@@ -31,22 +31,6 @@ public class PlayPresenter {
         this.setPredefinedCells();
     }
 
-    public PlayPresenter(int size, String gamemode) {
-        if(gamemode.equals("Str8ts")) {
-            SudokuAndSolution sudokuAndSolution = SudokuGenerator.generateSudokuAndSolution(size);
-            sudoku = sudokuAndSolution.sudoku();
-            solution = sudokuAndSolution.solution();
-            gameMenu = new view.game_menus.PlayStr8tsMenu(size, this::handleButtonEvent, "Str8ts");
-        } else {
-            SudokuAndSolution sudokuAndSolution = SudokuGenerator.generateSudokuAndSolution(size);
-            sudoku = sudokuAndSolution.sudoku();
-            solution = sudokuAndSolution.solution();
-            gameMenu = new view.game_menus.PlayMenu(size, this::handleButtonEvent, "Killer");
-        }
-        gameMenu.setVisible(true);
-        this.setPredefinedCells();
-    }
-
     private void setPredefinedCells() {
         for (int i = 0; i < sudoku.getGridSize(); i++) {
             for (int j = 0; j < sudoku.getGridSize(); j++) {

@@ -1,5 +1,6 @@
 package view.game_menus;
 
+import model.Killer;
 import view.CellLabel;
 import view.CustomButton;
 import view.LabelPanel;
@@ -14,9 +15,19 @@ import java.util.Set;
 
 public abstract class GameMenu extends JFrame {
 
+    /**
+     * Reference to all {@link LabelPanel fields} of the sudoku game.
+     */
     protected ArrayList<ArrayList<LabelPanel>> labels;
+
+    /**
+     * Reference to the actual clicked {@link LabelPanel field} of the sudoku game.
+     */
     protected LabelPanel clicked;
 
+    /**
+     * Various {@link Color colors} for the game menu.
+     */
     // Color for field-background
     protected final Color backgroundColor;
     // Color for field-background when clicked
@@ -30,13 +41,27 @@ public abstract class GameMenu extends JFrame {
     // Color for field-borders
     protected final Color borderColor;
 
+    /**
+     * The whole {@link Container menu}.
+     */
     protected Container pane;
+    /**
+     * A text that is shown in the menu when various events are triggered.
+     */
     protected JLabel guiText;
     protected boolean textSet;
+    /**
+     * Reference to an invalid {@link CellLabel cell} if there is one.
+     */
     protected CellLabel invalid;
+    /**
+     * List of conflicting cells.
+     */
     protected Set<model.AbstractPuzzle.Cell> conflicts;
-    protected ArrayList<ArrayList<JPanel>> panels;
 
+    /**
+     * The size of the grid.
+     */
     protected static int size;
 
     public GameMenu(int gridSize, ActionListener buttonListener, String title) {
@@ -82,7 +107,7 @@ public abstract class GameMenu extends JFrame {
         }
 
         // Initializing matrix of panels ('panels') -> Creation in advance in order to get the right coordinates
-        panels = new ArrayList<>();
+        ArrayList<ArrayList<JPanel>> panels = new ArrayList<>();
         for (int i = 0; i < gridSize; i++) {
             ArrayList<JPanel> temp = new ArrayList<>();
             for (int j = 0; j < gridSize; j++) {
@@ -135,12 +160,22 @@ public abstract class GameMenu extends JFrame {
         setLocationRelativeTo(null);
     }
 
-    // Add panels to outer panel
+    /**
+     * Adds a {@link JLabel panel} to the whole menu
+     *
+     * @param panel The panel that should be added to the menu
+     * @param layout The position where panel should be added
+     */
     protected void addToPanel(JPanel panel, String layout) {
         pane.add(panel, layout);
     }
 
-    // Set buttons other than the standard ones
+    /**
+     * Add buttons other than the standard ones to the menu
+     *
+     * @param buttonsPanel The panel where the buttons should be added to
+     * @param buttonListener The listener the buttons should be attached to
+     */
     public void setCustomButtons(JPanel buttonsPanel, ActionListener buttonListener) {
         CustomButton buttonSolve = new CustomButton(CustomButton.Type.SOLVE);
         buttonsPanel.add(buttonSolve);
@@ -290,10 +325,12 @@ public abstract class GameMenu extends JFrame {
     }
 }
 
-// TODO (Fabian) Merge von Tastatureingaben (vsl. einige Konflikte)
+// TODO (Fabian) Tastatureingaben
+// TODO (Fabian) Mit Tastatureingaben: Nach Eingabe einer Zahl gleich ein Feld weiter gehen
 // TODO (Fabian) Main-Menü: Jeweils Auswahl von Str8ts, normal & Killer
 // TODO (Philipp+Luca) Verbinden von Frontend Str8ts mit Backend Str8ts
-// TODO (Philipp/(ggf. Fabian)) Frontend: Implementieren von Gruppen in Killer
+// TODO (Fabian) Frontend: Implementieren von Gruppen in Killer
+// TODO (Fabian+Luca) Frontend: Implementieren von Gruppen in Killer
 // TODO (wer Zeit hat) GUIs schöner gestalten, ggf. auch von User anpassbar
 // TODO (Alle) Code aufräumen & Dokumentation
 // (TODO Zeitmessung mit Option zu Pausieren)

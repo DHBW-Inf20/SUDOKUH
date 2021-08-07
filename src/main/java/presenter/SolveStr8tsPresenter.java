@@ -11,7 +11,7 @@ import java.util.Set;
 
 public class SolveStr8tsPresenter extends SolvePresenter {
     public SolveStr8tsPresenter(int size) {
-        super(size, "Str8ts");
+        super(size, util.Mode.STRAITS_SOLVE);
     }
 
     @Override

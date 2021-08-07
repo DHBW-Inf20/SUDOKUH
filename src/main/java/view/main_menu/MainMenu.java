@@ -128,13 +128,13 @@ public class MainMenu extends JFrame {
         private void startGame(int size) {
             switch (mode) {
                 case SUDOKU_SOLVE:
-                    new presenter.SolvePresenter(size);
+                    new presenter.SolveSudokuPresenter(size);
                     break;
                 case SUDOKU_PLAY:
                     new presenter.PlayPresenter(size);
                     break;
                 case KILLER_SOLVE:
-                   // new presenter.PlayKillerPresenter(size);
+                    new presenter.SolveKillerPresenter(size);
                     break;
                 case STRAITS_SOLVE:
                     new presenter.SolveStr8tsPresenter(size);
