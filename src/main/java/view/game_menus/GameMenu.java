@@ -1,7 +1,5 @@
 package view.game_menus;
 
-import model.AbstractPuzzle;
-import model.Killer;
 import view.CellLabel;
 import view.CustomButton;
 import view.LabelPanel;
@@ -13,6 +11,8 @@ import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
+
+import static util.Type.*;
 
 public abstract class GameMenu extends JFrame {
 
@@ -154,13 +154,13 @@ public abstract class GameMenu extends JFrame {
         buttonsPanel.setBackground(primaryBackgroundColor);
         buttonsPanel.setForeground(primaryTextColor);
         for (int i = 1; i <= gridSize * gridSize; i++) {
-            CustomButton button = new CustomButton(i, CustomButton.Type.NUMBER);
+            CustomButton button = new CustomButton(i, NUMBER);
             button.setForeground(primaryTextColor);
             button.setBackground(primaryBackgroundColor);
             buttonsPanel.add(button);
             button.addActionListener(buttonListener);
         }
-        CustomButton buttonDelete = new CustomButton(CustomButton.Type.DELETE);
+        CustomButton buttonDelete = new CustomButton(DELETE);
         buttonDelete.setForeground(primaryTextColor);
         buttonDelete.setBackground(primaryBackgroundColor);
         buttonsPanel.add(buttonDelete);
@@ -227,7 +227,7 @@ public abstract class GameMenu extends JFrame {
      * @param buttonListener The listener the buttons should be attached to
      */
     public void setCustomButtons(JPanel buttonsPanel, ActionListener buttonListener) {
-        CustomButton buttonSolve = new CustomButton(CustomButton.Type.SOLVE);
+        CustomButton buttonSolve = new CustomButton(SOLVE);
         buttonSolve.setForeground(primaryTextColor);
         buttonSolve.setBackground(primaryBackgroundColor);
         buttonsPanel.add(buttonSolve);

@@ -16,10 +16,14 @@ public class SolveStr8tsPresenter extends SolvePresenter {
 
     @Override
     // ActionListener for numbers-buttons to provide a correct input
-    protected void handleButtonEvent(ActionEvent e) {
+    public void handleButtonListenerEvent(ActionEvent e) {
         CustomButton button = (CustomButton) e.getSource();
+        handleButton(button);
+    }
+    @Override
+    // Changes after button input
+    public void handleButton(CustomButton button){
         LabelPanel clickedCell = gameMenu.getClicked();
-
         switch (button.getType()) {
             case NUMBER -> {
                 if (!clickedCell.isPredefined()) {

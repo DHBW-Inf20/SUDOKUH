@@ -5,6 +5,7 @@ import view.CustomButton;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import static util.Type.*;
 
 public class PlayMenu extends GameMenu {
 
@@ -26,17 +27,17 @@ public class PlayMenu extends GameMenu {
 
     @Override
     public void setCustomButtons(JPanel buttonsPanel, ActionListener buttonListener) {
-        CustomButton buttonTip = new CustomButton(CustomButton.Type.TIP);
+        CustomButton buttonTip = new CustomButton(TIP);
         buttonTip.setForeground(primaryTextColor);
         buttonTip.setBackground(primaryBackgroundColor);
         buttonsPanel.add(buttonTip);
         buttonTip.addActionListener(buttonListener);
-        CustomButton buttonVerify = new CustomButton(CustomButton.Type.VERIFY);
+        CustomButton buttonVerify = new CustomButton(VERIFY);
         buttonVerify.setForeground(primaryTextColor);
         buttonVerify.setBackground(primaryBackgroundColor);
         buttonsPanel.add(buttonVerify);
         buttonVerify.addActionListener(buttonListener);
-        CustomButton buttonPen = new CustomButton(CustomButton.Type.PEN);
+        CustomButton buttonPen = new CustomButton(PEN);
         buttonPen.setForeground(primaryTextColor);
         buttonPen.setBackground(primaryBackgroundColor);
         buttonsPanel.add(buttonPen);
