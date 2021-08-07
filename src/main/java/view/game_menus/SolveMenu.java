@@ -61,7 +61,7 @@ public class SolveMenu extends GameMenu {
             for (int l = columnLowerBound; l <= columnUpperBound; l++) {
                 labels.get(k).get(l).setBackground(primaryBackgroundColor);
                 if(inputs.contains(labels.get(k).get(l))) labels.get(k).get(l).setBackground(predefinedColor);
-                labels.get(k).get(l).setBackground(primaryTextColor);
+                labels.get(k).get(l).setForeground(primaryTextColor);
             }
         }
         if (clicked != null) {
@@ -79,12 +79,12 @@ public class SolveMenu extends GameMenu {
         for (int k = 0; k < labels.get(clickedRow).size(); k++) {
             labels.get(clickedRow).get(k).setBackground(markedColor);
             if(inputs.contains(labels.get(clickedRow).get(k))) labels.get(clickedRow).get(k).setBackground(predefinedMarkedColor);
-            labels.get(clickedRow).get(k).setBackground(primaryTextColor);
+            labels.get(clickedRow).get(k).setForeground(primaryTextColor);
         }
         for (int k = 0; k < labels.get(clickedRow).size(); k++) {
             labels.get(k).get(clickedCol).setBackground(markedColor);
             if(inputs.contains(labels.get(k).get(clickedCol))) labels.get(k).get(clickedCol).setBackground(predefinedMarkedColor);
-            labels.get(k).get(clickedCol).setBackground(primaryTextColor);
+            labels.get(k).get(clickedCol).setForeground(primaryTextColor);
         }
         rowLowerBound = clicked.getRow() - (clicked.getRow() % gridSize);
         rowUpperBound = rowLowerBound + gridSize - 1;
