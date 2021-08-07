@@ -19,6 +19,10 @@ public class MainMenu extends JFrame {
 
     JButton playSudokuButton, solveSudokuButton, solveKillerButton, solveStraitsButton, settingsButton, startButton, backButton;
 
+    JToggleButton darkModeSwitch, autoStepForwardSwitch;
+
+    boolean darkMode = false, autoStepForward = true;
+
     SizeChooseSlider slider;
 
     public MainMenu() {
@@ -56,10 +60,10 @@ public class MainMenu extends JFrame {
         mainMenuPanel.add(solveStraitsButton);
         solveStraitsButton.setBounds(75, 400, 200, 50);
 
-//        settingsButton = new JButton("Einstellungen");
-//        settingsButton.addActionListener(new MainMenu.ButtonListener());
-//        mainMenuPanel.add(settingsButton);
-//        settingsButton.setBounds(75,500,200,50);
+        settingsButton = new JButton("Einstellungen");
+        settingsButton.addActionListener(new MainMenu.ButtonListener());
+        mainMenuPanel.add(settingsButton);
+        settingsButton.setBounds(75,500,200,50);
 
         //Back Button
         backButton = new JButton("Zurück");
@@ -78,15 +82,23 @@ public class MainMenu extends JFrame {
         gameSettingsPanel.add(startButton, BorderLayout.SOUTH);
         gameSettingsPanel.add(backButton, BorderLayout.PAGE_START);
 
-//        //Settings Panel
-//        JPanel settingsPanel = new JPanel();
-//        settingsPanel.setLayout(new BorderLayout());
-//        settingsPanel.add(backButton, BorderLayout.PAGE_START);
+        //Settings Panel
+        JPanel settingsPanel = new JPanel();
+        settingsPanel.setLayout(null);
+        settingsPanel.add(backButton, BorderLayout.PAGE_START);
+        darkModeSwitch = new JToggleButton("DarkMode", darkMode);
+        darkModeSwitch.setBounds(100, 300, 150, 50);
+        darkModeSwitch.setFocusable(false);
+        settingsPanel.add(darkModeSwitch);
+        autoStepForwardSwitch = new JToggleButton("Auto Step", autoStepForward);
+        autoStepForwardSwitch.setBounds(100, 400, 150, 50);
+        autoStepForwardSwitch.setFocusable(false);
+        settingsPanel.add(autoStepForwardSwitch);
 
         cardsPanel = new JPanel(cl);
         cardsPanel.add(mainMenuPanel, "mainMenu");
         cardsPanel.add(gameSettingsPanel, "gameSettingsPanel");
-        //cardsPanel.add(settingsPanel, "settingsPanel");
+        cardsPanel.add(settingsPanel, "settingsPanel");
         cl.first(cardsPanel);
         add(cardsPanel, BorderLayout.CENTER);
     }
@@ -112,10 +124,10 @@ public class MainMenu extends JFrame {
                 mode = Mode.STRAITS_SOLVE;
                 startGame(3);
             }
-//            if(e.getSource() == settingsButton){
-//                setTitle("Einstellungen");
-//                cl.show(cardsPanel, "settingsPanel");
-//            }
+            if(e.getSource() == settingsButton){
+                setTitle("Einstellungen");
+                cl.show(cardsPanel, "settingsPanel");
+            }
             if (e.getSource() == backButton) {
                 setTitle("Sudoku Hauptmen\u00fc");
                 cl.first(cardsPanel);
