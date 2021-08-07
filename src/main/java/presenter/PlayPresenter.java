@@ -71,9 +71,7 @@ public class PlayPresenter implements Presenter{
                         gameMenu.setNote(number);
                     } else {
                         final SetResult result = sudoku.setCell(clickedCell.getRow(), clickedCell.getCol(), number);
-                        if (result == SetResult.INVALID_VALUE) {
-                            throw new IllegalStateException("Tried to set a cell to a number that was out of the valid range: " + number);
-                        } else if (result.isSuccess()) {
+                        if (result != SetResult.INVALID_VALUE) {
                             gameMenu.validInput(number);
                             this.verifySolution();
                         } else {

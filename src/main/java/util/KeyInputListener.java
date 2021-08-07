@@ -21,10 +21,20 @@ public class KeyInputListener implements KeyListener {
         //NUMBERS ROW
         if(e.getKeyCode()>=48 && e.getKeyCode()<=57){
             presenter.handleButton(new CustomButton(e.getKeyCode()-48, Type.NUMBER));
+            return;
         }
         //NUMBERS PAD
         if(e.getKeyCode()>=96 && e.getKeyCode()<=105){
             presenter.handleButton(new CustomButton(e.getKeyCode()-96, Type.NUMBER));
+            return;
+        }
+        switch (e.getKeyCode()) {
+            case 8 -> presenter.handleButton(new CustomButton(Type.DELETE));
+            case 127 -> presenter.handleButton(new CustomButton(Type.DELETE));
+            case 84 -> presenter.handleButton(new CustomButton(Type.TIP));
+            case 78 -> presenter.handleButton(new CustomButton(Type.PEN));
+            case 69 -> presenter.handleButton(new CustomButton(Type.VERIFY));
+            case 10 -> presenter.handleButton(new CustomButton(Type.SOLVE));
         }
     }
 
