@@ -6,14 +6,13 @@ import view.CustomButton;
 import view.LabelPanel;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import static util.Type.*;
 
 public class SolveStr8tsMenu extends SolveMenu {
 
-    private ArrayList<ArrayList<model.Str8ts.Color>> colors;
+    private final ArrayList<ArrayList<model.Str8ts.Color>> colors;
 
     public SolveStr8tsMenu(int size, ActionListener buttonListener, String title, String theme) {
         super(size, buttonListener, title, theme);

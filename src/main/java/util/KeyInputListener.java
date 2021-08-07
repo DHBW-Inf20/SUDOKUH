@@ -8,7 +8,7 @@ import java.awt.event.KeyListener;
 
 public class KeyInputListener implements KeyListener {
 
-    private Presenter presenter;
+    private final Presenter presenter;
 
     public KeyInputListener(Presenter presenter) {
         this.presenter = presenter;
@@ -29,8 +29,7 @@ public class KeyInputListener implements KeyListener {
             return;
         }
         switch (e.getKeyCode()) {
-            case 8 -> presenter.handleButton(new CustomButton(Type.DELETE));
-            case 127 -> presenter.handleButton(new CustomButton(Type.DELETE));
+            case 8, 127 -> presenter.handleButton(new CustomButton(Type.DELETE));
             case 84 -> presenter.handleButton(new CustomButton(Type.TIP));
             case 78 -> presenter.handleButton(new CustomButton(Type.PEN));
             case 69 -> presenter.handleButton(new CustomButton(Type.VERIFY));
