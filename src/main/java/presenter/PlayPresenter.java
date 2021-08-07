@@ -25,7 +25,7 @@ public class PlayPresenter {
         sudoku = sudokuAndSolution.sudoku();
         solution = sudokuAndSolution.solution();
 
-        gameMenu = new view.game_menus.PlayMenu(size, this::handleButtonEvent, "Sudoku spielen");
+        gameMenu = new view.game_menus.PlayMenu(size, this::handleButtonEvent, "Sudoku");
         gameMenu.setVisible(true);
 
         this.setPredefinedCells();
@@ -36,12 +36,12 @@ public class PlayPresenter {
             SudokuAndSolution sudokuAndSolution = SudokuGenerator.generateSudokuAndSolution(size);
             sudoku = sudokuAndSolution.sudoku();
             solution = sudokuAndSolution.solution();
-            gameMenu = new view.game_menus.PlayStr8tsMenu(size, this::handleButtonEvent, "Str8ts lösen");
+            gameMenu = new view.game_menus.PlayStr8tsMenu(size, this::handleButtonEvent, "Str8ts");
         } else {
             SudokuAndSolution sudokuAndSolution = SudokuGenerator.generateSudokuAndSolution(size);
             sudoku = sudokuAndSolution.sudoku();
             solution = sudokuAndSolution.solution();
-            gameMenu = new view.game_menus.PlayMenu(size, this::handleButtonEvent, "Killer lösen");
+            gameMenu = new view.game_menus.PlayMenu(size, this::handleButtonEvent, "Killer");
         }
         gameMenu.setVisible(true);
         this.setPredefinedCells();

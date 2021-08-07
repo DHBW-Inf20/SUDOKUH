@@ -1,7 +1,5 @@
 package view.main_menu;
 
-import presenter.SolvePresenter;
-import presenter.SolveStr8tsPresenter;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,14 +13,14 @@ public class MainMenu extends JFrame {
 
     Mode mode;
 
-    JButton solveModeButton, playModeButton, settingsButton, startButton, backButton;
+    JButton playSudokuButton, solveSudokuButton, solveKillerButton, solveStraitsButton, settingsButton, startButton, backButton;
 
     SizeChooseSlider slider;
 
-    public MainMenu(){
+    public MainMenu() {
         super("Sudoku Hauptmen\u00fc");
 
-        setSize(new Dimension(350,700));
+        setSize(new Dimension(350, 700));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
         setVisible(true);
@@ -33,15 +31,26 @@ public class MainMenu extends JFrame {
         JPanel mainMenuPanel = new JPanel();
         setBackground(Color.RED);
         mainMenuPanel.setLayout(null);
-        solveModeButton = new JButton("Sudoku Löser");
-        solveModeButton.addActionListener(new MainMenu.ButtonListener());
-        mainMenuPanel.add(solveModeButton);
-        solveModeButton.setBounds(75,200,200,50);
 
-        playModeButton = new JButton("Sudoku Spiel");
-        playModeButton.addActionListener(new MainMenu.ButtonListener());
-        mainMenuPanel.add(playModeButton);
-        playModeButton.setBounds(75,300,200,50);
+        playSudokuButton = new JButton("Sudoku Spiel");
+        playSudokuButton.addActionListener(new MainMenu.ButtonListener());
+        mainMenuPanel.add(playSudokuButton);
+        playSudokuButton.setBounds(75, 100, 200, 50);
+
+        solveSudokuButton = new JButton("Sudoku Löser");
+        solveSudokuButton.addActionListener(new MainMenu.ButtonListener());
+        mainMenuPanel.add(solveSudokuButton);
+        solveSudokuButton.setBounds(75, 200, 200, 50);
+
+        solveKillerButton = new JButton("Killer Löser");
+        solveKillerButton.addActionListener(new MainMenu.ButtonListener());
+        mainMenuPanel.add(solveKillerButton);
+        solveKillerButton.setBounds(75, 300, 200, 50);
+
+        solveStraitsButton = new JButton("Str8ts Löser");
+        solveStraitsButton.addActionListener(new MainMenu.ButtonListener());
+        mainMenuPanel.add(solveStraitsButton);
+        solveStraitsButton.setBounds(75, 400, 200, 50);
 
 //        settingsButton = new JButton("Einstellungen");
 //        settingsButton.addActionListener(new MainMenu.ButtonListener());
@@ -52,18 +61,18 @@ public class MainMenu extends JFrame {
         backButton = new JButton("Zurück");
         backButton.addActionListener(new MainMenu.ButtonListener());
         mainMenuPanel.add(backButton);
-        backButton.setBounds(75, 100, 200,50);
+        backButton.setBounds(75, 100, 200, 50);
 
-        //Solve and Play Mode Panel
-        JPanel modesPanel = new JPanel();
-        modesPanel.setLayout(null);
+        //Game Settings Panel
+        JPanel gameSettingsPanel = new JPanel();
+        gameSettingsPanel.setLayout(null);
         slider = new SizeChooseSlider();
-        modesPanel.add(slider, BorderLayout.CENTER);
+        gameSettingsPanel.add(slider, BorderLayout.CENTER);
         startButton = new JButton("Start");
         startButton.addActionListener(new MainMenu.ButtonListener());
-        startButton.setBounds(100, 450, 150,50);
-        modesPanel.add(startButton, BorderLayout.SOUTH);
-        modesPanel.add(backButton, BorderLayout.PAGE_START);
+        startButton.setBounds(100, 450, 150, 50);
+        gameSettingsPanel.add(startButton, BorderLayout.SOUTH);
+        gameSettingsPanel.add(backButton, BorderLayout.PAGE_START);
 
 //        //Settings Panel
 //        JPanel settingsPanel = new JPanel();
@@ -72,55 +81,68 @@ public class MainMenu extends JFrame {
 
         cardsPanel = new JPanel(cl);
         cardsPanel.add(mainMenuPanel, "mainMenu");
-        cardsPanel.add(modesPanel, "modesPanel");
+        cardsPanel.add(gameSettingsPanel, "gameSettingsPanel");
 //        cardsPanel.add(settingsPanel, "settingsPanel");
         cl.first(cardsPanel);
-        add(cardsPanel,BorderLayout.CENTER);
+        add(cardsPanel, BorderLayout.CENTER);
     }
 
     private class ButtonListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            if(e.getSource() == solveModeButton){
+            if (e.getSource() == solveSudokuButton) {
                 setTitle("Neuer Sudoku Löser");
-                mode = Mode.SOLVE_MODE;
-                cl.show(cardsPanel, "modesPanel");
+                mode = Mode.SUDOKU_SOLVE;
+                cl.show(cardsPanel, "gameSettingsPanel");
             }
-            if(e.getSource() == playModeButton){
+            if (e.getSource() == playSudokuButton) {
                 setTitle("Neues Sudoku Spiel");
-                mode = Mode.PLAY_MODE;
-                cl.show(cardsPanel, "modesPanel");
+                mode = Mode.SUDOKU_PLAY;
+                cl.show(cardsPanel, "gameSettingsPanel");
+            }
+            if (e.getSource() == solveKillerButton) {
+                setTitle("Neuer Killer Löser");
+                mode = Mode.KILLER_SOLVE;
+                cl.show(cardsPanel, "gameSettingsPanel");
+            }
+            if (e.getSource() == solveStraitsButton) {
+                setTitle("Neuer Str8ts Löser");
+                mode = Mode.STRAITS_SOLVE;
+                cl.show(cardsPanel, "gameSettingsPanel");
             }
 //            if(e.getSource() == settingsButton){
 //                setTitle("Einstellungen");
 //                cl.show(cardsPanel, "settingsPanel");
 //            }
-            if(e.getSource() == backButton){
+            if (e.getSource() == backButton) {
                 setTitle("Sudoku Hauptmen\u00fc");
                 cl.first(cardsPanel);
             }
-            if(e.getSource() == startButton){
-                if(mode == Mode.SOLVE_MODE){
-                    startSolveMode(slider.getValue());
-                } else{
-                    // START PLAY MODE
-                    startPlayMode(slider.getValue());
-                }
+            if (e.getSource() == startButton) {
+                startGame(slider.getValue());
             }
         }
-    }
 
-    public void startSolveMode(int size){
-        new SolveStr8tsPresenter(size);
-        dispose();
-    }
-
-    public void startPlayMode(int size){
-        new presenter.PlayKillerPresenter(size);
-        dispose();
+        private void startGame(int size) {
+            switch (mode) {
+                case SUDOKU_SOLVE:
+                    new presenter.SolvePresenter(size);
+                    break;
+                case SUDOKU_PLAY:
+                    new presenter.PlayPresenter(size);
+                    break;
+                case KILLER_SOLVE:
+                   // new presenter.PlayKillerPresenter(size);
+                    break;
+                case STRAITS_SOLVE:
+                    new presenter.SolveStr8tsPresenter(size);
+                    break;
+            }
+            dispose();
+        }
     }
 }
 
 enum Mode{
-    SOLVE_MODE, PLAY_MODE
+    SUDOKU_PLAY, SUDOKU_SOLVE, STRAITS_SOLVE, KILLER_SOLVE
 }
