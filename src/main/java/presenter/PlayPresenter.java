@@ -9,6 +9,7 @@ import model.SudokuGenerator;
 import util.KeyInputListener;
 import view.CustomButton;
 import view.LabelPanel;
+import view.game_menus.GameMenu;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -113,5 +114,8 @@ public class PlayPresenter implements Presenter{
             }
             case PEN -> gameMenu.changeNoteMode(button);
         }
+    }
+    public GameMenu getGameMenu() {
+        return gameMenu;
     }
 }

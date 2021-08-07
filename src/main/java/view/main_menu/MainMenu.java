@@ -15,7 +15,7 @@ public class MainMenu extends JFrame {
 
     Mode mode;
 
-    String theme = "dark";
+    String theme = "default";
 
     JButton playSudokuButton, solveSudokuButton, solveKillerButton, solveStraitsButton, settingsButton, startButton, backButton;
 
@@ -105,14 +105,12 @@ public class MainMenu extends JFrame {
                 cl.show(cardsPanel, "gameSettingsPanel");
             }
             if (e.getSource() == solveKillerButton) {
-                setTitle("Neuer Killer Löser");
                 mode = Mode.KILLER_SOLVE;
-                cl.show(cardsPanel, "gameSettingsPanel");
+                startGame(3);
             }
             if (e.getSource() == solveStraitsButton) {
-                setTitle("Neuer Str8ts Löser");
                 mode = Mode.STRAITS_SOLVE;
-                cl.show(cardsPanel, "gameSettingsPanel");
+                startGame(3);
             }
 //            if(e.getSource() == settingsButton){
 //                setTitle("Einstellungen");

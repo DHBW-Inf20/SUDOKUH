@@ -2,6 +2,7 @@ package util;
 
 import presenter.Presenter;
 import view.CustomButton;
+import view.LabelPanel;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -34,6 +35,44 @@ public class KeyInputListener implements KeyListener {
             case 78 -> presenter.handleButton(new CustomButton(Type.PEN));
             case 69 -> presenter.handleButton(new CustomButton(Type.VERIFY));
             case 10 -> presenter.handleButton(new CustomButton(Type.SOLVE));
+        }
+
+        if(e.getKeyCode()>=37 && e.getKeyCode()<=40){
+           LabelPanel lastClicked = presenter.getGameMenu().getClicked();
+            switch (e.getKeyCode()){
+                //LEFT ARROW BUTTON
+                case 37 ->{
+                    if(lastClicked.getCol()-1!=-1){
+                        presenter.getGameMenu().setClicked(lastClicked.getRow(),lastClicked.getCol()-1);
+                    }else{
+                        presenter.getGameMenu().setClicked(lastClicked.getRow(),presenter.getGameMenu().getGridSize()*presenter.getGameMenu().getGridSize()-1);
+                    }
+                }
+                //UP ARROW BUTTON
+                case 38 ->{
+                    if(lastClicked.getRow()-1!=-1){
+                        presenter.getGameMenu().setClicked(lastClicked.getRow()-1,lastClicked.getCol());
+                    }else{
+                        presenter.getGameMenu().setClicked(presenter.getGameMenu().getGridSize()*presenter.getGameMenu().getGridSize()-1, lastClicked.getCol());
+                    }
+                }
+                //RIGHT ARROW BUTTON
+                case 39 ->{
+                    if(lastClicked.getCol()+1!=presenter.getGameMenu().getGridSize()*presenter.getGameMenu().getGridSize()){
+                        presenter.getGameMenu().setClicked(lastClicked.getRow(),lastClicked.getCol()+1);
+                    }else{
+                        presenter.getGameMenu().setClicked(lastClicked.getRow(),0);
+                    }
+                }
+                //DOWN ARROW BUTTON
+                case 40 ->{
+                    if(lastClicked.getRow()+1!=presenter.getGameMenu().getGridSize()*presenter.getGameMenu().getGridSize()){
+                        presenter.getGameMenu().setClicked(lastClicked.getRow()+1,lastClicked.getCol());
+                    }else{
+                        presenter.getGameMenu().setClicked(0,lastClicked.getCol());
+                    }
+                }
+            }
         }
     }
 

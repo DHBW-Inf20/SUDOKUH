@@ -28,12 +28,10 @@ public abstract class SolvePresenter implements Presenter{
             case STRAITS_SOLVE -> {
                 sudoku = new Str8ts();
                 gameMenu = new SolveStr8tsMenu(size, this::handleButtonListenerEvent, "Str8ts lösen", theme);
-                break;
-            }
+                            }
             case KILLER_SOLVE -> {
                 sudoku = new Killer();
                 gameMenu = new SolveKillerMenu(size, this::handleButtonListenerEvent, "Killer lösen", theme);
-                break;
             }
             default -> {
                 sudoku = new Sudoku(size);
@@ -93,5 +91,8 @@ public abstract class SolvePresenter implements Presenter{
                 }
             }
         }
+    }
+    public GameMenu getGameMenu() {
+        return gameMenu;
     }
 }

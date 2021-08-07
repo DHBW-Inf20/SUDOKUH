@@ -290,6 +290,12 @@ public abstract class GameMenu extends JFrame {
 
     public LabelPanel getClicked() { return clicked; }
 
+    // Method for keyboard input
+    public void setClicked(int row, int column){
+        LabelPanel newClicked = labels.get(row).get(column);
+        handleClickEvent(size,newClicked);
+    }
+
     // Set a value to a cell from backend
     public void setValue(int row, int col, int value) {
         labels.get(row).get(col).setText(Integer.toString(value));
@@ -366,6 +372,10 @@ public abstract class GameMenu extends JFrame {
     public void highlightConflicts(model.AbstractPuzzle.Cell c) {
         labels.get(c.row()).get(c.column()).getLabel().setForeground(Color.red);
         conflicts.add(c);
+    }
+
+    public int getGridSize() {
+        return size;
     }
 }
 
