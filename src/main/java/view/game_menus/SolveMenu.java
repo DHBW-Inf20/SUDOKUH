@@ -15,9 +15,6 @@ public class SolveMenu extends GameMenu {
     }
 
     @Override
-    public void changeColor() {}
-
-    @Override
     public void validInput(String input) {
         clicked.setText(input);
         clicked.setForeground(Color.black);

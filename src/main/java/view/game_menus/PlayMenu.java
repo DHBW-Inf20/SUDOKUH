@@ -61,9 +61,4 @@ public class PlayMenu extends GameMenu {
         clicked.setNote(value);
         pane.revalidate();
     }
-
-    @Override
-    public void changeColor() {}
-
-    public void setColor(int row, int col, model.Str8ts.Color color) {}
 }

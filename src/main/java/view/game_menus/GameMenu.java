@@ -123,8 +123,8 @@ public abstract class GameMenu extends JFrame {
         setCustomButtons(buttonsPanel, buttonListener);
 
         // Adding game overlay and buttons to the panel
-        pane.add(outerPanel, BorderLayout.CENTER);
-        pane.add(buttonsPanel, BorderLayout.EAST);
+        this.addToPanel(outerPanel, BorderLayout.CENTER);
+        this.addToPanel(buttonsPanel, BorderLayout.EAST);
 
         // Changing clicked-Value to 0|0 to exclude errors
         clicked = labels.get(0).get(0);
@@ -133,6 +133,11 @@ public abstract class GameMenu extends JFrame {
         setSize(900, 700);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
+    }
+
+    // Add panels to outer panel
+    protected void addToPanel(JPanel panel, String layout) {
+        pane.add(panel, layout);
     }
 
     // Set buttons other than the standard ones
@@ -283,16 +288,14 @@ public abstract class GameMenu extends JFrame {
         labels.get(c.row()).get(c.column()).getLabel().setForeground(Color.red);
         conflicts.add(c);
     }
-
-    public abstract void changeColor();
 }
 
 // TODO (Fabian) Merge von Tastatureingaben (vsl. einige Konflikte)
 // TODO (Fabian) Main-Menü: Jeweils Auswahl von Str8ts, normal & Killer
-// TODO (Philipp) Implementieren von Blocken in Str8ts (Spielen + Lösen)
 // TODO (Philipp+Luca) Verbinden von Frontend Str8ts mit Backend Str8ts
 // TODO (Philipp/(ggf. Fabian)) Frontend: Implementieren von Gruppen in Killer
 // TODO (wer Zeit hat) GUIs schöner gestalten, ggf. auch von User anpassbar
+// TODO (Alle) Code aufräumen & Dokumentation
 // (TODO Zeitmessung mit Option zu Pausieren)
 // (TODO von Untermenüs zurück in Mainmenu)
 // (TODO Rückgängig-Funktion)

@@ -111,12 +111,12 @@ public class MainMenu extends JFrame {
     }
 
     public void startSolveMode(int size){
-        new SolvePresenter(size);
+        new SolveStr8tsPresenter(size);
         dispose();
     }
 
     public void startPlayMode(int size){
-        new presenter.PlayPresenter(size);
+        new presenter.PlayKillerPresenter(size);
         dispose();
     }
 }
