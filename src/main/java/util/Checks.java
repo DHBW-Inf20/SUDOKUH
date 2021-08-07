@@ -1,6 +1,6 @@
 package util;
 
-public class Checks {
+public final class Checks {
 
     public static int requireNonNegative(final int number, final String message) {
         if (number < 0) {

@@ -22,7 +22,6 @@ public abstract class AbstractPuzzle {
      * @param conflictingCells a {@link Set} of {@link Cell cells} that are responsible for the
      *                         {@link #setCell(int, int, int) setCell()} operation to fail
      */
-
     public static final record SetResult(boolean isSuccess, Set<Cell> conflictingCells) {
 
         /**

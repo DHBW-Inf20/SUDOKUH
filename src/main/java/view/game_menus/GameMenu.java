@@ -246,11 +246,10 @@ public abstract class GameMenu extends JFrame {
         if (clicked != null) {
             if (clicked.isPredefined()) {
                 clicked.setBackground(predefinedColor);
-                clicked.setForeground(primaryTextColor);
             } else {
                 clicked.setBackground(primaryBackgroundColor);
-                clicked.setForeground(primaryTextColor);
             }
+            clicked.setForeground(primaryTextColor);
         }
         clicked = labelPanel;
         // Marking of possible conflicting cells
@@ -374,7 +373,7 @@ public abstract class GameMenu extends JFrame {
 // TODO (Fabian) Mit Tastatureingaben: Nach Eingabe einer Zahl gleich ein Feld weiter gehen
 // TODO (Fabian) Frontend: Implementieren von Gruppen in Killer
 // TODO (Fabian+Luca) Verbinden von Backend+Frontend Killer
-// TODO (Philipp) GUIs schöner gestalten, ggf. auch von User anpassbar
+// TODO (Fabian) Theme-Wechsel in Settings unterbringen, ggf. auch weitere Themes hinzufügen
 // TODO (Alle) Code aufräumen & Dokumentation
 // (TODO Zeitmessung mit Option zu Pausieren)
 // (TODO Tipp-Limit)

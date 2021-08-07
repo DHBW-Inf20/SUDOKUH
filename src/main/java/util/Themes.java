@@ -3,25 +3,25 @@ package util;
 import java.awt.*;
 
 public class Themes {
-    private Color primaryBackgroundColor;
+    private final Color primaryBackgroundColor;
     // Color for field-background (secondary)
-    private Color secondaryBackgroundColor;
+    private final Color secondaryBackgroundColor;
     // Color for field-background when clicked
-    private Color clickedColor;
+    private final Color clickedColor;
     // Color for field-background when there mustn't be a duplicate to clicked field
-    private Color markedColor;
+    private final Color markedColor;
     // Color for field-background when field is predefined
-    private Color predefinedColor;
+    private final Color predefinedColor;
     // Color for field-background when field is predefined and possible conflicting to field
-    private Color predefinedMarkedColor;
+    private final Color predefinedMarkedColor;
     // Color for field-borders
-    private Color borderColor;
+    private final Color borderColor;
     // Color for text
-    private Color primaryTextColor;
+    private final Color primaryTextColor;
     // Color for text (secondary)
-    private Color secondaryTextColor;
+    private final Color secondaryTextColor;
     // Color for text if there is an error
-    private Color errorTextColor;
+    private final Color errorTextColor;
 
     public Themes(String theme) {
         switch (theme) {
