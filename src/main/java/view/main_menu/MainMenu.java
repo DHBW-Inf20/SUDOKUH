@@ -1,6 +1,8 @@
 package view.main_menu;
 
 
+import util.Mode;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -141,8 +143,4 @@ public class MainMenu extends JFrame {
             dispose();
         }
     }
-}
-
-enum Mode{
-    SUDOKU_PLAY, SUDOKU_SOLVE, STRAITS_SOLVE, KILLER_SOLVE
 }
