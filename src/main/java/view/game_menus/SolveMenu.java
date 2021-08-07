@@ -3,7 +3,6 @@ package view.game_menus;
 import model.AbstractPuzzle;
 import view.LabelPanel;
 
-import java.awt.*;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 

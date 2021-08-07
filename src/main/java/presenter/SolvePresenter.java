@@ -3,12 +3,14 @@ package presenter;
 import model.AbstractPuzzle;
 import model.AbstractPuzzle.Cell;
 import model.AbstractPuzzle.SetResult;
+import model.Killer;
 import model.Str8ts;
 import model.Sudoku;
 import util.KeyInputListener;
 import view.CustomButton;
 import view.LabelPanel;
 import view.game_menus.GameMenu;
+import view.game_menus.SolveKillerMenu;
 import view.game_menus.SolveMenu;
 import view.game_menus.SolveStr8tsMenu;
 
@@ -23,20 +25,18 @@ public abstract class SolvePresenter implements Presenter{
 
     public SolvePresenter(int size, util.Mode gameMode, String theme) {
         switch (gameMode) {
-            case SUDOKU_SOLVE -> {
-                sudoku = new Sudoku();
-                gameMenu = new SolveMenu(size, this::handleButtonListenerEvent, "Sudoku lösen", theme);
-            }
             case STRAITS_SOLVE -> {
                 sudoku = new Str8ts();
                 gameMenu = new SolveStr8tsMenu(size, this::handleButtonListenerEvent, "Str8ts lösen", theme);
+                break;
             }
             case KILLER_SOLVE -> {
-                sudoku = new Str8ts();
-                gameMenu = new SolveMenu(size, this::handleButtonListenerEvent, "Killer lösen", theme);
+                sudoku = new Killer();
+                gameMenu = new SolveKillerMenu(size, this::handleButtonListenerEvent, "Killer lösen", theme);
+                break;
             }
             default -> {
-                sudoku = new Sudoku();
+                sudoku = new Sudoku(size);
                 gameMenu = new SolveMenu(size, this::handleButtonListenerEvent, "Sudoku lösen", theme);
             }
         }

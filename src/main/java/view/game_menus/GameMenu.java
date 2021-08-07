@@ -299,7 +299,7 @@ public abstract class GameMenu extends JFrame {
         // Reset the value of an invalid cell
         if (invalid != null) invalid.setText("");
         if(! conflicts.isEmpty()) {
-            for(AbstractPuzzle.Cell c : conflicts) {
+            for(model.AbstractPuzzle.Cell c : conflicts) {
                 labels.get(c.row()).get(c.column()).getLabel().setForeground(primaryTextColor);
             }
         }

@@ -15,7 +15,7 @@ public class MainMenu extends JFrame {
 
     Mode mode;
 
-    String theme = "dark";
+    String theme = "default";
 
     JButton playSudokuButton, solveSudokuButton, solveKillerButton, solveStraitsButton, settingsButton, startButton, backButton;
 
