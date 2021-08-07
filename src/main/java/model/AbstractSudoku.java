@@ -6,6 +6,7 @@ import static java.lang.Math.sqrt;
 import static java.util.Arrays.fill;
 import static java.util.Objects.hash;
 import static util.Arrays.deepCopyOf;
+import static util.Checks.requireNonNegative;
 
 public abstract class AbstractSudoku extends AbstractPuzzle {
 
@@ -13,10 +14,7 @@ public abstract class AbstractSudoku extends AbstractPuzzle {
 
 
     protected AbstractSudoku(final int subGridSize) {
-        super(new int[subGridSize * subGridSize][subGridSize * subGridSize], subGridSize * subGridSize);
-        if (subGridSize < 0) {
-            throw new IllegalArgumentException("subGridSize has to be positive or 0!");
-        }
+        super(new int[requireNonNegative(subGridSize, "subGridSize has to be positive or 0!") * subGridSize][subGridSize * subGridSize]);
         this.subGridSize = subGridSize;
         for (final int[] row : grid) {
             fill(row, EMPTY_CELL);
@@ -24,7 +22,7 @@ public abstract class AbstractSudoku extends AbstractPuzzle {
     }
 
     protected AbstractSudoku(final int[][] grid) {
-        super(deepCopyOf(grid), grid.length);
+        super(deepCopyOf(grid));
         subGridSize = (int) sqrt(gridSize);
         if (subGridSize * subGridSize != gridSize) {
             throw new IllegalArgumentException("Input grid did not have a size that is a square number!");
