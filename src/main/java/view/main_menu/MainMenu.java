@@ -57,7 +57,7 @@ public class MainMenu extends JFrame {
 //        settingsButton = new JButton("Einstellungen");
 //        settingsButton.addActionListener(new MainMenu.ButtonListener());
 //        mainMenuPanel.add(settingsButton);
-//        settingsButton.setBounds(75,400,200,50);
+//        settingsButton.setBounds(75,500,200,50);
 
         //Back Button
         backButton = new JButton("Zurück");
@@ -84,7 +84,7 @@ public class MainMenu extends JFrame {
         cardsPanel = new JPanel(cl);
         cardsPanel.add(mainMenuPanel, "mainMenu");
         cardsPanel.add(gameSettingsPanel, "gameSettingsPanel");
-//        cardsPanel.add(settingsPanel, "settingsPanel");
+        //cardsPanel.add(settingsPanel, "settingsPanel");
         cl.first(cardsPanel);
         add(cardsPanel, BorderLayout.CENTER);
     }
@@ -127,18 +127,10 @@ public class MainMenu extends JFrame {
 
         private void startGame(int size) {
             switch (mode) {
-                case SUDOKU_SOLVE:
-                    new presenter.SolveSudokuPresenter(size);
-                    break;
-                case SUDOKU_PLAY:
-                    new presenter.PlayPresenter(size);
-                    break;
-                case KILLER_SOLVE:
-                    new presenter.SolveKillerPresenter(size);
-                    break;
-                case STRAITS_SOLVE:
-                    new presenter.SolveStr8tsPresenter(size);
-                    break;
+                case SUDOKU_SOLVE -> new presenter.SolveSudokuPresenter(size);
+                case SUDOKU_PLAY -> new presenter.PlayPresenter(size);
+                case KILLER_SOLVE -> new presenter.SolveKillerPresenter(size);
+                case STRAITS_SOLVE -> new presenter.SolveStr8tsPresenter(size);
             }
             dispose();
         }

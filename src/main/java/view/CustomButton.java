@@ -1,5 +1,7 @@
 package view;
 
+import util.Type;
+
 import javax.swing.*;
 
 public class CustomButton extends JButton {
@@ -23,6 +25,7 @@ public class CustomButton extends JButton {
             case PEN -> setText("Notiz");
             case CHANGECOLOR -> setText("Farbe wechseln");
         }
+        setFocusable(false);
     }
 
     public int getValue() {
@@ -33,7 +36,5 @@ public class CustomButton extends JButton {
         return type;
     }
 
-    public enum Type {
-        NUMBER, DELETE, SOLVE, TIP, VERIFY, PEN, CHANGECOLOR
-    }
 }
+

@@ -6,6 +6,7 @@ import model.AbstractPuzzle.SetResult;
 import model.Sudoku;
 import model.SudokuAndSolution;
 import model.SudokuGenerator;
+import util.KeyInputListener;
 import view.CustomButton;
 import view.LabelPanel;
 
@@ -13,7 +14,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.Set;
 
-public class PlayPresenter {
+public class PlayPresenter implements Presenter{
 
     protected final AbstractPuzzle sudoku;
     protected final AbstractPuzzle solution;
@@ -25,8 +26,10 @@ public class PlayPresenter {
         sudoku = sudokuAndSolution.sudoku();
         solution = sudokuAndSolution.solution();
 
-        gameMenu = new view.game_menus.PlayMenu(size, this::handleButtonEvent, "Sudoku");
+        gameMenu = new view.game_menus.PlayMenu(size, this::handleButtonListenerEvent, "Sudoku");
         gameMenu.setVisible(true);
+
+        gameMenu.addKeyListener(new KeyInputListener(this));
 
         this.setPredefinedCells();
     }
@@ -51,8 +54,13 @@ public class PlayPresenter {
     }
 
     // ActionListener for numbers-buttons to provide a correct input
-    private void handleButtonEvent(ActionEvent e) {
+    public void handleButtonListenerEvent(ActionEvent e) {
         CustomButton button = (CustomButton) e.getSource();
+       handleButton(button);
+    }
+
+    @Override
+    public void handleButton(CustomButton button) {
         LabelPanel clickedCell = gameMenu.getClicked();
 
         switch (button.getType()) {

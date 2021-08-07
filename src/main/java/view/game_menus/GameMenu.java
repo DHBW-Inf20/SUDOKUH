@@ -1,6 +1,5 @@
 package view.game_menus;
 
-import model.Killer;
 import view.CellLabel;
 import view.CustomButton;
 import view.LabelPanel;
@@ -12,6 +11,8 @@ import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
+
+import static util.Type.*;
 
 public abstract class GameMenu extends JFrame {
 
@@ -138,11 +139,11 @@ public abstract class GameMenu extends JFrame {
         JPanel buttonsPanel = new JPanel();
         buttonsPanel.setLayout(new GridLayout(gridSize + 1, gridSize));
         for (int i = 1; i <= gridSize * gridSize; i++) {
-            CustomButton button = new CustomButton(i, CustomButton.Type.NUMBER);
+            CustomButton button = new CustomButton(i, NUMBER);
             buttonsPanel.add(button);
             button.addActionListener(buttonListener);
         }
-        CustomButton buttonDelete = new CustomButton(CustomButton.Type.DELETE);
+        CustomButton buttonDelete = new CustomButton(DELETE);
         buttonsPanel.add(buttonDelete);
         buttonDelete.addActionListener(buttonListener);
         setCustomButtons(buttonsPanel, buttonListener);
@@ -177,7 +178,7 @@ public abstract class GameMenu extends JFrame {
      * @param buttonListener The listener the buttons should be attached to
      */
     public void setCustomButtons(JPanel buttonsPanel, ActionListener buttonListener) {
-        CustomButton buttonSolve = new CustomButton(CustomButton.Type.SOLVE);
+        CustomButton buttonSolve = new CustomButton(SOLVE);
         buttonsPanel.add(buttonSolve);
         buttonSolve.addActionListener(buttonListener);
     }

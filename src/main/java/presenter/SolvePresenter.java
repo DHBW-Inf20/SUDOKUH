@@ -5,6 +5,7 @@ import model.AbstractPuzzle.Cell;
 import model.AbstractPuzzle.SetResult;
 import model.Str8ts;
 import model.Sudoku;
+import util.KeyInputListener;
 import view.CustomButton;
 import view.LabelPanel;
 import view.game_menus.GameMenu;
@@ -15,39 +16,42 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.Set;
 
-public abstract class SolvePresenter {
+public abstract class SolvePresenter implements Presenter{
 
     protected final AbstractPuzzle sudoku;
     protected final GameMenu gameMenu;
 
-    public SolvePresenter(int size, util.Mode gamemode) {
-        switch(gamemode) {
-            case SUDOKU_SOLVE: {
+    public SolvePresenter(int size, util.Mode gameMode) {
+        switch (gameMode) {
+            case SUDOKU_SOLVE -> {
                 sudoku = new Sudoku();
-                gameMenu = new SolveMenu(size, this::handleButtonEvent, "Sudoku lösen");
-                break;
+                gameMenu = new SolveMenu(size, this::handleButtonListenerEvent, "Sudoku lösen");
             }
-            case STRAITS_SOLVE: {
+            case STRAITS_SOLVE -> {
                 sudoku = new Str8ts();
-                gameMenu = new SolveStr8tsMenu(size, this::handleButtonEvent, "Str8ts lösen");
-                break;
+                gameMenu = new SolveStr8tsMenu(size, this::handleButtonListenerEvent, "Str8ts lösen");
             }
-            case KILLER_SOLVE: {
+            case KILLER_SOLVE -> {
                 sudoku = new Str8ts();
-                gameMenu = new SolveMenu(size, this::handleButtonEvent, "Killer lösen");
-                break;
+                gameMenu = new SolveMenu(size, this::handleButtonListenerEvent, "Killer lösen");
             }
-            default: {
+            default -> {
                 sudoku = new Sudoku();
-                gameMenu = new SolveMenu(size, this::handleButtonEvent, "Sudoku lösen");
+                gameMenu = new SolveMenu(size, this::handleButtonListenerEvent, "Sudoku lösen");
             }
         }
         gameMenu.setVisible(true);
+
+        gameMenu.addKeyListener(new KeyInputListener(this));
     }
 
     // ActionListener for numbers-buttons to provide a correct input
-    protected void handleButtonEvent(ActionEvent e) {
-        CustomButton button = (CustomButton) e.getSource();
+    public void handleButtonListenerEvent(ActionEvent e) {
+        handleButton((CustomButton) e.getSource());
+    }
+
+    // Changes after button input
+    public void handleButton(CustomButton button){
         LabelPanel clickedCell = gameMenu.getClicked();
 
         switch (button.getType()) {

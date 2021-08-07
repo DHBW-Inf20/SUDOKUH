@@ -7,6 +7,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import static util.Type.*;
 
 public class SolveStr8tsMenu extends SolveMenu {
 
@@ -27,10 +28,10 @@ public class SolveStr8tsMenu extends SolveMenu {
     @Override
     // Set buttons other than the standard ones
     public void setCustomButtons(JPanel buttonsPanel, ActionListener buttonListener) {
-        CustomButton buttonSolve = new CustomButton(CustomButton.Type.SOLVE);
+        CustomButton buttonSolve = new CustomButton(SOLVE);
         buttonsPanel.add(buttonSolve);
         buttonSolve.addActionListener(buttonListener);
-        CustomButton buttonChangeColor = new CustomButton(CustomButton.Type.CHANGECOLOR);
+        CustomButton buttonChangeColor = new CustomButton(CHANGECOLOR);
         buttonsPanel.add(buttonChangeColor);
         buttonChangeColor.addActionListener(buttonListener);
     }
