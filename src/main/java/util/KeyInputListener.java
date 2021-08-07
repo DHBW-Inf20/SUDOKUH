@@ -11,6 +11,8 @@ public class KeyInputListener implements KeyListener {
 
     private final Presenter presenter;
 
+    private boolean autoStep = true;
+
     public KeyInputListener(Presenter presenter) {
         this.presenter = presenter;
     }
@@ -22,11 +24,13 @@ public class KeyInputListener implements KeyListener {
         //NUMBERS ROW
         if(e.getKeyCode()>=48 && e.getKeyCode()<=57){
             presenter.handleButton(new CustomButton(e.getKeyCode()-48, Type.NUMBER));
+            if(autoStep)autoStepForward();
             return;
         }
         //NUMBERS PAD
         if(e.getKeyCode()>=96 && e.getKeyCode()<=105){
             presenter.handleButton(new CustomButton(e.getKeyCode()-96, Type.NUMBER));
+            if(autoStep)autoStepForward();
             return;
         }
         switch (e.getKeyCode()) {
@@ -76,6 +80,14 @@ public class KeyInputListener implements KeyListener {
         }
     }
 
+    private void autoStepForward() {
+        LabelPanel lastClicked = presenter.getGameMenu().getClicked();
+        if(lastClicked.getCol()+1 != presenter.getGameMenu().getGridSize()*presenter.getGameMenu().getGridSize()){
+            presenter.getGameMenu().setClicked(lastClicked.getRow(),lastClicked.getCol()+1);
+        }else if(lastClicked.getRow()+1 > presenter.getGameMenu().getGridSize()*presenter.getGameMenu().getGridSize()){
+            presenter.getGameMenu().setClicked(lastClicked.getRow()+1,0);
+        }
+    }
 
 
     @Override
