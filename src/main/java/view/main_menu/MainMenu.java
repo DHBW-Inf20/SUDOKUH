@@ -25,6 +25,8 @@ public class MainMenu extends JFrame {
 
     SizeChooseSlider slider;
 
+    int tipLimit = 3;
+
     public MainMenu() {
         super("Sudoku Hauptmen\u00fc");
 
@@ -94,6 +96,7 @@ public class MainMenu extends JFrame {
         autoStepForwardSwitch.setBounds(100, 400, 150, 50);
         autoStepForwardSwitch.setFocusable(false);
         settingsPanel.add(autoStepForwardSwitch);
+        // TODO Tipplimit einstellen (Variable tipLimit)
 
         cardsPanel = new JPanel(cl);
         cardsPanel.add(mainMenuPanel, "mainMenu");
@@ -143,7 +146,7 @@ public class MainMenu extends JFrame {
             } catch(Exception e) {}
             switch (mode) {
                 case SUDOKU_SOLVE -> new presenter.SolveSudokuPresenter(size, theme);
-                case SUDOKU_PLAY -> new presenter.PlayPresenter(size, theme);
+                case SUDOKU_PLAY -> new presenter.PlayPresenter(size, theme, tipLimit);
                 case KILLER_SOLVE -> new presenter.SolveKillerPresenter(size, theme);
                 case STRAITS_SOLVE -> new presenter.SolveStr8tsPresenter(size, theme);
             }

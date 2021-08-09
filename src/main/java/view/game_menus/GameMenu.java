@@ -121,7 +121,7 @@ public abstract class GameMenu extends JFrame {
                 labelPanel.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mousePressed(MouseEvent e) {
-                        handleClickEvent(gridSize, labelPanel);
+                        handleClickEvent(labelPanel);
                     }
                 });
                 temp.add(labelPanel);
@@ -218,24 +218,34 @@ public abstract class GameMenu extends JFrame {
         buttonSolve.addActionListener(buttonListener);
     }
 
-    protected void handleClickEvent(int gridSize, LabelPanel labelPanel) {
-        // Unmarking of possible conflicting cells
+    /**
+     * Handling of clicking on a cell
+     *
+     * @param labelPanel Panel of cells
+     */
+    protected void handleClickEvent(LabelPanel labelPanel) {
+        /*
+         *  Unmarking of previous highlighted cells
+         */
         int clickedRow = clicked.getRow();
         int clickedCol = clicked.getCol();
+        // Unmarking the cells in the same row
         for (int k = 0; k < labels.get(clickedRow).size(); k++) {
             labels.get(clickedRow).get(k).setBackground(primaryBackgroundColor);
             labels.get(clickedRow).get(k).setForeground(primaryTextColor);
             if (labels.get(clickedRow).get(k).isPredefined()) labels.get(clickedRow).get(k).setBackground(predefinedColor);
         }
+        // Unmarking the cells in the same column
         for (int k = 0; k < labels.get(clickedRow).size(); k++) {
             labels.get(k).get(clickedCol).setBackground(primaryBackgroundColor);
             labels.get(k).get(clickedCol).setForeground(primaryTextColor);
             if (labels.get(k).get(clickedCol).isPredefined()) labels.get(k).get(clickedCol).setBackground(predefinedColor);
         }
-        int rowLowerBound = clicked.getRow() - (clicked.getRow() % gridSize);
-        int rowUpperBound = rowLowerBound + gridSize - 1;
-        int columnLowerBound = clicked.getCol() - (clicked.getCol() % gridSize);
-        int columnUpperBound = columnLowerBound + gridSize - 1;
+        // Unmarking the cells in the same subgrid
+        int rowLowerBound = clicked.getRow() - (clicked.getRow() % size);
+        int rowUpperBound = rowLowerBound + size - 1;
+        int columnLowerBound = clicked.getCol() - (clicked.getCol() % size);
+        int columnUpperBound = columnLowerBound + size - 1;
         for (int k = rowLowerBound; k <= rowUpperBound; k++) {
             for (int l = columnLowerBound; l <= columnUpperBound; l++) {
                 labels.get(k).get(l).setBackground(primaryBackgroundColor);
@@ -243,6 +253,7 @@ public abstract class GameMenu extends JFrame {
                 if (labels.get(k).get(l).isPredefined()) labels.get(k).get(l).setBackground(predefinedColor);
             }
         }
+        // Unmarking the clicked cell
         if (clicked != null) {
             if (clicked.isPredefined()) {
                 clicked.setBackground(predefinedColor);
@@ -255,20 +266,23 @@ public abstract class GameMenu extends JFrame {
         // Marking of possible conflicting cells
         clickedRow = clicked.getRow();
         clickedCol = clicked.getCol();
+        // Highlighting the cells in the same row
         for (int k = 0; k < labels.get(clickedRow).size(); k++) {
             labels.get(clickedRow).get(k).setBackground(markedColor);
             if (labels.get(clickedRow).get(k).isPredefined()) labels.get(clickedRow).get(k).setBackground(predefinedMarkedColor);
             labels.get(clickedRow).get(k).setForeground(primaryTextColor);
         }
+        // Highlighting the cells in the same column
         for (int k = 0; k < labels.get(clickedRow).size(); k++) {
             labels.get(k).get(clickedCol).setBackground(markedColor);
             if (labels.get(k).get(clickedCol).isPredefined()) labels.get(k).get(clickedCol).setBackground(predefinedMarkedColor);
             labels.get(k).get(clickedCol).setForeground(primaryTextColor);
         }
-        rowLowerBound = clicked.getRow() - (clicked.getRow() % gridSize);
-        rowUpperBound = rowLowerBound + gridSize - 1;
-        columnLowerBound = clicked.getCol() - (clicked.getCol() % gridSize);
-        columnUpperBound = columnLowerBound + gridSize - 1;
+        // Highlighting the cells in the same subgrid
+        rowLowerBound = clicked.getRow() - (clicked.getRow() % size);
+        rowUpperBound = rowLowerBound + size - 1;
+        columnLowerBound = clicked.getCol() - (clicked.getCol() % size);
+        columnUpperBound = columnLowerBound + size - 1;
         for (int k = rowLowerBound; k <= rowUpperBound; k++) {
             for (int l = columnLowerBound; l <= columnUpperBound; l++) {
                 labels.get(k).get(l).setBackground(markedColor);
@@ -276,6 +290,7 @@ public abstract class GameMenu extends JFrame {
                 labels.get(k).get(l).setForeground(primaryTextColor);
             }
         }
+        // Highlighting the clicked cell
         clicked.setBackground(clickedColor);
         clicked.setForeground(primaryTextColor);
 
@@ -288,30 +303,55 @@ public abstract class GameMenu extends JFrame {
         }
     }
 
+    /**
+     * @return the actual clicked cell
+     */
     public LabelPanel getClicked() { return clicked; }
 
-    // Method for keyboard input
+    /**
+     * Set the clicked cell to specified coordinates
+     *
+     * @param row the cell-row
+     * @param column the cell-column
+     */
     public void setClicked(int row, int column){
         LabelPanel newClicked = labels.get(row).get(column);
-        handleClickEvent(size,newClicked);
+        handleClickEvent(newClicked);
     }
 
-    // Set a value to a cell from backend
+    /**
+     * Sets a value to a cell of specified coordinates
+     *
+     * @param row the cell-row
+     * @param col the cell-column
+     * @param value the value to be set
+     */
     public void setValue(int row, int col, int value) {
         labels.get(row).get(col).setText(Integer.toString(value));
         labels.get(row).get(col).setForeground(primaryTextColor);
     }
 
-    // Delete a value from a cell
+    /**
+     * Deletes the value of the actual clicked cell
+     */
     public void resetCell() {
         clicked.getLabel().setText("");
     }
 
+    /**
+     * Adaptor method for validInput(String input) from an integer
+     *
+     * @param input the input value from type integer
+     */
     public void validInput(int input) {
         validInput(Integer.toString(input));
     }
 
-    // Set a valid input by user
+    /**
+     * Sets an input to the clicked cell and set the text color correctly
+     *
+     * @param input the input value from type String
+     */
     public void validInput(String input) {
         clicked.setText(input);
         clicked.setForeground(primaryTextColor);
@@ -325,11 +365,20 @@ public abstract class GameMenu extends JFrame {
         conflicts = new HashSet<>();
     }
 
+    /**
+     * Adaptor method for invalidInput(String input) from an integer
+     *
+     * @param input the input value from type integer
+     */
     public void invalidInput(int input) {
         invalidInput(Integer.toString(input));
     }
 
-    // Set a invalid input by user (only frontend)
+    /**
+     * Sets an invalid input (color: {@code errorTextColor}) to the clicked cell
+     *
+     * @param input the input value from type String
+     */
     public void invalidInput(String input) {
         clicked.setText(input);
         clicked.setForeground(errorTextColor);
@@ -337,14 +386,24 @@ public abstract class GameMenu extends JFrame {
         invalid = clicked.getLabel();
     }
 
-    // Set a invalid input by backend (tip function)
+    /**
+     * Sets an invalid input to a specified cell when a conflict is created by using the tip function
+     *
+     * @param row the cell-row
+     * @param col the cell-column
+     */
     public void invalidInput(int row, int col) {
         labels.get(row).get(col).setForeground(errorTextColor);
         labels.get(row).get(col).getLabel().setForeground(errorTextColor);
         invalid = labels.get(row).get(col).getLabel();
     }
 
-    // Print a text to the top of the gui
+    /**
+     * Prints a text to the top of the gui
+     *
+     * @param text text to be printed
+     * @param color color in which the text should be printed
+     */
     public void setGUIText(String text, Color color) {
         guiText = new JLabel(text);
         guiText.setOpaque(true);
@@ -360,7 +419,9 @@ public abstract class GameMenu extends JFrame {
         textSet = true;
     }
 
-    // Removes the text from the top of the gui
+    /**
+     * If there is a text at the top of the gui this method will remove it
+     */
     public void resetGUIText() {
         if (textSet) {
             pane.remove(guiText);
@@ -369,23 +430,28 @@ public abstract class GameMenu extends JFrame {
         }
     }
 
+    /**
+     * Sets the color of a conflicting cell to red and adds it to the conflicts-list
+     *
+     * @param c the invalid cell
+     */
     public void highlightConflicts(model.AbstractPuzzle.Cell c) {
         labels.get(c.row()).get(c.column()).getLabel().setForeground(Color.red);
         conflicts.add(c);
     }
 
+    /**
+     * @return the grid size
+     */
     public int getGridSize() {
         return size;
     }
 }
 
-// TODO (Fabian) Tastatureingaben
-// TODO (Fabian) Mit Tastatureingaben: Nach Eingabe einer Zahl gleich ein Feld weiter gehen
 // TODO (Fabian) Frontend: Implementieren von Gruppen in Killer
 // TODO (Fabian+Luca) Verbinden von Backend+Frontend Killer
 // TODO (Fabian) Theme-Wechsel in Settings unterbringen, ggf. auch weitere Themes hinzufügen
 // TODO (Alle) Code aufräumen & Dokumentation
 // (TODO Zeitmessung mit Option zu Pausieren)
-// (TODO Tipp-Limit)
 // (TODO von Untermenüs zurück in Mainmenu)
 // (TODO Rückgängig-Funktion)

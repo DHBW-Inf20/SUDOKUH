@@ -26,8 +26,13 @@ public class SolveStr8tsMenu extends SolveMenu {
         }
     }
 
+    /**
+     * Add buttons other than the standard ones to the menu
+     *
+     * @param buttonsPanel The panel where the buttons should be added to
+     * @param buttonListener The listener the buttons should be attached to
+     */
     @Override
-    // Set buttons other than the standard ones
     public void setCustomButtons(JPanel buttonsPanel, ActionListener buttonListener) {
         CustomButton buttonSolve = new CustomButton(SOLVE);
         buttonSolve.setForeground(primaryTextColor);
@@ -43,7 +48,9 @@ public class SolveStr8tsMenu extends SolveMenu {
         buttonChangeColor.addActionListener(buttonListener);
     }
 
-    // Set pre-defined colored elements
+    /**
+     * Change the color of the actual clicked cell
+     */
     public void changeColor() {
         int row = clicked.getRow();
         int col = clicked.getCol();
@@ -62,8 +69,13 @@ public class SolveStr8tsMenu extends SolveMenu {
         }
     }
 
+    /**
+     * Handling of clicking on a cell
+     *
+     * @param labelPanel Panel of cells
+     */
     @Override
-    protected void handleClickEvent(int gridSize, LabelPanel labelPanel) {
+    protected void handleClickEvent(LabelPanel labelPanel) {
         // Unmarking of possible conflicting cells
         int clickedRow = clicked.getRow();
         int clickedCol = clicked.getCol();
@@ -83,10 +95,10 @@ public class SolveStr8tsMenu extends SolveMenu {
                 labels.get(k).get(clickedCol).getLabel().setForeground(secondaryTextColor);
             }
         }
-        int rowLowerBound = clicked.getRow() - (clicked.getRow() % gridSize);
-        int rowUpperBound = rowLowerBound + gridSize - 1;
-        int columnLowerBound = clicked.getCol() - (clicked.getCol() % gridSize);
-        int columnUpperBound = columnLowerBound + gridSize - 1;
+        int rowLowerBound = clicked.getRow() - (clicked.getRow() % size);
+        int rowUpperBound = rowLowerBound + size - 1;
+        int columnLowerBound = clicked.getCol() - (clicked.getCol() % size);
+        int columnUpperBound = columnLowerBound + size - 1;
         for (int k = rowLowerBound; k <= rowUpperBound; k++) {
             for (int l = columnLowerBound; l <= columnUpperBound; l++) {
                 labels.get(k).get(l).setBackground(primaryBackgroundColor);
@@ -127,10 +139,10 @@ public class SolveStr8tsMenu extends SolveMenu {
                 labels.get(k).get(clickedCol).getLabel().setForeground(secondaryTextColor);
             }
         }
-        rowLowerBound = clicked.getRow() - (clicked.getRow() % gridSize);
-        rowUpperBound = rowLowerBound + gridSize - 1;
-        columnLowerBound = clicked.getCol() - (clicked.getCol() % gridSize);
-        columnUpperBound = columnLowerBound + gridSize - 1;
+        rowLowerBound = clicked.getRow() - (clicked.getRow() % size);
+        rowUpperBound = rowLowerBound + size - 1;
+        columnLowerBound = clicked.getCol() - (clicked.getCol() % size);
+        columnUpperBound = columnLowerBound + size - 1;
         for (int k = rowLowerBound; k <= rowUpperBound; k++) {
             for (int l = columnLowerBound; l <= columnUpperBound; l++) {
                 labels.get(k).get(l).setBackground(markedColor);

@@ -14,14 +14,19 @@ public class SolveStr8tsPresenter extends SolvePresenter {
         super(size, util.Mode.STRAITS_SOLVE, theme);
     }
 
+    /**
+     * Action listener for buttons
+     */
     @Override
-    // ActionListener for numbers-buttons to provide a correct input
     public void handleButtonListenerEvent(ActionEvent e) {
         CustomButton button = (CustomButton) e.getSource();
         handleButton(button);
     }
+
+    /**
+     * Handles the button events and triggers actions based on the clicked button
+     */
     @Override
-    // Changes after button input
     public void handleButton(CustomButton button){
         LabelPanel clickedCell = gameMenu.getClicked();
         switch (button.getType()) {

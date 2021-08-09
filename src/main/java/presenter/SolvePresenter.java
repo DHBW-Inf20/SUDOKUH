@@ -43,12 +43,16 @@ public abstract class SolvePresenter implements Presenter{
         gameMenu.addKeyListener(new KeyInputListener(this));
     }
 
-    // ActionListener for numbers-buttons to provide a correct input
+    /**
+     * Action listener for buttons
+     */
     public void handleButtonListenerEvent(ActionEvent e) {
         handleButton((CustomButton) e.getSource());
     }
 
-    // Changes after button input
+    /**
+     * Handles the button events and triggers actions based on the clicked button
+     */
     public void handleButton(CustomButton button){
         LabelPanel clickedCell = gameMenu.getClicked();
 
