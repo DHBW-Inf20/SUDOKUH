@@ -9,10 +9,7 @@ import model.Sudoku;
 import util.KeyInputListener;
 import view.CustomButton;
 import view.LabelPanel;
-import view.game_menus.GameMenu;
-import view.game_menus.SolveKillerMenu;
-import view.game_menus.SolveMenu;
-import view.game_menus.SolveStr8tsMenu;
+import view.ingame.InGameViewScaffold;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -21,7 +18,7 @@ import java.util.Set;
 public abstract class SolvePresenter implements Presenter{
 
     protected final AbstractPuzzle sudoku;
-    protected final GameMenu gameMenu;
+    protected view.ingame.InGameViewScaffold inGameViewScaffold;
 
     protected boolean autoStepForward;
 
@@ -30,20 +27,18 @@ public abstract class SolvePresenter implements Presenter{
         switch (gameMode) {
             case STRAITS_SOLVE -> {
                 sudoku = new Str8ts();
-                gameMenu = new SolveStr8tsMenu(size, this::handleButtonListenerEvent, "Str8ts lösen", theme);
-                            }
+                inGameViewScaffold = new InGameViewScaffold(size, this::handleButtonListenerEvent, "Str8ts lösen", theme, gameMode);
+            }
             case KILLER_SOLVE -> {
                 sudoku = new Killer();
-                gameMenu = new SolveKillerMenu(size, this::handleButtonListenerEvent, "Killer lösen", theme);
+                inGameViewScaffold = new InGameViewScaffold(size, this::handleButtonListenerEvent, "Killer lösen", theme, gameMode);
             }
             default -> {
                 sudoku = new Sudoku(size);
-                gameMenu = new SolveMenu(size, this::handleButtonListenerEvent, "Sudoku lösen", theme);
+                inGameViewScaffold = new InGameViewScaffold(size, this::handleButtonListenerEvent, "Sudoku lösen", theme, gameMode);
             }
         }
-        gameMenu.setVisible(true);
-
-        gameMenu.addKeyListener(new KeyInputListener(this, autoStepForward));
+        inGameViewScaffold.addKeyListener(new KeyInputListener(this, autoStepForward));
     }
 
     /**
@@ -57,7 +52,7 @@ public abstract class SolvePresenter implements Presenter{
      * Handles the button events and triggers actions based on the clicked button
      */
     public void handleButton(CustomButton button){
-        LabelPanel clickedCell = gameMenu.getClicked();
+        LabelPanel clickedCell = inGameViewScaffold.getClicked();
 
         switch (button.getType()) {
             case NUMBER -> {
@@ -67,31 +62,31 @@ public abstract class SolvePresenter implements Presenter{
                     if (result == SetResult.INVALID_VALUE) {
                         throw new IllegalStateException("Tried to set a cell to a number that was out of the valid range: " + number);
                     } else if (result.isSuccess()) {
-                        gameMenu.validInput(number);
+                        inGameViewScaffold.validInput(String.valueOf(number));
                     } else {
                         final Set<Cell> conflicts = result.conflictingCells();
                         for(Cell c : conflicts) {
-                            gameMenu.highlightConflicts(c);
+                            inGameViewScaffold.highlightConflicts(c);
                         }
-                        gameMenu.invalidInput(number);
+                        inGameViewScaffold.invalidInput(String.valueOf(number));
                     }
                 }
             }
             case DELETE -> {
                 if (!clickedCell.isPredefined()) {
                     sudoku.resetCell(clickedCell.getRow(), clickedCell.getCol());
-                    gameMenu.resetCell();
+                    inGameViewScaffold.resetCell();
                 }
             }
             case SOLVE -> {
                 switch (sudoku.solve()) {
-                    case NO_SOLUTION -> gameMenu.setGUIText("Dieses Sudoku kann nicht gelöst werden!", Color.red);
+                    case NO_SOLUTION -> inGameViewScaffold.setGUIText("Dieses Sudoku kann nicht gelöst werden!", Color.red);
                     // todo handle cases differently (for example warning when solution is not unique)
                     case MULTIPLE_SOLUTIONS, ONE_SOLUTION -> {
-                        gameMenu.resetGUIText();
+                        inGameViewScaffold.resetGUIText();
                         for (int row = 0; row < sudoku.getGridSize(); row++) {
                             for (int column = 0; column < sudoku.getGridSize(); column++) {
-                                gameMenu.setValue(row, column, sudoku.getCell(row, column));
+                                inGameViewScaffold.setValue(row, column, sudoku.getCell(row, column));
                             }
                         }
                     }
@@ -99,7 +94,7 @@ public abstract class SolvePresenter implements Presenter{
             }
         }
     }
-    public GameMenu getGameMenu() {
-        return gameMenu;
+    public InGameViewScaffold getInGameViewScaffold() {
+        return inGameViewScaffold;
     }
 }

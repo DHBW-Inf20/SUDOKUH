@@ -1,7 +1,7 @@
 package presenter;
 
 import view.CustomButton;
-import view.game_menus.GameMenu;
+import view.ingame.InGameViewScaffold;
 
 import java.awt.event.ActionEvent;
 
@@ -9,5 +9,5 @@ public interface Presenter {
 
     void handleButtonListenerEvent(ActionEvent e);
     void handleButton(CustomButton button);
-    GameMenu getGameMenu();
+    InGameViewScaffold getInGameViewScaffold();
 }

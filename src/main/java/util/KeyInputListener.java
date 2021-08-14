@@ -43,38 +43,38 @@ public class KeyInputListener implements KeyListener {
         }
 
         if(e.getKeyCode()>=37 && e.getKeyCode()<=40){
-           LabelPanel lastClicked = presenter.getGameMenu().getClicked();
+           LabelPanel lastClicked = presenter.getInGameViewScaffold().getClicked();
             switch (e.getKeyCode()){
                 //LEFT ARROW BUTTON
                 case 37 ->{
                     if(lastClicked.getCol()-1!=-1){
-                        presenter.getGameMenu().setClicked(lastClicked.getRow(),lastClicked.getCol()-1);
+                        presenter.getInGameViewScaffold().setClicked(lastClicked.getRow(),lastClicked.getCol()-1);
                     }else{
-                        presenter.getGameMenu().setClicked(lastClicked.getRow(),presenter.getGameMenu().getGridSize()*presenter.getGameMenu().getGridSize()-1);
+                        presenter.getInGameViewScaffold().setClicked(lastClicked.getRow(),presenter.getInGameViewScaffold().getGridSize()*presenter.getInGameViewScaffold().getGridSize()-1);
                     }
                 }
                 //UP ARROW BUTTON
                 case 38 ->{
                     if(lastClicked.getRow()-1!=-1){
-                        presenter.getGameMenu().setClicked(lastClicked.getRow()-1,lastClicked.getCol());
+                        presenter.getInGameViewScaffold().setClicked(lastClicked.getRow()-1,lastClicked.getCol());
                     }else{
-                        presenter.getGameMenu().setClicked(presenter.getGameMenu().getGridSize()*presenter.getGameMenu().getGridSize()-1, lastClicked.getCol());
+                        presenter.getInGameViewScaffold().setClicked(presenter.getInGameViewScaffold().getGridSize()*presenter.getInGameViewScaffold().getGridSize()-1, lastClicked.getCol());
                     }
                 }
                 //RIGHT ARROW BUTTON
                 case 39 ->{
-                    if(lastClicked.getCol()+1!=presenter.getGameMenu().getGridSize()*presenter.getGameMenu().getGridSize()){
-                        presenter.getGameMenu().setClicked(lastClicked.getRow(),lastClicked.getCol()+1);
+                    if(lastClicked.getCol()+1!=presenter.getInGameViewScaffold().getGridSize()*presenter.getInGameViewScaffold().getGridSize()){
+                        presenter.getInGameViewScaffold().setClicked(lastClicked.getRow(),lastClicked.getCol()+1);
                     }else{
-                        presenter.getGameMenu().setClicked(lastClicked.getRow(),0);
+                        presenter.getInGameViewScaffold().setClicked(lastClicked.getRow(),0);
                     }
                 }
                 //DOWN ARROW BUTTON
                 case 40 ->{
-                    if(lastClicked.getRow()+1!=presenter.getGameMenu().getGridSize()*presenter.getGameMenu().getGridSize()){
-                        presenter.getGameMenu().setClicked(lastClicked.getRow()+1,lastClicked.getCol());
+                    if(lastClicked.getRow()+1!=presenter.getInGameViewScaffold().getGridSize()*presenter.getInGameViewScaffold().getGridSize()){
+                        presenter.getInGameViewScaffold().setClicked(lastClicked.getRow()+1,lastClicked.getCol());
                     }else{
-                        presenter.getGameMenu().setClicked(0,lastClicked.getCol());
+                        presenter.getInGameViewScaffold().setClicked(0,lastClicked.getCol());
                     }
                 }
             }
@@ -82,11 +82,11 @@ public class KeyInputListener implements KeyListener {
     }
 
     private void autoStepForward() {
-        LabelPanel lastClicked = presenter.getGameMenu().getClicked();
-        if(lastClicked.getCol()+1 != presenter.getGameMenu().getGridSize()*presenter.getGameMenu().getGridSize()){
-            presenter.getGameMenu().setClicked(lastClicked.getRow(),lastClicked.getCol()+1);
-        }else if(lastClicked.getRow()+1 > presenter.getGameMenu().getGridSize()*presenter.getGameMenu().getGridSize()){
-            presenter.getGameMenu().setClicked(lastClicked.getRow()+1,0);
+        LabelPanel lastClicked = presenter.getInGameViewScaffold().getClicked();
+        if(lastClicked.getCol()+1 != presenter.getInGameViewScaffold().getGridSize()*presenter.getInGameViewScaffold().getGridSize()){
+            presenter.getInGameViewScaffold().setClicked(lastClicked.getRow(),lastClicked.getCol()+1);
+        }else if(lastClicked.getRow()+1 > presenter.getInGameViewScaffold().getGridSize()*presenter.getInGameViewScaffold().getGridSize()){
+            presenter.getInGameViewScaffold().setClicked(lastClicked.getRow()+1,0);
         }
     }
 

@@ -7,10 +7,9 @@ import model.Sudoku;
 import model.SudokuAndSolution;
 import model.SudokuGenerator;
 import util.KeyInputListener;
+import util.Mode;
 import view.CustomButton;
 import view.LabelPanel;
-import view.game_menus.GameMenu;
-import view.game_menus.PlayMenu;
 import view.ingame.InGameViewScaffold;
 
 import java.awt.*;
@@ -21,7 +20,6 @@ public class PlayPresenter implements Presenter{
 
     protected final AbstractPuzzle sudoku;
     protected final AbstractPuzzle solution;
-    protected final view.game_menus.PlayMenu gameMenu;
     protected final view.ingame.InGameViewScaffold inGameViewScaffold;
 
     protected int tipLimit;
@@ -34,18 +32,16 @@ public class PlayPresenter implements Presenter{
         sudoku = sudokuAndSolution.sudoku();
         solution = sudokuAndSolution.solution();
 
-        inGameViewScaffold = new InGameViewScaffold(size, this::handleButtonListenerEvent, "Spielen", theme);
+        inGameViewScaffold = new InGameViewScaffold(size, this::handleButtonListenerEvent, "Spielen", theme, Mode.SUDOKU_PLAY);
 
-        gameMenu = new view.game_menus.PlayMenu(size, this::handleButtonListenerEvent, "Sudoku", theme);
-
-        gameMenu.addKeyListener(new KeyInputListener(this, autoStepForward));
+        inGameViewScaffold.addKeyListener(new KeyInputListener(this, autoStepForward));
 
         this.setPredefinedCells();
 
         this.tipLimit = tipLimit;
         this.tipsUsed = 0;
         this.autoStepForward = autoStepForward;
-        gameMenu.setRemainingTips(tipLimit-tipsUsed);
+        inGameViewScaffold.setRemainingTips(tipLimit-tipsUsed);
     }
 
     /**
@@ -56,7 +52,7 @@ public class PlayPresenter implements Presenter{
             for (int j = 0; j < sudoku.getGridSize(); j++) {
                 int value = sudoku.getCell(i, j);
                 if (value != Sudoku.EMPTY_CELL) {
-                    gameMenu.setPredefined(i, j, value);
+                    inGameViewScaffold.setPredefined(i, j, value);
                 }
             }
         }
@@ -67,7 +63,7 @@ public class PlayPresenter implements Presenter{
      */
     private boolean verifySolution() {
         if (sudoku.equals(solution)) {
-            gameMenu.setGUIText("Korrekte Lösung!", Color.green);
+            inGameViewScaffold.setGUIText("Korrekte Lösung!", Color.green);
             return true;
         }
         return false;
@@ -86,25 +82,25 @@ public class PlayPresenter implements Presenter{
      */
     @Override
     public void handleButton(CustomButton button) {
-        LabelPanel clickedCell = gameMenu.getClicked();
+        LabelPanel clickedCell = inGameViewScaffold.getClicked();
 
         switch (button.getType()) {
             case NUMBER -> {
                 int number = button.getValue();
                 if (!clickedCell.isPredefined()) {
-                    if (gameMenu.getNoteMode()) {
-                        gameMenu.setNote(number);
+                    if (inGameViewScaffold.getNoteMode()) {
+                        inGameViewScaffold.setNote(number);
                     } else {
                         final SetResult result = sudoku.setCell(clickedCell.getRow(), clickedCell.getCol(), number);
-                        if (result != SetResult.INVALID_VALUE) {
-                            gameMenu.validInput(number);
+                        if (result == SetResult.SUCCESS) {
+                            inGameViewScaffold.validInput(String.valueOf(number));
                             this.verifySolution();
                         } else {
                             final Set<Cell> conflicts = result.conflictingCells();
                             for(Cell c : conflicts) {
-                                gameMenu.highlightConflicts(c);
+                                inGameViewScaffold.highlightConflicts(c);
                             }
-                            gameMenu.invalidInput(number);
+                            inGameViewScaffold.invalidInput(String.valueOf(number));
                         }
                     }
                 }
@@ -119,35 +115,34 @@ public class PlayPresenter implements Presenter{
                 if(! clickedCell.isPredefined()) {
                     tipsUsed++;
                     if (tipLimit >= tipsUsed) {
-                        gameMenu.validInput(String.valueOf(solution.getCell(clickedCell.getRow(), clickedCell.getCol())), (tipLimit - tipsUsed));
-                        gameMenu.setPredefined(clickedCell.getRow(), clickedCell.getCol(), solution.getCell(clickedCell.getRow(), clickedCell.getCol()));
-                        // TODO: Setcell gibt Setresult zurück: boolean und ggf. Zeile & Spalte -> Markieren von selbst eingegebenem Fehler
+                        inGameViewScaffold.validInput(String.valueOf(solution.getCell(clickedCell.getRow(), clickedCell.getCol())), (tipLimit - tipsUsed));
+                        inGameViewScaffold.setPredefined(clickedCell.getRow(), clickedCell.getCol(), solution.getCell(clickedCell.getRow(), clickedCell.getCol()));
                         final SetResult result = sudoku.setCell(clickedCell.getRow(), clickedCell.getCol(), solution.getCell(clickedCell.getRow(), clickedCell.getCol()));
                         if (!result.isSuccess()) {
-                            // TODO show conflicts
                             final Set<Cell> conflicts = result.conflictingCells();
                             if (!conflicts.isEmpty()) {
-                                // can be any conflict (no order guaranteed) -> TODO show all
-                                final Cell randomConflict = conflicts.iterator().next();
-                                gameMenu.invalidInput(randomConflict.row(), randomConflict.column());
+                                // can be any conflict (no order guaranteed)
+                                for (Cell c : conflicts) {
+                                    inGameViewScaffold.invalidInput(c.row(), c.column());
+                                }
                             }
                         }
                         this.verifySolution();
-                        if (tipsUsed == tipLimit) gameMenu.reachedMaxTips();
+                        if (tipsUsed == tipLimit) inGameViewScaffold.reachedMaxTips();
                     } else {
-                        gameMenu.reachedMaxTips();
+                        inGameViewScaffold.reachedMaxTips();
                     }
                 }
             }
             case VERIFY -> {
                 if (!this.verifySolution()) {
-                    gameMenu.setGUIText("Diese Lösung ist falsch oder unvollständig!", Color.red);
+                    inGameViewScaffold.setGUIText("Diese Lösung ist falsch oder unvollständig!", Color.red);
                 }
             }
-            case PEN -> gameMenu.changeNoteMode(button);
+            case PEN -> inGameViewScaffold.changeNoteMode(button);
         }
     }
-    public GameMenu getGameMenu() {
-        return gameMenu;
+    public InGameViewScaffold getInGameViewScaffold() {
+        return inGameViewScaffold;
     }
 }

@@ -9,9 +9,8 @@ public class Main {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch(Exception E) {}
-//
-//        MainMenu menu = new MainMenu();
-//        menu.setLocationRelativeTo(null);
-        new MainMenu();
+
+        MainMenu menu = new MainMenu();
+        menu.setLocationRelativeTo(null);
     }
 }

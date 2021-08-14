@@ -3,7 +3,7 @@ package presenter;
 import model.AbstractPuzzle;
 import view.CustomButton;
 import view.LabelPanel;
-import view.game_menus.SolveStr8tsMenu;
+import view.ingame.InGameViewScaffold;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -28,7 +28,7 @@ public class SolveStr8tsPresenter extends SolvePresenter {
      */
     @Override
     public void handleButton(CustomButton button){
-        LabelPanel clickedCell = gameMenu.getClicked();
+        LabelPanel clickedCell = inGameViewScaffold.getClicked();
         switch (button.getType()) {
             case NUMBER -> {
                 if (!clickedCell.isPredefined()) {
@@ -37,35 +37,39 @@ public class SolveStr8tsPresenter extends SolvePresenter {
                     if (result == AbstractPuzzle.SetResult.INVALID_VALUE) {
                         throw new IllegalStateException("Tried to set a cell to a number that was out of the valid range: " + number);
                     } else if (result.isSuccess()) {
-                        gameMenu.validInput(number);
+                        inGameViewScaffold.validInput(String.valueOf(number));
                     } else {
                         final Set<AbstractPuzzle.Cell> conflicts = result.conflictingCells();
                         for(AbstractPuzzle.Cell c : conflicts) {
-                            gameMenu.highlightConflicts(c);
+                            inGameViewScaffold.highlightConflicts(c);
                         }
-                        gameMenu.invalidInput(number);
+                        inGameViewScaffold.invalidInput(String.valueOf(number));
                     }
                 }
             }
             case DELETE -> {
                 if (!clickedCell.isPredefined()) {
                     sudoku.resetCell(clickedCell.getRow(), clickedCell.getCol());
-                    gameMenu.resetCell();
+                    inGameViewScaffold.resetCell();
                 }
             }
             case SOLVE -> {
                 if (sudoku.solve() != AbstractPuzzle.SolveResult.NO_SOLUTION) {
-                    gameMenu.resetGUIText();
+                    inGameViewScaffold.resetGUIText();
                     for (int row = 0; row < sudoku.getGridSize(); row++) {
                         for (int column = 0; column < sudoku.getGridSize(); column++) {
-                            gameMenu.setValue(row, column, sudoku.getCell(row, column));
+                            inGameViewScaffold.setValue(row, column, sudoku.getCell(row, column));
                         }
                     }
                 } else {
-                    gameMenu.setGUIText("Dieses Sudoku kann nicht gelöst werden!", Color.red);
+                    inGameViewScaffold.setGUIText("Dieses Sudoku kann nicht gelöst werden!", Color.red);
                 }
             }
-            case CHANGECOLOR -> ((SolveStr8tsMenu) gameMenu).changeColor();
+            case CHANGECOLOR -> inGameViewScaffold.changeColor();
         }
+    }
+
+    public InGameViewScaffold getInGameViewScaffold() {
+        return inGameViewScaffold;
     }
 }

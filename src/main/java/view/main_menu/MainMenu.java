@@ -138,7 +138,7 @@ public class MainMenu extends JFrame {
         tipSlider = new JSlider();
         tipSlider.setMinimum(0);
         tipSlider.setMaximum(4);
-        tipSlider.setValue(5);
+        tipSlider.setValue(1);
         tipSlider.setPaintTicks(true);
         tipSlider.setPaintLabels(true);
         Hashtable<Integer, JLabel> labels = new Hashtable<>();
