@@ -19,7 +19,13 @@ public class MainMenu extends JFrame {
 
     JButton playSudokuButton, solveSudokuButton, solveKillerButton, solveStraitsButton, settingsButton, startButton, backButton;
 
+    JToggleButton darkModeSwitch, autoStepForwardSwitch;
+
+    boolean darkMode = false, autoStepForward = true;
+
     SizeChooseSlider slider;
+
+    int tipLimit = 3;
 
     public MainMenu() {
         super("Sudoku Hauptmen\u00fc");
@@ -56,10 +62,10 @@ public class MainMenu extends JFrame {
         mainMenuPanel.add(solveStraitsButton);
         solveStraitsButton.setBounds(75, 400, 200, 50);
 
-//        settingsButton = new JButton("Einstellungen");
-//        settingsButton.addActionListener(new MainMenu.ButtonListener());
-//        mainMenuPanel.add(settingsButton);
-//        settingsButton.setBounds(75,500,200,50);
+        settingsButton = new JButton("Einstellungen");
+        settingsButton.addActionListener(new MainMenu.ButtonListener());
+        mainMenuPanel.add(settingsButton);
+        settingsButton.setBounds(75,500,200,50);
 
         //Back Button
         backButton = new JButton("Zurück");
@@ -78,15 +84,24 @@ public class MainMenu extends JFrame {
         gameSettingsPanel.add(startButton, BorderLayout.SOUTH);
         gameSettingsPanel.add(backButton, BorderLayout.PAGE_START);
 
-//        //Settings Panel
-//        JPanel settingsPanel = new JPanel();
-//        settingsPanel.setLayout(new BorderLayout());
-//        settingsPanel.add(backButton, BorderLayout.PAGE_START);
+        //Settings Panel
+        JPanel settingsPanel = new JPanel();
+        settingsPanel.setLayout(null);
+        settingsPanel.add(backButton, BorderLayout.PAGE_START);
+        darkModeSwitch = new JToggleButton("DarkMode", darkMode);
+        darkModeSwitch.setBounds(100, 300, 150, 50);
+        darkModeSwitch.setFocusable(false);
+        settingsPanel.add(darkModeSwitch);
+        autoStepForwardSwitch = new JToggleButton("Auto Step", autoStepForward);
+        autoStepForwardSwitch.setBounds(100, 400, 150, 50);
+        autoStepForwardSwitch.setFocusable(false);
+        settingsPanel.add(autoStepForwardSwitch);
+        // TODO Tipplimit einstellen (Variable tipLimit)
 
         cardsPanel = new JPanel(cl);
         cardsPanel.add(mainMenuPanel, "mainMenu");
         cardsPanel.add(gameSettingsPanel, "gameSettingsPanel");
-        //cardsPanel.add(settingsPanel, "settingsPanel");
+        cardsPanel.add(settingsPanel, "settingsPanel");
         cl.first(cardsPanel);
         add(cardsPanel, BorderLayout.CENTER);
     }
@@ -105,19 +120,17 @@ public class MainMenu extends JFrame {
                 cl.show(cardsPanel, "gameSettingsPanel");
             }
             if (e.getSource() == solveKillerButton) {
-                setTitle("Neuer Killer Löser");
                 mode = Mode.KILLER_SOLVE;
-                cl.show(cardsPanel, "gameSettingsPanel");
+                startGame(3);
             }
             if (e.getSource() == solveStraitsButton) {
-                setTitle("Neuer Str8ts Löser");
                 mode = Mode.STRAITS_SOLVE;
-                cl.show(cardsPanel, "gameSettingsPanel");
+                startGame(3);
             }
-//            if(e.getSource() == settingsButton){
-//                setTitle("Einstellungen");
-//                cl.show(cardsPanel, "settingsPanel");
-//            }
+            if(e.getSource() == settingsButton){
+                setTitle("Einstellungen");
+                cl.show(cardsPanel, "settingsPanel");
+            }
             if (e.getSource() == backButton) {
                 setTitle("Sudoku Hauptmen\u00fc");
                 cl.first(cardsPanel);
@@ -133,7 +146,7 @@ public class MainMenu extends JFrame {
             } catch(Exception e) {}
             switch (mode) {
                 case SUDOKU_SOLVE -> new presenter.SolveSudokuPresenter(size, theme);
-                case SUDOKU_PLAY -> new presenter.PlayPresenter(size, theme);
+                case SUDOKU_PLAY -> new presenter.PlayPresenter(size, theme, tipLimit);
                 case KILLER_SOLVE -> new presenter.SolveKillerPresenter(size, theme);
                 case STRAITS_SOLVE -> new presenter.SolveStr8tsPresenter(size, theme);
             }

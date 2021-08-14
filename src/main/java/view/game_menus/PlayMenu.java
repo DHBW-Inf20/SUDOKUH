@@ -5,19 +5,27 @@ import view.CustomButton;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.util.HashSet;
+
 import static util.Type.*;
 
 public class PlayMenu extends GameMenu {
 
-    // Note-Mode active or not
+    /**
+     * Specifies whether the node mode is active or not
+     */
     protected boolean noteMode;
+
+    protected CustomButton buttonTip;
 
     public PlayMenu(int size, ActionListener buttonListener, String title, String theme) {
         super(size, buttonListener, title, theme);
         noteMode = false;
     }
 
-    // Definition of pre-defined elements -> cannot be changed
+    /**
+     * Marks a specific cell as predifined in order to cannot be changed and has another color
+     */
     public void setPredefined(int row, int col, int value) {
         labels.get(row).get(col).setText(Integer.toString(value));
         labels.get(row).get(col).setPredefined(true);
@@ -25,9 +33,15 @@ public class PlayMenu extends GameMenu {
         labels.get(row).get(col).setForeground(primaryTextColor);
     }
 
+    /**
+     * Add buttons other than the standard ones to the menu
+     *
+     * @param buttonsPanel The panel where the buttons should be added to
+     * @param buttonListener The listener the buttons should be attached to
+     */
     @Override
     public void setCustomButtons(JPanel buttonsPanel, ActionListener buttonListener) {
-        CustomButton buttonTip = new CustomButton(TIP);
+        buttonTip = new CustomButton(TIP);
         buttonTip.setForeground(primaryTextColor);
         buttonTip.setBackground(primaryBackgroundColor);
         buttonTip.setOpaque(true);
@@ -47,12 +61,17 @@ public class PlayMenu extends GameMenu {
         buttonPen.addActionListener(buttonListener);
     }
 
+    /**
+     * Deletes the value of the actual clicked cell
+     */
     @Override
-    // Delete a value from a cell
     public void resetCell() {
         clicked.setText("");
     }
 
+    /**
+     * Changes the node mode and sets the color of the button
+     */
     public void changeNoteMode(CustomButton button) {
         noteMode = !noteMode;
         if (noteMode) {
@@ -64,10 +83,52 @@ public class PlayMenu extends GameMenu {
         }
     }
 
+    /**
+     * Sets a valid input to cell with changing the tip-button to the remaining tips
+     *
+     * @param input the input value from type integer
+     * @param tipsRemaining the number how many tips are remaining
+     */
+    public void validInput(String input, int tipsRemaining) {
+        clicked.setText(input);
+        clicked.setForeground(primaryTextColor);
+        clicked.getLabel().setForeground(primaryTextColor);
+        invalid = null;
+        if(! conflicts.isEmpty()) {
+            for(model.AbstractPuzzle.Cell c : conflicts) {
+                labels.get(c.row()).get(c.column()).getLabel().setForeground(primaryTextColor);
+            }
+        }
+        conflicts = new HashSet<>();
+        buttonTip.setText("Tipp anzeigen ("+Integer.valueOf(tipsRemaining)+")");
+    }
+
+    /**
+     * Changing the tip-button to the remaining tips
+     *
+     * @param tipsRemaining the number how many tips are remaining
+     */
+    public void setRemainingTips(int tipsRemaining) {
+        buttonTip.setText("Tipp anzeigen ("+Integer.valueOf(tipsRemaining)+")");
+    }
+
+    /**
+     * Changing the color of the tip-button when there are no more remaining tips
+     */
+    public void reachedMaxTips() {
+        buttonTip.setBackground(Color.RED);
+    }
+
+    /**
+     * @return the actual set note mode
+     */
     public boolean getNoteMode() {
         return noteMode;
     }
 
+    /**
+     * Sets a note to the clicked cell
+     */
     public void setNote(int value) {
         clicked.setNote(value);
         pane.revalidate();

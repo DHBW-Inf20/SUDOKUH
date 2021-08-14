@@ -29,6 +29,11 @@ public class LabelPanel extends JPanel {
         primaryTextColor = primTextColor;
     }
 
+    /**
+     * Sets a note to the object
+     *
+     * @param value value of the note
+     */
     public void setNote(int value) {
         if (!(this.labelValue == null)) {
             if (!(this.labelValue.equals(""))) {
@@ -86,6 +91,11 @@ public class LabelPanel extends JPanel {
         state = State.PANEL;
     }
 
+    /**
+     * Sets a text in the object
+     *
+     * @param value the value to be set
+     */
     public void setText(String value) {
         this.removeAll();
         notes = new ArrayList<>();

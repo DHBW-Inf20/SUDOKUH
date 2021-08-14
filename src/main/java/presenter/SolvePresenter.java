@@ -28,12 +28,10 @@ public abstract class SolvePresenter implements Presenter{
             case STRAITS_SOLVE -> {
                 sudoku = new Str8ts();
                 gameMenu = new SolveStr8tsMenu(size, this::handleButtonListenerEvent, "Str8ts lösen", theme);
-                break;
-            }
+                            }
             case KILLER_SOLVE -> {
                 sudoku = new Killer();
                 gameMenu = new SolveKillerMenu(size, this::handleButtonListenerEvent, "Killer lösen", theme);
-                break;
             }
             default -> {
                 sudoku = new Sudoku(size);
@@ -45,12 +43,16 @@ public abstract class SolvePresenter implements Presenter{
         gameMenu.addKeyListener(new KeyInputListener(this));
     }
 
-    // ActionListener for numbers-buttons to provide a correct input
+    /**
+     * Action listener for buttons
+     */
     public void handleButtonListenerEvent(ActionEvent e) {
         handleButton((CustomButton) e.getSource());
     }
 
-    // Changes after button input
+    /**
+     * Handles the button events and triggers actions based on the clicked button
+     */
     public void handleButton(CustomButton button){
         LabelPanel clickedCell = gameMenu.getClicked();
 
@@ -93,5 +95,8 @@ public abstract class SolvePresenter implements Presenter{
                 }
             }
         }
+    }
+    public GameMenu getGameMenu() {
+        return gameMenu;
     }
 }
