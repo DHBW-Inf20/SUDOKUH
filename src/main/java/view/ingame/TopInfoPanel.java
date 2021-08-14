@@ -51,7 +51,7 @@ public class TopInfoPanel extends JPanel {
         guiText.setHorizontalAlignment(SwingConstants.CENTER);
         guiText.setVerticalAlignment(SwingConstants.CENTER);
 
-        this.remove(guiText);
+        this.removeAll();
         this.add(guiText, BorderLayout.NORTH);
         this.revalidate();
         textSet = true;
@@ -62,7 +62,7 @@ public class TopInfoPanel extends JPanel {
      */
     public void resetGUIText() {
         if (textSet) {
-            this.remove(guiText);
+            this.removeAll();
             this.revalidate();
             textSet = false;
         }

@@ -42,6 +42,7 @@ public class PlayPresenter implements Presenter{
         this.tipsUsed = 0;
         this.autoStepForward = autoStepForward;
         inGameViewScaffold.setRemainingTips(tipLimit-tipsUsed);
+        if(tipLimit-tipsUsed == 0) inGameViewScaffold.reachedMaxTips();
     }
 
     /**

@@ -201,13 +201,6 @@ public class MainMenu extends JFrame {
                 updateBackgrounds();
             }
             if (e.getSource() == backButtonSettings) {
-                switch(tipSlider.getValue()) {
-                    case 0: tipLimit = 0; break;
-                    case 1: tipLimit = 3; break;
-                    case 2: tipLimit = 5; break;
-                    case 3: tipLimit = 10; break;
-                    case 4: tipLimit = 20; break;
-                }
                 setTitle("SUDOKUH Hauptmen\u00fc");
                 cl.first(cardsPanel);
             }
@@ -216,6 +209,13 @@ public class MainMenu extends JFrame {
             }
             if (e.getSource() == backButtonGameSettings) {
                 setTitle("SUDOKUH Hauptmen\u00fc");
+                switch(tipSlider.getValue()) {
+                    case 0: tipLimit = 0; break;
+                    case 1: tipLimit = 3; break;
+                    case 2: tipLimit = 5; break;
+                    case 3: tipLimit = 10; break;
+                    case 4: tipLimit = 20; break;
+                }
                 cl.first(cardsPanel);
             }
         }
