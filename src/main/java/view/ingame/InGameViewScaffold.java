@@ -12,8 +12,8 @@ public class InGameViewScaffold extends JFrame {
     public InGameViewScaffold(){
 
         //General Window Options
-        super("<Sudoku>");
-        this.setSize(1400, 1120);
+        super("SUDOKUH");
+        this.setSize(1195, 980);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLocationRelativeTo(null);
         this.setResizable(false);
@@ -25,33 +25,19 @@ public class InGameViewScaffold extends JFrame {
         mainContainer.setBackground(backgroundColor);
         mainContainer.setLayout(null);
 
-        //Margin to outside if necessary
-        //this.getRootPane().setBorder(BorderFactory.createMatteBorder(10,10,10,10,backgroundColor));
-
-        //TODO: Die einzelnen Panels als extra Klasse -> Übersichtlicher
-
         //Top information panel
-        JPanel topInfoPanel = new JPanel();
-        topInfoPanel.setBackground(panelBackgroundColor);
-        topInfoPanel.setBounds(20,20, 900,120);
-        mainContainer.add(topInfoPanel);
+        mainContainer.add(new TopInfoPanel(panelBackgroundColor));
 
         //Sudoku field panel
-        JPanel sudokuFieldPanel = new JPanel();
-        sudokuFieldPanel.setBackground(panelBackgroundColor);
-        sudokuFieldPanel.setBounds(20, 160,900,900);
-        mainContainer.add(sudokuFieldPanel);
+        mainContainer.add(new SudokuFieldPanel());
 
         //Right controls panel
-        JPanel rightControlsPanel = new JPanel();
-        rightControlsPanel.setBackground(panelBackgroundColor);
-        rightControlsPanel.setBounds(940, 160,420,900);
-        mainContainer.add(rightControlsPanel);
+        mainContainer.add(new RightControlsPanel());
 
         //Control Buttons
         JButton againButton = new JButton();
         againButton.setBackground(backgroundColor);
-        againButton.setBounds(1180, 40,80,80);
+        againButton.setBounds(980, 20,80,80);
         try {
             Image img = ImageIO.read(getClass().getResourceAsStream("/again_icon.png"));
             againButton.setIcon(new ImageIcon(img));
@@ -64,10 +50,12 @@ public class InGameViewScaffold extends JFrame {
 
         JButton homeButton = new JButton();
         homeButton.setBackground(backgroundColor);
-        homeButton.setBounds(1280, 40,80,80);
+        homeButton.setBounds(1080, 20,80,80);
         try {
-            Image img = ImageIO.read(getClass().getResourceAsStream("/home_icon.png"));
+            Image img = ImageIO.read(getClass().getResourceAsStream("/logo_80.png"));
             homeButton.setIcon(new ImageIcon(img));
+            //Sets Icon of Frame
+            this.setIconImage(img);
         } catch (Exception ex) {
             System.out.println(ex);
         }
