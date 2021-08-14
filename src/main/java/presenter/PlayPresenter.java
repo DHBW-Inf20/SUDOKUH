@@ -11,6 +11,7 @@ import view.CustomButton;
 import view.LabelPanel;
 import view.game_menus.GameMenu;
 import view.game_menus.PlayMenu;
+import view.ingame.InGameViewScaffold;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -21,24 +22,29 @@ public class PlayPresenter implements Presenter{
     protected final AbstractPuzzle sudoku;
     protected final AbstractPuzzle solution;
     protected final view.game_menus.PlayMenu gameMenu;
+    protected final view.ingame.InGameViewScaffold inGameViewScaffold;
 
     protected int tipLimit;
     protected int tipsUsed;
 
-    public PlayPresenter(int size, String theme, int tipLimit) {
+    protected boolean autoStepForward;
+
+    public PlayPresenter(int size, String theme, boolean autoStepForward, int tipLimit) {
         SudokuAndSolution sudokuAndSolution = SudokuGenerator.generateSudokuAndSolution(size);
         sudoku = sudokuAndSolution.sudoku();
         solution = sudokuAndSolution.solution();
 
-        gameMenu = new view.game_menus.PlayMenu(size, this::handleButtonListenerEvent, "Sudoku", theme);
-        gameMenu.setVisible(true);
+        inGameViewScaffold = new InGameViewScaffold(size, this::handleButtonListenerEvent, "Spielen", theme);
 
-        gameMenu.addKeyListener(new KeyInputListener(this));
+        gameMenu = new view.game_menus.PlayMenu(size, this::handleButtonListenerEvent, "Sudoku", theme);
+
+        gameMenu.addKeyListener(new KeyInputListener(this, autoStepForward));
 
         this.setPredefinedCells();
 
         this.tipLimit = tipLimit;
         this.tipsUsed = 0;
+        this.autoStepForward = autoStepForward;
         gameMenu.setRemainingTips(tipLimit-tipsUsed);
     }
 
@@ -110,25 +116,27 @@ public class PlayPresenter implements Presenter{
                 }
             }
             case TIP -> {
-                tipsUsed++;
-                if(tipLimit >= tipsUsed) {
-                    gameMenu.validInput(String.valueOf(solution.getCell(clickedCell.getRow(), clickedCell.getCol())), (tipLimit-tipsUsed));
-                    gameMenu.setPredefined(clickedCell.getRow(), clickedCell.getCol(), solution.getCell(clickedCell.getRow(), clickedCell.getCol()));
-                    // TODO: Setcell gibt Setresult zurück: boolean und ggf. Zeile & Spalte -> Markieren von selbst eingegebenem Fehler
-                    final SetResult result = sudoku.setCell(clickedCell.getRow(), clickedCell.getCol(), solution.getCell(clickedCell.getRow(), clickedCell.getCol()));
-                    if (!result.isSuccess()) {
-                        // TODO show conflicts
-                        final Set<Cell> conflicts = result.conflictingCells();
-                        if (!conflicts.isEmpty()) {
-                            // can be any conflict (no order guaranteed) -> TODO show all
-                            final Cell randomConflict = conflicts.iterator().next();
-                            gameMenu.invalidInput(randomConflict.row(), randomConflict.column());
+                if(! clickedCell.isPredefined()) {
+                    tipsUsed++;
+                    if (tipLimit >= tipsUsed) {
+                        gameMenu.validInput(String.valueOf(solution.getCell(clickedCell.getRow(), clickedCell.getCol())), (tipLimit - tipsUsed));
+                        gameMenu.setPredefined(clickedCell.getRow(), clickedCell.getCol(), solution.getCell(clickedCell.getRow(), clickedCell.getCol()));
+                        // TODO: Setcell gibt Setresult zurück: boolean und ggf. Zeile & Spalte -> Markieren von selbst eingegebenem Fehler
+                        final SetResult result = sudoku.setCell(clickedCell.getRow(), clickedCell.getCol(), solution.getCell(clickedCell.getRow(), clickedCell.getCol()));
+                        if (!result.isSuccess()) {
+                            // TODO show conflicts
+                            final Set<Cell> conflicts = result.conflictingCells();
+                            if (!conflicts.isEmpty()) {
+                                // can be any conflict (no order guaranteed) -> TODO show all
+                                final Cell randomConflict = conflicts.iterator().next();
+                                gameMenu.invalidInput(randomConflict.row(), randomConflict.column());
+                            }
                         }
+                        this.verifySolution();
+                        if (tipsUsed == tipLimit) gameMenu.reachedMaxTips();
+                    } else {
+                        gameMenu.reachedMaxTips();
                     }
-                    this.verifySolution();
-                    if(tipsUsed == tipLimit) gameMenu.reachedMaxTips();
-                } else {
-                    gameMenu.reachedMaxTips();
                 }
             }
             case VERIFY -> {

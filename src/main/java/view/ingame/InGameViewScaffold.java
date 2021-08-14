@@ -1,18 +1,25 @@
 package view.ingame;
 
+import util.Themes;
+import view.game_menus.GameMenu;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
 
 public class InGameViewScaffold extends JFrame {
 
     Color backgroundColor;
     Color panelBackgroundColor;
 
-    public InGameViewScaffold(){
+    TopInfoPanel topInfoPanel;
+    SudokuFieldPanel sudokuFieldPanel;
+    RightControlsPanel rightControlsPanel;
 
+    public InGameViewScaffold(int gridSize, ActionListener buttonListener, String title, String theme){
         //General Window Options
-        super("SUDOKUH");
+        super("SUDOKUH - "+title);
         this.setSize(1195, 980);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLocationRelativeTo(null);
@@ -20,19 +27,24 @@ public class InGameViewScaffold extends JFrame {
         this.getContentPane().setLayout(null);
 
         //JFrame Container Settings
-        setLightMode();
+        Themes t = new Themes(theme);
+        backgroundColor = t.getMenuBackgroundColor();;
+        panelBackgroundColor = t.getPanelBackgroundColor();
         Container mainContainer = this.getContentPane();
         mainContainer.setBackground(backgroundColor);
         mainContainer.setLayout(null);
 
         //Top information panel
-        mainContainer.add(new TopInfoPanel(panelBackgroundColor));
+        topInfoPanel = new TopInfoPanel(panelBackgroundColor);
+        mainContainer.add(topInfoPanel);
 
         //Sudoku field panel
-        mainContainer.add(new SudokuFieldPanel());
+        sudokuFieldPanel = new SudokuFieldPanel();
+        mainContainer.add(sudokuFieldPanel);
 
         //Right controls panel
-        mainContainer.add(new RightControlsPanel());
+        rightControlsPanel = new RightControlsPanel();
+        mainContainer.add(rightControlsPanel);
 
         //Control Buttons
         JButton againButton = new JButton();
@@ -64,16 +76,6 @@ public class InGameViewScaffold extends JFrame {
         mainContainer.add(homeButton);
 
         this.setVisible(true);
-    }
-
-    void setDarkMode(){
-         backgroundColor = Color.darkGray;
-         panelBackgroundColor = Color.darkGray.brighter();
-    }
-
-    void setLightMode(){
-         backgroundColor = Color.lightGray;
-         panelBackgroundColor = Color.lightGray.brighter();
     }
 }
 

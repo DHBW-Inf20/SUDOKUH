@@ -11,10 +11,11 @@ public class KeyInputListener implements KeyListener {
 
     private final Presenter presenter;
 
-    private boolean autoStep = true;
+    private boolean autoStep;
 
-    public KeyInputListener(Presenter presenter) {
+    public KeyInputListener(Presenter presenter, boolean autoStepForward) {
         this.presenter = presenter;
+        autoStep = autoStepForward;
     }
 
 

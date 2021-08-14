@@ -7,6 +7,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Hashtable;
 
 public class MainMenu extends JFrame {
 
@@ -15,7 +16,7 @@ public class MainMenu extends JFrame {
 
     Mode mode;
 
-    String theme = "dark";
+    String theme = "default";
 
     JButton playSudokuButton, solveSudokuButton, solveKillerButton, solveStraitsButton, settingsButton, startButton, backButton;
 
@@ -24,6 +25,7 @@ public class MainMenu extends JFrame {
     boolean darkMode = false, autoStepForward = true;
 
     SizeChooseSlider slider;
+    JSlider tipSlider;
 
     int tipLimit = 3;
 
@@ -89,14 +91,34 @@ public class MainMenu extends JFrame {
         settingsPanel.setLayout(null);
         settingsPanel.add(backButton, BorderLayout.PAGE_START);
         darkModeSwitch = new JToggleButton("DarkMode", darkMode);
+        darkModeSwitch.addActionListener(new MainMenu.ButtonListener());
         darkModeSwitch.setBounds(100, 300, 150, 50);
         darkModeSwitch.setFocusable(false);
         settingsPanel.add(darkModeSwitch);
         autoStepForwardSwitch = new JToggleButton("Auto Step", autoStepForward);
+        autoStepForwardSwitch.addActionListener(new MainMenu.ButtonListener());
         autoStepForwardSwitch.setBounds(100, 400, 150, 50);
         autoStepForwardSwitch.setFocusable(false);
         settingsPanel.add(autoStepForwardSwitch);
-        // TODO Tipplimit einstellen (Variable tipLimit)
+        JLabel tipText = new JLabel("Tipp-Limit:");
+        tipText.setBounds(100,450,150,50);
+        settingsPanel.add(tipText);
+        tipSlider = new JSlider();
+        tipSlider.setMinimum(0);
+        tipSlider.setMaximum(4);
+        tipSlider.setValue(5);
+        tipSlider.setPaintTicks(true);
+        tipSlider.setPaintLabels(true);
+        Hashtable<Integer, JLabel> labels = new Hashtable<>();
+        labels.put(0, new JLabel("0"));
+        labels.put(1, new JLabel("3"));
+        labels.put(2, new JLabel("5"));
+        labels.put(3, new JLabel("10"));
+        labels.put(4, new JLabel("20"));
+        tipSlider.setLabelTable(labels);
+        tipSlider.setBounds(100, 500, 150, 50);
+        tipSlider.setFocusable(false);
+        settingsPanel.add(tipSlider);
 
         cardsPanel = new JPanel(cl);
         cardsPanel.add(mainMenuPanel, "mainMenu");
@@ -131,7 +153,25 @@ public class MainMenu extends JFrame {
                 setTitle("Einstellungen");
                 cl.show(cardsPanel, "settingsPanel");
             }
+            if (e.getSource() == autoStepForwardSwitch) {
+                autoStepForward = !autoStepForward;
+            }
+            if (e.getSource() == darkModeSwitch) {
+                darkMode = !darkMode;
+                if(darkMode) {
+                    theme = "dark";
+                } else {
+                    theme = "default";
+                }
+            }
             if (e.getSource() == backButton) {
+                switch(tipSlider.getValue()) {
+                    case 0: tipLimit = 0; break;
+                    case 1: tipLimit = 3; break;
+                    case 2: tipLimit = 5; break;
+                    case 3: tipLimit = 10; break;
+                    case 4: tipLimit = 20; break;
+                }
                 setTitle("Sudoku Hauptmen\u00fc");
                 cl.first(cardsPanel);
             }
@@ -145,10 +185,10 @@ public class MainMenu extends JFrame {
                 UIManager.setLookAndFeel(new javax.swing.plaf.metal.MetalLookAndFeel());
             } catch(Exception e) {}
             switch (mode) {
-                case SUDOKU_SOLVE -> new presenter.SolveSudokuPresenter(size, theme);
-                case SUDOKU_PLAY -> new presenter.PlayPresenter(size, theme, tipLimit);
-                case KILLER_SOLVE -> new presenter.SolveKillerPresenter(size, theme);
-                case STRAITS_SOLVE -> new presenter.SolveStr8tsPresenter(size, theme);
+                case SUDOKU_SOLVE -> new presenter.SolveSudokuPresenter(size, theme, autoStepForward);
+                case SUDOKU_PLAY -> new presenter.PlayPresenter(size, theme, autoStepForward, tipLimit);
+                case KILLER_SOLVE -> new presenter.SolveKillerPresenter(size, theme, autoStepForward);
+                case STRAITS_SOLVE -> new presenter.SolveStr8tsPresenter(size, theme, autoStepForward);
             }
             dispose();
         }

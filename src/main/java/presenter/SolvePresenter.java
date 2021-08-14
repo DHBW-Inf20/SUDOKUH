@@ -23,7 +23,10 @@ public abstract class SolvePresenter implements Presenter{
     protected final AbstractPuzzle sudoku;
     protected final GameMenu gameMenu;
 
-    public SolvePresenter(int size, util.Mode gameMode, String theme) {
+    protected boolean autoStepForward;
+
+    public SolvePresenter(int size, util.Mode gameMode, String theme, boolean autoStepForward) {
+        this.autoStepForward = autoStepForward;
         switch (gameMode) {
             case STRAITS_SOLVE -> {
                 sudoku = new Str8ts();
@@ -40,7 +43,7 @@ public abstract class SolvePresenter implements Presenter{
         }
         gameMenu.setVisible(true);
 
-        gameMenu.addKeyListener(new KeyInputListener(this));
+        gameMenu.addKeyListener(new KeyInputListener(this, autoStepForward));
     }
 
     /**

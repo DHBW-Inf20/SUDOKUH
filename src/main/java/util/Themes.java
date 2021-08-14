@@ -22,6 +22,10 @@ public class Themes {
     private final Color secondaryTextColor;
     // Color for text if there is an error
     private final Color errorTextColor;
+    // Color for panel background
+    private final Color panelBackgroundColor;
+    // Color for menu background
+    private final Color menuBackgroundColor;
 
     public Themes(String theme) {
         switch (theme) {
@@ -36,6 +40,8 @@ public class Themes {
                 secondaryTextColor = Color.decode("#686868");
                 errorTextColor = Color.red;
                 borderColor = Color.decode("#C0C0C0");
+                panelBackgroundColor = Color.darkGray.brighter();
+                menuBackgroundColor = Color.darkGray;
                 break;
             }
             default: {
@@ -49,6 +55,8 @@ public class Themes {
                 secondaryTextColor = Color.white;
                 errorTextColor = Color.red;
                 borderColor = Color.darkGray;
+                panelBackgroundColor = Color.lightGray.brighter();
+                menuBackgroundColor = Color.lightGray;
             }
         }
     }
@@ -91,5 +99,13 @@ public class Themes {
 
     public Color getErrorTextColor() {
         return errorTextColor;
+    }
+
+    public Color getPanelBackgroundColor() {
+        return panelBackgroundColor;
+    }
+
+    public Color getMenuBackgroundColor() {
+        return menuBackgroundColor;
     }
 }

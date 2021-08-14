@@ -12,6 +12,6 @@ public class Main {
 //
 //        MainMenu menu = new MainMenu();
 //        menu.setLocationRelativeTo(null);
-        new InGameViewScaffold();
+        new MainMenu();
     }
 }
