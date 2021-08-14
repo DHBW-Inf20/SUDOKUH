@@ -131,7 +131,7 @@ public final class Killer extends AbstractSudoku {
 
         for (int i = -2; i < 2; i++) {
             final int rowDelta = i % 2;          // these two values will produce the following tuples:
-            final int columnDelta = (i + 1) % 2; // (0,-1); (-1,0); (0,1), (1,0)
+            final int columnDelta = (i + 1) % 2; // (0,-1); (-1,0); (0,1); (1,0)
 
             final Cell neighbor = new Cell(cell.row() + rowDelta, cell.column() + columnDelta);
             if (allCells.contains(neighbor) && !connectedCells.contains(neighbor)) {
@@ -144,7 +144,7 @@ public final class Killer extends AbstractSudoku {
 
         final Group group = groupsForCells.get(cell);
         if (group == null) { // cell is in no group
-            return false;
+            return true;
         } else if (group.cells.size() <= 1) { // group only consists of cell -> remove whole group
             return remove(group);
         }
@@ -304,8 +304,7 @@ public final class Killer extends AbstractSudoku {
     /**
      * Trys to remove the cell in the specified {@code row} and {@code column} from the {@link Group group} it is part
      * of.
-     * <p>This will not work if the cell is in no group or the removal of the cell would lead to a group with
-     * unconnected cells.</p>
+     * <p>This will not work if the removal of the cell would lead to a group with unconnected cells.</p>
      *
      * @return a {@link GroupsUpdateResult GroupsUpdateResult}
      * @see GroupsUpdateResult GroupsUpdateResult
@@ -337,8 +336,8 @@ public final class Killer extends AbstractSudoku {
         final Cell currentCell = new Cell(row, column);
         final Group group = groupsForCells.get(currentCell);
 
-        // an empty group cannot have any more conflicts
-        if (group.cells.isEmpty()) {
+        // no group / an empty group cannot have any more conflicts
+        if (group == null || group.cells.isEmpty()) {
             return conflicts;
         }
 
