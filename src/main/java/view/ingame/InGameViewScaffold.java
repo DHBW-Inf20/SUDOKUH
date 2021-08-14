@@ -28,7 +28,7 @@ public class InGameViewScaffold extends JFrame {
 
         //JFrame Container Settings
         Themes t = new Themes(theme);
-        backgroundColor = t.getMenuBackgroundColor();;
+        backgroundColor = t.getMenuBackgroundColor();
         panelBackgroundColor = t.getPanelBackgroundColor();
         Container mainContainer = this.getContentPane();
         mainContainer.setBackground(backgroundColor);
@@ -64,7 +64,7 @@ public class InGameViewScaffold extends JFrame {
         homeButton.setBackground(backgroundColor);
         homeButton.setBounds(1080, 20,80,80);
         try {
-            Image img = ImageIO.read(getClass().getResourceAsStream("/logo_80.png"));
+            Image img = ImageIO.read(getClass().getResourceAsStream("/logo_200.png"));
             homeButton.setIcon(new ImageIcon(img));
             //Sets Icon of Frame
             this.setIconImage(img);

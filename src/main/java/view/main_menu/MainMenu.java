@@ -2,11 +2,14 @@ package view.main_menu;
 
 
 import util.Mode;
+import util.Themes;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.util.Hashtable;
 
 public class MainMenu extends JFrame {
@@ -14,11 +17,16 @@ public class MainMenu extends JFrame {
     CardLayout cl = new CardLayout();
     JPanel cardsPanel;
 
+    JPanel mainMenuPanel = new JPanel();
+    JPanel settingsPanel = new JPanel();
+    JPanel gameSettingsPanel = new JPanel();
+    JLabel tipText = new JLabel("Tipp-Limit:");
+
     Mode mode;
 
     String theme = "default";
 
-    JButton playSudokuButton, solveSudokuButton, solveKillerButton, solveStraitsButton, settingsButton, startButton, backButton;
+    JButton playSudokuButton, solveSudokuButton, solveKillerButton, solveStraitsButton, settingsButton, startButton, backButtonGameSettings, backButtonSettings;
 
     JToggleButton darkModeSwitch, autoStepForwardSwitch;
 
@@ -27,69 +35,93 @@ public class MainMenu extends JFrame {
     SizeChooseSlider slider;
     JSlider tipSlider;
 
+    Themes t = new Themes(theme);
+
     int tipLimit = 3;
 
     public MainMenu() {
-        super("Sudoku Hauptmen\u00fc");
+        super("SUDOKUH Hauptmen\u00fc");
 
-        setSize(new Dimension(350, 700));
+        setSize(new Dimension(350, 660));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.getContentPane().setBackground(Color.white);
+        this.setLocationRelativeTo(null);
         setResizable(false);
-        setVisible(true);
-        Container pane = getContentPane();
-        pane.setLayout(new BorderLayout());
+        try {
+            Image img = ImageIO.read(getClass().getResourceAsStream("/logo_200.png"));
+            this.setIconImage(img);
+        } catch (Exception ex) {
+            System.out.println(ex);
+        }
+
 
         //Main Menu Panel
-        JPanel mainMenuPanel = new JPanel();
-        setBackground(Color.RED);
+        mainMenuPanel.setBackground(t.getPrimaryBackgroundColor());
         mainMenuPanel.setLayout(null);
+        add(mainMenuPanel);
+
+        try {
+            BufferedImage logoImg = ImageIO.read(getClass().getResourceAsStream("/logo_200.png"));
+            JLabel logo = new JLabel(new ImageIcon(logoImg));
+            mainMenuPanel.add(logo);
+            logo.setBounds(75, 25 ,200,200);
+        } catch (Exception ex){
+            System.out.println(ex);
+        }
+
 
         playSudokuButton = new JButton("Sudoku Spiel");
         playSudokuButton.addActionListener(new MainMenu.ButtonListener());
         mainMenuPanel.add(playSudokuButton);
-        playSudokuButton.setBounds(75, 100, 200, 50);
+        playSudokuButton.setBounds(75, 250, 200, 50);
 
         solveSudokuButton = new JButton("Sudoku Löser");
         solveSudokuButton.addActionListener(new MainMenu.ButtonListener());
         mainMenuPanel.add(solveSudokuButton);
-        solveSudokuButton.setBounds(75, 200, 200, 50);
+        solveSudokuButton.setBounds(75, 325, 200, 50);
 
         solveKillerButton = new JButton("Killer Löser");
         solveKillerButton.addActionListener(new MainMenu.ButtonListener());
         mainMenuPanel.add(solveKillerButton);
-        solveKillerButton.setBounds(75, 300, 200, 50);
+        solveKillerButton.setBounds(75, 400, 200, 50);
 
         solveStraitsButton = new JButton("Str8ts Löser");
         solveStraitsButton.addActionListener(new MainMenu.ButtonListener());
         mainMenuPanel.add(solveStraitsButton);
-        solveStraitsButton.setBounds(75, 400, 200, 50);
+        solveStraitsButton.setBounds(75, 475, 200, 50);
 
         settingsButton = new JButton("Einstellungen");
         settingsButton.addActionListener(new MainMenu.ButtonListener());
         mainMenuPanel.add(settingsButton);
-        settingsButton.setBounds(75,500,200,50);
+        settingsButton.setBounds(75,550,200,50);
 
-        //Back Button
-        backButton = new JButton("Zurück");
-        backButton.addActionListener(new MainMenu.ButtonListener());
-        mainMenuPanel.add(backButton);
-        backButton.setBounds(75, 100, 200, 50);
+        //Back Button Settings
+        backButtonSettings = new JButton("Zurück");
+        backButtonSettings.addActionListener(new MainMenu.ButtonListener());
+        backButtonSettings.setBounds(100, 25, 150, 50);
+
+        //Back Button Game Settings
+        backButtonGameSettings = new JButton("Zurück");
+        backButtonGameSettings.addActionListener(new MainMenu.ButtonListener());
+        backButtonGameSettings.setBounds(100, 25, 150, 50);
 
         //Game Settings Panel
-        JPanel gameSettingsPanel = new JPanel();
-        gameSettingsPanel.setLayout(null);
         slider = new SizeChooseSlider();
-        gameSettingsPanel.add(slider, BorderLayout.CENTER);
+        slider.setBackground(t.getPrimaryBackgroundColor());
+        gameSettingsPanel.add(backButtonSettings);
+        gameSettingsPanel.setLayout(null);
+        gameSettingsPanel.add(slider);
+        gameSettingsPanel.setBackground(t.getPrimaryBackgroundColor());
         startButton = new JButton("Start");
         startButton.addActionListener(new MainMenu.ButtonListener());
         startButton.setBounds(100, 450, 150, 50);
-        gameSettingsPanel.add(startButton, BorderLayout.SOUTH);
-        gameSettingsPanel.add(backButton, BorderLayout.PAGE_START);
+        gameSettingsPanel.add(startButton);
+
 
         //Settings Panel
-        JPanel settingsPanel = new JPanel();
         settingsPanel.setLayout(null);
-        settingsPanel.add(backButton, BorderLayout.PAGE_START);
+        settingsPanel.setBackground(t.getPrimaryBackgroundColor());
+        settingsPanel.add(backButtonGameSettings);
         darkModeSwitch = new JToggleButton("DarkMode", darkMode);
         darkModeSwitch.addActionListener(new MainMenu.ButtonListener());
         darkModeSwitch.setBounds(100, 300, 150, 50);
@@ -100,7 +132,7 @@ public class MainMenu extends JFrame {
         autoStepForwardSwitch.setBounds(100, 400, 150, 50);
         autoStepForwardSwitch.setFocusable(false);
         settingsPanel.add(autoStepForwardSwitch);
-        JLabel tipText = new JLabel("Tipp-Limit:");
+        tipText.setForeground(t.getPrimaryTextColor());
         tipText.setBounds(100,450,150,50);
         settingsPanel.add(tipText);
         tipSlider = new JSlider();
@@ -118,6 +150,7 @@ public class MainMenu extends JFrame {
         tipSlider.setLabelTable(labels);
         tipSlider.setBounds(100, 500, 150, 50);
         tipSlider.setFocusable(false);
+        tipSlider.setBackground(t.getPrimaryBackgroundColor());
         settingsPanel.add(tipSlider);
 
         cardsPanel = new JPanel(cl);
@@ -126,6 +159,8 @@ public class MainMenu extends JFrame {
         cardsPanel.add(settingsPanel, "settingsPanel");
         cl.first(cardsPanel);
         add(cardsPanel, BorderLayout.CENTER);
+
+        this.setVisible(true);
     }
 
     private class ButtonListener implements ActionListener {
@@ -163,8 +198,9 @@ public class MainMenu extends JFrame {
                 } else {
                     theme = "default";
                 }
+                updateBackgrounds();
             }
-            if (e.getSource() == backButton) {
+            if (e.getSource() == backButtonSettings) {
                 switch(tipSlider.getValue()) {
                     case 0: tipLimit = 0; break;
                     case 1: tipLimit = 3; break;
@@ -172,11 +208,15 @@ public class MainMenu extends JFrame {
                     case 3: tipLimit = 10; break;
                     case 4: tipLimit = 20; break;
                 }
-                setTitle("Sudoku Hauptmen\u00fc");
+                setTitle("SUDOKUH Hauptmen\u00fc");
                 cl.first(cardsPanel);
             }
             if (e.getSource() == startButton) {
                 startGame(slider.getValue());
+            }
+            if (e.getSource() == backButtonGameSettings) {
+                setTitle("SUDOKUH Hauptmen\u00fc");
+                cl.first(cardsPanel);
             }
         }
 
@@ -192,5 +232,15 @@ public class MainMenu extends JFrame {
             }
             dispose();
         }
+    }
+
+    private void updateBackgrounds() {
+        t = new Themes(theme);
+        mainMenuPanel.setBackground(t.getPrimaryBackgroundColor());
+        settingsPanel.setBackground(t.getPrimaryBackgroundColor());
+        tipSlider.setBackground(t.getPrimaryBackgroundColor());
+        tipText.setForeground(t.getPrimaryTextColor());
+        gameSettingsPanel.setBackground(t.getPrimaryBackgroundColor());
+        slider.setBackground(t.getPrimaryBackgroundColor());
     }
 }
