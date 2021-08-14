@@ -112,6 +112,67 @@ public final class Killer extends AbstractSudoku {
     }
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
+    private boolean groupIsValid(final Group group) {
+        return groupIsValid(group, null, null);
+    }
+
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
+    private boolean groupIsValidWithoutCell(final Group group, final Cell withoutCell) {
+        return groupIsValid(group, null, withoutCell);
+    }
+
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
+    private boolean groupIsValidWithAdditionalCell(final Group group, final Cell additionalCell) {
+        return groupIsValid(group, additionalCell, null);
+    }
+
+    private boolean groupIsValid(final Group group, Cell additionalCell, final Cell withoutCell) {
+
+        if (group == null) {
+            return true;
+        }
+
+        // occurrences[n] == true -> cell value n + 1 already occurred in this group
+        final boolean[] occurrences = new boolean[gridSize];
+        int sum = 0;
+        boolean hasEmptyCells = false;
+
+        // calculate sum and check for double occurrences
+        final Iterator<Cell> cellIterator = group.cells.iterator();
+        while (additionalCell != null || cellIterator.hasNext()) {
+
+            final Cell cell;
+            if (additionalCell != null) {
+                cell = additionalCell;
+                additionalCell = null;
+            } else {
+                cell = cellIterator.next();
+            }
+
+            if (cell.equals(withoutCell)) {
+                continue;
+            }
+
+            final int cellValue = grid[cell.row()][cell.column()];
+
+            if (cellValue == EMPTY_CELL) {
+                hasEmptyCells = true;
+
+            } else {
+                sum += cellValue;
+
+                // cellValue already occurred in this group
+                if (occurrences[cellValue - 1]) {
+                    return false;
+                }
+                occurrences[cellValue - 1] = true;
+            }
+        }
+
+        return (hasEmptyCells && sum < group.sum) || (!hasEmptyCells && sum == group.sum);
+    }
+
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     private boolean allCellsAreConnected(final Set<Cell> cells) {
 
         // a single cell is always connected
@@ -211,7 +272,7 @@ public final class Killer extends AbstractSudoku {
      * it from the group it was previously part of (if any).
      * <p>This will not work if {@code sum} is not in the valid range from {@code 1} to
      * {@link Group#MAX_SUM Group#MAX_SUM} (both inclusive) or the removal of the cell from its previous group would
-     * lead to a group with unconnected cells.</p>
+     * lead to a group with unconnected cells or an invalid sum.</p>
      *
      * @param sum the {@link Group#sum sum} that the newly created {@link Group group} is supposed to have
      * @return a {@link GroupsUpdateResult GroupsUpdateResult}
@@ -225,17 +286,18 @@ public final class Killer extends AbstractSudoku {
         }
 
         final Cell cell = new Cell(row, column);
-        if (!remove(cell)) { // remove from previous group -> if not successful return failure
+        // check if old group would be valid without cell and if removal from previous group was successful
+        if (!groupIsValidWithoutCell(groupsForCells.get(cell), cell) || !remove(cell)) {
             return createGroupsUpdateFailure();
         }
 
-        final Group group = new Group(Set.of(cell), sum);
+        final Group newGroup = new Group(Set.of(cell), sum);
         final int index = groups.size(); // will be added to end of groups
 
         // add the new group and update maps
-        groups.add(group);
-        groupIndices.put(group, index);
-        groupsForCells.put(cell, group);
+        groups.add(newGroup);
+        groupIndices.put(newGroup, index);
+        groupsForCells.put(cell, newGroup);
 
         return createGroupsUpdateSuccess();
     }
@@ -245,7 +307,7 @@ public final class Killer extends AbstractSudoku {
      * removes it from the group it was previously part of (if any).
      * <p>This will not work if {@code group} is no longer part of this Killer (also happens after updates to the
      * group) or the removal of the cell from its previous group / addition of the cell to {@code group} would lead to a
-     * group with unconnected cells.</p>
+     * group with unconnected cells or an invalid sum.</p>
      *
      * @return a {@link GroupsUpdateResult GroupsUpdateResult}
      * @see GroupsUpdateResult GroupsUpdateResult
@@ -258,7 +320,9 @@ public final class Killer extends AbstractSudoku {
         }
 
         final Cell cell = new Cell(row, column);
-        if (!remove(cell)) { // remove from previous group -> if not successful return failure
+        if (!groupIsValidWithoutCell(groupsForCells.get(cell), cell) // old group valid without cell?
+                || !groupIsValidWithAdditionalCell(group, cell)      // new group valid with additional cell?
+                || !remove(cell)) {                                  // removal from previous group successful?
             return createGroupsUpdateFailure();
         }
 
@@ -295,8 +359,13 @@ public final class Killer extends AbstractSudoku {
             return createGroupsUpdateFailure();
         }
 
+        final Group newGroup = new Group(group.cells, sum);
+        if (!groupIsValid(newGroup)) { // sum is not valid for this group
+            return createGroupsUpdateFailure();
+        }
+
         // replace with copy with updated sum
-        updateGroup(index, new Group(group.cells, sum));
+        updateGroup(index, newGroup);
 
         return createGroupsUpdateSuccess();
     }
