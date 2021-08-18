@@ -14,6 +14,8 @@ public class InGameViewScaffold extends JFrame {
     Color backgroundColor;
     Color panelBackgroundColor;
 
+    String theme;
+
     TopInfoPanel topInfoPanel;
     SudokuFieldPanel sudokuFieldPanel;
     RightControlsPanel rightControlsPanel;
@@ -77,6 +79,8 @@ public class InGameViewScaffold extends JFrame {
         mainContainer.add(homeButton);
 
         this.setVisible(true);
+
+        this.theme = theme;
     }
 
     /**
@@ -148,6 +152,15 @@ public class InGameViewScaffold extends JFrame {
      */
     public void setGUIText(String text, Color color) {
         topInfoPanel.setGUIText(text, color);
+    }
+
+    /**
+     * Prints a text to the top of the gui in the primary text color
+     *
+     * @param text text to be printed
+     */
+    public void setGUIText(String text) {
+        topInfoPanel.setGUIText(text);
     }
 
     /**
@@ -238,3 +251,6 @@ public class InGameViewScaffold extends JFrame {
 }
 
 
+// TODO Killer Frontend
+// TODO Hauptmenü-Button
+// TODO Rückgängig-Funktion

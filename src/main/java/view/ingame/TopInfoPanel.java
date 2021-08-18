@@ -12,6 +12,8 @@ public class TopInfoPanel extends JPanel {
      */
     // Color for field-background
     protected Color panelBackgroundColor;
+    // Color for text
+    protected Color primaryTextColor;
 
     /**
      * The actual played gamemode.
@@ -27,6 +29,7 @@ public class TopInfoPanel extends JPanel {
     public TopInfoPanel(String theme, util.Mode gamemode){
         Themes t = new Themes(theme);
         panelBackgroundColor = t.getPanelBackgroundColor();
+        primaryTextColor = t.getPrimaryTextColor();
         this.setBackground(panelBackgroundColor);
         this.setBounds(20,20, 800,80);
 
@@ -52,9 +55,19 @@ public class TopInfoPanel extends JPanel {
         guiText.setVerticalAlignment(SwingConstants.CENTER);
 
         this.removeAll();
+        this.revalidate();
         this.add(guiText, BorderLayout.NORTH);
         this.revalidate();
         textSet = true;
+    }
+
+    /**
+     * Prints a text to the top of the gui in the primary text color
+     *
+     * @param text text to be printed
+     */
+    public void setGUIText(String text) {
+        this.setGUIText(text, primaryTextColor);
     }
 
     /**

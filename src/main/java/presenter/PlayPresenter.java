@@ -12,9 +12,13 @@ import view.CustomButton;
 import view.LabelPanel;
 import view.ingame.InGameViewScaffold;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Set;
+import java.time.ZonedDateTime;
+import java.util.concurrent.TimeUnit;
 
 public class PlayPresenter implements Presenter{
 
@@ -26,6 +30,12 @@ public class PlayPresenter implements Presenter{
     protected int tipsUsed;
 
     protected boolean autoStepForward;
+
+    protected Timer timer;
+    protected long startTime;
+    protected long lastUpdateTime;
+
+    protected boolean solved;
 
     public PlayPresenter(int size, String theme, boolean autoStepForward, int tipLimit) {
         SudokuAndSolution sudokuAndSolution = SudokuGenerator.generateSudokuAndSolution(size);
@@ -43,6 +53,20 @@ public class PlayPresenter implements Presenter{
         this.autoStepForward = autoStepForward;
         inGameViewScaffold.setRemainingTips(tipLimit-tipsUsed);
         if(tipLimit-tipsUsed == 0) inGameViewScaffold.reachedMaxTips();
+
+        startTime = ZonedDateTime.now().toInstant().toEpochMilli();
+        lastUpdateTime = 0;
+
+        timer = new Timer(0, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setTimer();
+            }
+        });
+        timer.setInitialDelay(1000);
+        timer.start();
+
+        solved = false;
     }
 
     /**
@@ -64,7 +88,11 @@ public class PlayPresenter implements Presenter{
      */
     private boolean verifySolution() {
         if (sudoku.equals(solution)) {
-            inGameViewScaffold.setGUIText("Korrekte Lösung!", Color.green);
+            timer.stop();
+            long actualTime = ZonedDateTime.now().toInstant().toEpochMilli();
+            long timeDif = actualTime-startTime;
+            inGameViewScaffold.setGUIText(("<html><body><center>Korrekte Lösung!<br>"+this.getTimerText(timeDif)+"</center></body></html>"), Color.green);
+            solved = true;
             return true;
         }
         return false;
@@ -83,6 +111,7 @@ public class PlayPresenter implements Presenter{
      */
     @Override
     public void handleButton(CustomButton button) {
+        if(solved) return;
         LabelPanel clickedCell = inGameViewScaffold.getClicked();
 
         switch (button.getType()) {
@@ -138,11 +167,52 @@ public class PlayPresenter implements Presenter{
             case VERIFY -> {
                 if (!this.verifySolution()) {
                     inGameViewScaffold.setGUIText("Diese Lösung ist falsch oder unvollständig!", Color.red);
+                    // Pause time display for 5 seconds
+                    lastUpdateTime += 5000;
                 }
             }
             case PEN -> inGameViewScaffold.changeNoteMode(button);
         }
     }
+
+    /**
+     * Sets the playing time timer to the actual value
+     */
+    protected void setTimer() {
+        long actualTime = ZonedDateTime.now().toInstant().toEpochMilli();
+        // Only set the time if there is a difference of one second
+        if(actualTime >= lastUpdateTime+1000) {
+            long timeDif = actualTime-startTime;
+            inGameViewScaffold.setGUIText(this.getTimerText(timeDif));
+            lastUpdateTime = actualTime;
+        }
+    }
+
+    /**
+     * Returns a formatted String of time
+     *
+     * @param timeDif the time difference
+     * @return a String to be set in the gui
+     */
+    private String getTimerText(long timeDif) {
+        long hours = TimeUnit.MILLISECONDS.toHours(timeDif);
+        long minutes = TimeUnit.MILLISECONDS.toMinutes(timeDif) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(timeDif));
+        long seconds = TimeUnit.MILLISECONDS.toSeconds(timeDif) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(timeDif));
+        String hoursText = " Stunden, ";
+        String minutesText = " Minuten, ";
+        String secondsText = " Sekunden";
+        if(hours == 1) hoursText = " Stunde, ";
+        if(minutes == 1) minutesText = " Minute, ";
+        if(seconds == 1) secondsText = " Sekunde";
+        if (hours != 0) {
+           return ("Benötigte Zeit: "+hours+hoursText+minutes+minutesText+seconds+secondsText);
+        } else if (minutes != 0) {
+            return ("Benötigte Zeit: "+minutes+minutesText+seconds+secondsText);
+        } else {
+            return ("Benötigte Zeit: "+seconds+secondsText);
+        }
+    }
+
     public InGameViewScaffold getInGameViewScaffold() {
         return inGameViewScaffold;
     }

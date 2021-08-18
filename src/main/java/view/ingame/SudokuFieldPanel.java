@@ -121,7 +121,6 @@ public class SudokuFieldPanel extends JPanel {
             }
             colors.add(temp);
         }
-        System.out.println("Colors is "+colors.size());
 
         this.setLayout(new GridLayout(gridSize, gridSize));
         this.setSize(400,400);
