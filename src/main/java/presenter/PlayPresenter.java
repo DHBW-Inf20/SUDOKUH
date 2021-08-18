@@ -198,19 +198,13 @@ public class PlayPresenter implements Presenter{
         long hours = TimeUnit.MILLISECONDS.toHours(timeDif);
         long minutes = TimeUnit.MILLISECONDS.toMinutes(timeDif) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(timeDif));
         long seconds = TimeUnit.MILLISECONDS.toSeconds(timeDif) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(timeDif));
-        String hoursText = " Stunden, ";
-        String minutesText = " Minuten, ";
-        String secondsText = " Sekunden";
-        if(hours == 1) hoursText = " Stunde, ";
-        if(minutes == 1) minutesText = " Minute, ";
-        if(seconds == 1) secondsText = " Sekunde";
-        if (hours != 0) {
-           return ("Benötigte Zeit: "+hours+hoursText+minutes+minutesText+seconds+secondsText);
-        } else if (minutes != 0) {
-            return ("Benötigte Zeit: "+minutes+minutesText+seconds+secondsText);
-        } else {
-            return ("Benötigte Zeit: "+seconds+secondsText);
-        }
+        String hoursText = hours == 1 ? "Stunde, ":" Stunden, ";
+        String minutesText = minutes == 1 ? "Minute, ":" Minuten, ";
+        String secondsText = seconds == 1 ? " Sekunde":" Sekunden";
+        String text = "Spielzeit: ";
+        if(hours != 0) text += hours+hoursText;
+        if(minutes != 0) text += minutes+minutesText;
+        return (text+seconds+secondsText);
     }
 
     public InGameViewScaffold getInGameViewScaffold() {
