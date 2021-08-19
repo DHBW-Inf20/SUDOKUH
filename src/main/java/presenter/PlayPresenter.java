@@ -15,7 +15,6 @@ import view.ingame.InGameViewScaffold;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Set;
 import java.time.ZonedDateTime;
 import java.util.concurrent.TimeUnit;
@@ -57,12 +56,7 @@ public class PlayPresenter implements Presenter{
         startTime = ZonedDateTime.now().toInstant().toEpochMilli();
         lastUpdateTime = 0;
 
-        timer = new Timer(0, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                setTimer();
-            }
-        });
+        timer = new Timer(0, e -> setTimer());
         timer.setInitialDelay(1000);
         timer.start();
 
@@ -198,8 +192,8 @@ public class PlayPresenter implements Presenter{
         long hours = TimeUnit.MILLISECONDS.toHours(timeDif);
         long minutes = TimeUnit.MILLISECONDS.toMinutes(timeDif) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(timeDif));
         long seconds = TimeUnit.MILLISECONDS.toSeconds(timeDif) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(timeDif));
-        String hoursText = hours == 1 ? "Stunde, ":" Stunden, ";
-        String minutesText = minutes == 1 ? "Minute, ":" Minuten, ";
+        String hoursText = hours == 1 ? " Stunde, ":" Stunden, ";
+        String minutesText = minutes == 1 ? " Minute, ":" Minuten, ";
         String secondsText = seconds == 1 ? " Sekunde":" Sekunden";
         String text = "Spielzeit: ";
         if(hours != 0) text += hours+hoursText;

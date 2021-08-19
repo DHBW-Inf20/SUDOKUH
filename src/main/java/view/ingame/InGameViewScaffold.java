@@ -254,3 +254,4 @@ public class InGameViewScaffold extends JFrame {
 // TODO Killer Frontend
 // TODO Hauptmenü-Button
 // TODO Rückgängig-Funktion
+// TODO Bug: Notizen bleiben zu sehen wenn Zahl drüber eingegeben bis Zellwechsel (genauso bei topInfoText)

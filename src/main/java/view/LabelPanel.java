@@ -35,11 +35,9 @@ public class LabelPanel extends JPanel {
      * @param value value of the note
      */
     public void setNote(int value) {
-        if (!(this.labelValue == null)) {
-            if (!(this.labelValue.equals(""))) {
-                this.removeAll();
-                this.labelValue = "";
-            }
+        if (this.labelValue != null) {
+            this.removeAll();
+            this.labelValue = null;
         }
         if (notes.contains(value)) return;
         if (state == State.LABEL) setNoteMode();
@@ -99,9 +97,6 @@ public class LabelPanel extends JPanel {
     public void setText(String value) {
         this.removeAll();
         notes = new ArrayList<>();
-        for (int i = 0; i < size / 2; i++) {
-            this.add(new JLabel());
-        }
         this.add(label);
         label.setText(value);
         this.labelValue = value;

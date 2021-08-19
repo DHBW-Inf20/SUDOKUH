@@ -163,7 +163,7 @@ public class SudokuFieldPanel extends JPanel {
                 panel.setBackground(primaryBackgroundColor);
                 panel.setForeground(primaryTextColor);
                 panel.setLayout(new GridLayout(gridSize, gridSize));
-                panel.setBorder(new LineBorder(borderColor, 2));
+                if(gamemode != Mode.STRAITS_SOLVE) panel.setBorder(new LineBorder(borderColor, 2));
                 temp.add(panel);
             }
             panels.add(temp);
@@ -288,20 +288,6 @@ public class SudokuFieldPanel extends JPanel {
                         labels.get(k).get(clickedCol).getLabel().setForeground(secondaryTextColor);
                     }
                 }
-                int rowLowerBound = clicked.getRow() - (clicked.getRow() % size);
-                int rowUpperBound = rowLowerBound + size - 1;
-                int columnLowerBound = clicked.getCol() - (clicked.getCol() % size);
-                int columnUpperBound = columnLowerBound + size - 1;
-                for (int k = rowLowerBound; k <= rowUpperBound; k++) {
-                    for (int l = columnLowerBound; l <= columnUpperBound; l++) {
-                        labels.get(k).get(l).setBackground(primaryBackgroundColor);
-                        if(inputs.contains(labels.get(k).get(l))) labels.get(k).get(l).setBackground(predefinedColor);
-                        if(colors.get(k).get(l) == Str8ts.Color.BLACK) {
-                            labels.get(k).get(l).setBackground(secondaryBackgroundColor);
-                            labels.get(k).get(l).getLabel().setForeground(secondaryTextColor);
-                        }
-                    }
-                }
                 if (clicked != null) {
                     if (colors.get(clickedRow).get(clickedCol) == Str8ts.Color.BLACK) {
                         clicked.setBackground(secondaryBackgroundColor);
@@ -330,20 +316,6 @@ public class SudokuFieldPanel extends JPanel {
                     if(colors.get(k).get(clickedCol) == Str8ts.Color.BLACK) {
                         labels.get(k).get(clickedCol).setBackground(secondaryBackgroundColor);
                         labels.get(k).get(clickedCol).getLabel().setForeground(secondaryTextColor);
-                    }
-                }
-                rowLowerBound = clicked.getRow() - (clicked.getRow() % size);
-                rowUpperBound = rowLowerBound + size - 1;
-                columnLowerBound = clicked.getCol() - (clicked.getCol() % size);
-                columnUpperBound = columnLowerBound + size - 1;
-                for (int k = rowLowerBound; k <= rowUpperBound; k++) {
-                    for (int l = columnLowerBound; l <= columnUpperBound; l++) {
-                        labels.get(k).get(l).setBackground(markedColor);
-                        if(inputs.contains(labels.get(k).get(l))) labels.get(k).get(l).setBackground(predefinedMarkedColor);
-                        if(colors.get(k).get(l) == Str8ts.Color.BLACK) {
-                            labels.get(k).get(l).setBackground(secondaryBackgroundColor);
-                            labels.get(k).get(l).getLabel().setForeground(secondaryTextColor);
-                        }
                     }
                 }
                 clicked.setBackground(clickedColor);
