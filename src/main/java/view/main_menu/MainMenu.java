@@ -137,7 +137,6 @@ public class MainMenu extends JFrame {
         highlightSwitch.setBounds(100, 400, 150, 50);
         highlightSwitch.setFocusable(false);
         settingsPanel.add(highlightSwitch);
-        tipText.setForeground(t.getPrimaryTextColor());
         tipText.setBounds(100,450,150,50);
         settingsPanel.add(tipText);
         tipSlider = new JSlider();

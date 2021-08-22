@@ -122,5 +122,6 @@ public class LabelPanel extends JPanel {
         this.add(label,BorderLayout.CENTER);
         label.setText(value);
         this.labelValue = value;
+        this.revalidate();
     }
 }

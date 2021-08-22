@@ -22,7 +22,7 @@ public class TopInfoPanel extends JPanel {
     /**
      * A text that is shown in the menu when various events are triggered.
      */
-    protected JLabel guiText;
+    protected JLabel guiText = new JLabel("");;
     protected boolean textSet;
 
     public TopInfoPanel(String theme, util.Mode gamemode){
@@ -45,18 +45,16 @@ public class TopInfoPanel extends JPanel {
      * @param color color in which the text should be printed
      */
     public void setGUIText(String text, Color color) {
-        guiText = new JLabel(text);
+        guiText.setText(text);
         guiText.setOpaque(true);
         guiText.setBackground(panelBackgroundColor);
         guiText.setForeground(color);
         guiText.setFont(new Font(getFont().getName(), Font.BOLD, 25));
         guiText.setHorizontalAlignment(SwingConstants.CENTER);
         guiText.setVerticalAlignment(SwingConstants.CENTER);
-
         this.removeAll();
-        this.revalidate();
         this.add(guiText, BorderLayout.NORTH);
-        this.revalidate();
+        this.validate();
         textSet = true;
     }
 
