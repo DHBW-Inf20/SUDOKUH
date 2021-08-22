@@ -3,14 +3,17 @@ package view.ingame;
 import util.Themes;
 import view.CustomButton;
 import view.LabelPanel;
+import view.PopUpWindow;
+import presenter.PlayPresenter;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Objects;
 
-public class InGameViewScaffold extends JFrame {
+public class InGameViewScaffold extends JFrame implements ActionListener{
 
     Color backgroundColor;
     Color panelBackgroundColor;
@@ -20,6 +23,11 @@ public class InGameViewScaffold extends JFrame {
     TopInfoPanel topInfoPanel;
     SudokuFieldPanel sudokuFieldPanel;
     RightControlsPanel rightControlsPanel;
+
+    JButton againButton = new JButton();
+    JButton homeButton = new JButton();
+
+    private PlayPresenter playPresenter;
 
     public InGameViewScaffold(int gridSize, ActionListener buttonListener, String title, String theme, boolean highlighting, util.Mode gamemode){
         //General Window Options
@@ -51,7 +59,6 @@ public class InGameViewScaffold extends JFrame {
         mainContainer.add(rightControlsPanel);
 
         //Control Buttons
-        JButton againButton = new JButton();
         againButton.setBackground(backgroundColor);
         againButton.setBounds(980, 20,80,80);
         try {
@@ -62,13 +69,13 @@ public class InGameViewScaffold extends JFrame {
         }
         againButton.setFocusable(false);
         againButton.setBorder(null);
+        againButton.addActionListener(this);
         mainContainer.add(againButton);
 
-        JButton homeButton = new JButton();
         homeButton.setBackground(backgroundColor);
         homeButton.setBounds(1080, 20,80,80);
         try {
-            Image img = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/logo_200.png")));
+            Image img = ImageIO.read(getClass().getResourceAsStream("/logo_80.png"));
             homeButton.setIcon(new ImageIcon(img));
             //Sets Icon of Frame
             this.setIconImage(img);
@@ -77,12 +84,19 @@ public class InGameViewScaffold extends JFrame {
         }
         homeButton.setFocusable(false);
         homeButton.setBorder(null);
+        homeButton.addActionListener(this);
         mainContainer.add(homeButton);
 
         this.setVisible(true);
 
         this.theme = theme;
     }
+
+    public InGameViewScaffold(int gridSize, ActionListener buttonListener, String title, String theme,boolean highlighting, util.Mode gamemode, PlayPresenter playPresenter){
+        this(gridSize, buttonListener, title, theme, highlighting,  gamemode);
+        this.playPresenter = playPresenter;
+    }
+
 
     /**
      * @return the actual clicked cell
@@ -248,6 +262,26 @@ public class InGameViewScaffold extends JFrame {
      */
     public void changeColor() {
         sudokuFieldPanel.changeColor();
+    }
+
+    /**
+     * @return the playPresenter for PopUpWindow
+     */
+    public PlayPresenter getPlayPresenter(){
+        return playPresenter;
+    }
+
+    /**
+     * Handles control button events
+     */
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if(e.getSource() == homeButton){
+            if(playPresenter!=null){
+                playPresenter.pauseTimer();
+            }
+            new PopUpWindow(this);
+        }
     }
 }
 

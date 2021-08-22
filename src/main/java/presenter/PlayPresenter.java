@@ -33,6 +33,7 @@ public class PlayPresenter implements Presenter{
     protected Timer timer;
     protected long startTime;
     protected long lastUpdateTime;
+    protected long pausedTime = 0;
 
     protected boolean solved;
 
@@ -176,7 +177,7 @@ public class PlayPresenter implements Presenter{
         long actualTime = ZonedDateTime.now().toInstant().toEpochMilli();
         // Only set the time if there is a difference of one second
         if(actualTime >= lastUpdateTime+1000) {
-            long timeDif = actualTime-startTime;
+            long timeDif = actualTime-startTime+pausedTime;
             inGameViewScaffold.setGUIText(this.getTimerText(timeDif));
             lastUpdateTime = actualTime;
         }
@@ -199,6 +200,19 @@ public class PlayPresenter implements Presenter{
         if(hours != 0) text += hours+hoursText;
         if(minutes != 0) text += minutes+minutesText;
         return (text+seconds+secondsText);
+    }
+
+    /**
+     * Saves current time to add later when the timer is resumed
+     */
+    public void pauseTimer() {
+        pausedTime = pausedTime + lastUpdateTime-startTime;
+        timer.stop();
+    }
+
+    public void resumeTimer() {
+        timer.start();
+        startTime = ZonedDateTime.now().toInstant().toEpochMilli();
     }
 
     public InGameViewScaffold getInGameViewScaffold() {
