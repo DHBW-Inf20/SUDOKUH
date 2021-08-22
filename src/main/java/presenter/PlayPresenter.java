@@ -86,25 +86,6 @@ public class PlayPresenter implements Presenter{
     }
 
     /**
-     * @return the actual set note mode
-     */
-    public boolean getNoteMode() {
-        return noteMode;
-    }
-
-    /**
-     * Changes the node mode and sets the color of the button
-     */
-    public void changeNoteMode() {
-        noteMode = !noteMode;
-        if (noteMode) {
-            inGameViewScaffold.setNoteMode();
-        } else {
-            inGameViewScaffold.setNormalMode();
-        }
-    }
-
-    /**
      * If sudoku is solved right, print a text to the gui
      */
     private boolean verifySolution() {
@@ -156,6 +137,9 @@ public class PlayPresenter implements Presenter{
                                 inGameViewScaffold.highlightConflicts(c);
                             }
                             inGameViewScaffold.invalidInput(String.valueOf(number));
+                            inGameViewScaffold.setGUIText("Logisch falscher Input!",Color.red);
+                            // Pause time display for 1 seconds
+                            lastUpdateTime += 1000;
                         }
                     }
                 }

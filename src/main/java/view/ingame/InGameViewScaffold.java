@@ -287,4 +287,3 @@ public class InGameViewScaffold extends JFrame implements ActionListener{
 
 // TODO Killer Frontend
 // TODO Warnings entfernen
-// TODO Bug: Notizen bleiben zu sehen wenn Zahl drüber eingegeben bis Zellwechsel (genauso bei topInfoText)

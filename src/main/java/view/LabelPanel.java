@@ -14,7 +14,7 @@ public class LabelPanel extends JPanel {
     private final int row;
     private final int col;
     String labelValue;
-    private ArrayList<Integer> notes;
+    private ArrayList<String> notes;
     private final Color primaryTextColor;
     int size;
 
@@ -32,19 +32,31 @@ public class LabelPanel extends JPanel {
     /**
      * Sets a note to the object
      *
-     * @param value value of the note
+     * @param val value of the note
      */
-    public void setNote(int value) {
+    public void setNote(int val) {
+        String value = String.valueOf(val);
         this.setNoteMode();
         if (this.labelValue != null) {
             this.removeAll();
             this.labelValue = null;
         }
-        if (notes.contains(value)) return;
+        if (notes.contains(value)) {
+            Component[] cList = this.getComponents();
+            for(Component c : cList) {
+                if(c.getName().equals(value)) {
+                    this.remove(c);
+                    break;
+                }
+            }
+            notes.remove(value);
+            this.revalidate();
+            return;
+        }
         if (state == State.LABEL) setNoteMode();
 
-        final String stringValue = Integer.toString(value);
-        JLabel label = new JLabel(stringValue);
+        JLabel label = new JLabel(value);
+        label.setName(value);
         label.setForeground(primaryTextColor);
         if (notes.isEmpty()) {
             this.add(label, 0);
@@ -52,7 +64,7 @@ public class LabelPanel extends JPanel {
             return;
         }
         for (int i = 0; i < notes.size(); i++) {
-            if (notes.get(i) > value) {
+            if (Integer.parseInt(notes.get(i)) > Integer.parseInt(value)) {
                 this.add(label, i);
                 notes.add(i, value);
                 return;
