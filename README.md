@@ -1,4 +1,4 @@
-<img src="https://imgur.com/a/Cs4maqS" alt="SUDOKUH Logo" width="600"/>
+![](https://i.imgur.com/R2yKOuR.png)
 
 # SUDOKUH
 [![forthebadge made-with-java](https://forthebadge.com/images/badges/made-with-java.svg)](https://java.com/)
