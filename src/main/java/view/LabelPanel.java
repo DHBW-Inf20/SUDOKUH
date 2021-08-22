@@ -5,7 +5,7 @@ import java.awt.*;
 import java.util.ArrayList;
 
 public class LabelPanel extends JPanel {
-    private final CellLabel label;
+    private final JLabel label;
     private State state;
     public enum State {
         LABEL, PANEL
@@ -13,19 +13,19 @@ public class LabelPanel extends JPanel {
     private boolean isPredefined = false;
     private final int row;
     private final int col;
-    private final int size;
     String labelValue;
     private ArrayList<Integer> notes;
-    private Color primaryTextColor;
+    private final Color primaryTextColor;
+    int size;
 
-    public LabelPanel(CellLabel lab, int row, int col, int size, Color primTextColor) {
+    public LabelPanel(JLabel lab, int row, int col, int size, Color primTextColor) {
         label = lab;
         state = State.LABEL;
         this.row = row;
         this.col = col;
         this.size = size;
         notes = new ArrayList<>();
-        this.setLayout(new GridLayout(size, size));
+        this.setLayout(new BorderLayout());
         primaryTextColor = primTextColor;
     }
 
@@ -65,27 +65,49 @@ public class LabelPanel extends JPanel {
         return isPredefined;
     }
 
+    /**
+     * Marks the cell as predefined or not
+     *
+     * @param isPredefined wether the cell is predefined (true) or not (false)
+     */
     public void setPredefined(boolean isPredefined) {
         this.isPredefined = isPredefined;
     }
 
+    /**
+     * @return the row of the cell
+     */
     public int getRow() {
         return row;
     }
 
+    /**
+     * @return the column of the cell
+     */
     public int getCol() {
         return col;
     }
 
-    public CellLabel getLabel() {
+    /**
+     * @return the actual set label of the cell
+     */
+    public JLabel getLabel() {
         return label;
     }
 
+    /**
+     * Makes the cell ready for normal inputs
+     */
     public void setNormalMode() {
+        this.setLayout(new BorderLayout());
         state = State.LABEL;
     }
 
+    /**
+     * Makes the cell ready for notes
+     */
     public void setNoteMode() {
+        this.setLayout(new GridLayout(size, size));
         state = State.PANEL;
     }
 
@@ -97,7 +119,7 @@ public class LabelPanel extends JPanel {
     public void setText(String value) {
         this.removeAll();
         notes = new ArrayList<>();
-        this.add(label);
+        this.add(label,BorderLayout.CENTER);
         label.setText(value);
         this.labelValue = value;
     }

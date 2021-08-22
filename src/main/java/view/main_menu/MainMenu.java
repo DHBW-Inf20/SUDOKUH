@@ -28,9 +28,9 @@ public class MainMenu extends JFrame {
 
     JButton playSudokuButton, solveSudokuButton, solveKillerButton, solveStraitsButton, settingsButton, startButton, backButtonGameSettings, backButtonSettings;
 
-    JToggleButton darkModeSwitch, autoStepForwardSwitch;
+    JToggleButton darkModeSwitch, autoStepForwardSwitch, highlightSwitch;
 
-    boolean darkMode = false, autoStepForward = true;
+    boolean darkMode = false, autoStepForward = true, highlighting = true;
 
     SizeChooseSlider slider;
     JSlider tipSlider;
@@ -124,14 +124,19 @@ public class MainMenu extends JFrame {
         settingsPanel.add(backButtonGameSettings);
         darkModeSwitch = new JToggleButton("DarkMode", darkMode);
         darkModeSwitch.addActionListener(new MainMenu.ButtonListener());
-        darkModeSwitch.setBounds(100, 300, 150, 50);
+        darkModeSwitch.setBounds(100, 200, 150, 50);
         darkModeSwitch.setFocusable(false);
         settingsPanel.add(darkModeSwitch);
         autoStepForwardSwitch = new JToggleButton("Auto Step", autoStepForward);
         autoStepForwardSwitch.addActionListener(new MainMenu.ButtonListener());
-        autoStepForwardSwitch.setBounds(100, 400, 150, 50);
+        autoStepForwardSwitch.setBounds(100, 300, 150, 50);
         autoStepForwardSwitch.setFocusable(false);
         settingsPanel.add(autoStepForwardSwitch);
+        highlightSwitch = new JToggleButton("Hervorhebungen", highlighting);
+        highlightSwitch.addActionListener(new MainMenu.ButtonListener());
+        highlightSwitch.setBounds(100, 400, 150, 50);
+        highlightSwitch.setFocusable(false);
+        settingsPanel.add(highlightSwitch);
         tipText.setForeground(t.getPrimaryTextColor());
         tipText.setBounds(100,450,150,50);
         settingsPanel.add(tipText);
@@ -191,6 +196,9 @@ public class MainMenu extends JFrame {
             if (e.getSource() == autoStepForwardSwitch) {
                 autoStepForward = !autoStepForward;
             }
+            if (e.getSource() == highlightSwitch) {
+                highlighting = !highlighting;
+            }
             if (e.getSource() == darkModeSwitch) {
                 darkMode = !darkMode;
                 if(darkMode) {
@@ -225,10 +233,10 @@ public class MainMenu extends JFrame {
                 UIManager.setLookAndFeel(new javax.swing.plaf.metal.MetalLookAndFeel());
             } catch(Exception e) {}
             switch (mode) {
-                case SUDOKU_SOLVE -> new presenter.SolveSudokuPresenter(size, theme, autoStepForward);
-                case SUDOKU_PLAY -> new presenter.PlayPresenter(size, theme, autoStepForward, tipLimit);
-                case KILLER_SOLVE -> new presenter.SolveKillerPresenter(size, theme, autoStepForward);
-                case STRAITS_SOLVE -> new presenter.SolveStr8tsPresenter(size, theme, autoStepForward);
+                case SUDOKU_SOLVE -> new presenter.SolveSudokuPresenter(size, theme, autoStepForward, highlighting);
+                case SUDOKU_PLAY -> new presenter.PlayPresenter(size, theme, autoStepForward, highlighting, tipLimit);
+                case KILLER_SOLVE -> new presenter.SolveKillerPresenter(size, theme, autoStepForward, highlighting);
+                case STRAITS_SOLVE -> new presenter.SolveStr8tsPresenter(size, theme, autoStepForward, highlighting);
             }
             dispose();
         }

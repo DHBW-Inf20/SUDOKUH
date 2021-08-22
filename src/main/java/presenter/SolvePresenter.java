@@ -22,20 +22,20 @@ public abstract class SolvePresenter implements Presenter{
 
     protected boolean autoStepForward;
 
-    public SolvePresenter(int size, util.Mode gameMode, String theme, boolean autoStepForward) {
+    public SolvePresenter(int size, util.Mode gameMode, String theme, boolean highlighting, boolean autoStepForward) {
         this.autoStepForward = autoStepForward;
         switch (gameMode) {
             case STRAITS_SOLVE -> {
                 sudoku = new Str8ts();
-                inGameViewScaffold = new InGameViewScaffold(size, this::handleButtonListenerEvent, "Str8ts lösen", theme, gameMode);
+                inGameViewScaffold = new InGameViewScaffold(size, this::handleButtonListenerEvent, "Str8ts lösen", theme, highlighting, gameMode);
             }
             case KILLER_SOLVE -> {
                 sudoku = new Killer();
-                inGameViewScaffold = new InGameViewScaffold(size, this::handleButtonListenerEvent, "Killer lösen", theme, gameMode);
+                inGameViewScaffold = new InGameViewScaffold(size, this::handleButtonListenerEvent, "Killer lösen", theme, highlighting, gameMode);
             }
             default -> {
                 sudoku = new Sudoku(size);
-                inGameViewScaffold = new InGameViewScaffold(size, this::handleButtonListenerEvent, "Sudoku lösen", theme, gameMode);
+                inGameViewScaffold = new InGameViewScaffold(size, this::handleButtonListenerEvent, "Sudoku lösen", theme, highlighting, gameMode);
             }
         }
         inGameViewScaffold.addKeyListener(new KeyInputListener(this, autoStepForward));

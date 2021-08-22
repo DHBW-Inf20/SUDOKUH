@@ -8,6 +8,7 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.util.Objects;
 
 public class InGameViewScaffold extends JFrame {
 
@@ -20,7 +21,7 @@ public class InGameViewScaffold extends JFrame {
     SudokuFieldPanel sudokuFieldPanel;
     RightControlsPanel rightControlsPanel;
 
-    public InGameViewScaffold(int gridSize, ActionListener buttonListener, String title, String theme, util.Mode gamemode){
+    public InGameViewScaffold(int gridSize, ActionListener buttonListener, String title, String theme, boolean highlighting, util.Mode gamemode){
         //General Window Options
         super("SUDOKUH - "+title);
         this.setResizable(false);
@@ -42,7 +43,7 @@ public class InGameViewScaffold extends JFrame {
         mainContainer.add(topInfoPanel);
 
         //Sudoku field panel
-        sudokuFieldPanel = new SudokuFieldPanel(gridSize, theme, gamemode);
+        sudokuFieldPanel = new SudokuFieldPanel(gridSize, theme, highlighting, gamemode);
         mainContainer.add(sudokuFieldPanel);
 
         //Right controls panel
@@ -54,10 +55,10 @@ public class InGameViewScaffold extends JFrame {
         againButton.setBackground(backgroundColor);
         againButton.setBounds(980, 20,80,80);
         try {
-            Image img = ImageIO.read(getClass().getResourceAsStream("/again_icon.png"));
+            Image img = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/again_icon.png")));
             againButton.setIcon(new ImageIcon(img));
         } catch (Exception ex) {
-            System.out.println(ex);
+            ex.printStackTrace();
         }
         againButton.setFocusable(false);
         againButton.setBorder(null);
@@ -67,12 +68,12 @@ public class InGameViewScaffold extends JFrame {
         homeButton.setBackground(backgroundColor);
         homeButton.setBounds(1080, 20,80,80);
         try {
-            Image img = ImageIO.read(getClass().getResourceAsStream("/logo_200.png"));
+            Image img = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/logo_200.png")));
             homeButton.setIcon(new ImageIcon(img));
             //Sets Icon of Frame
             this.setIconImage(img);
         } catch (Exception ex) {
-            System.out.println(ex);
+            ex.printStackTrace();
         }
         homeButton.setFocusable(false);
         homeButton.setBorder(null);
@@ -209,7 +210,7 @@ public class InGameViewScaffold extends JFrame {
      */
     public void validInput(String input, int tipsRemaining) {
         sudokuFieldPanel.validInput(input);
-        rightControlsPanel.setTipButtonText("Tipp anzeigen ("+Integer.valueOf(tipsRemaining)+")");
+        rightControlsPanel.setTipButtonText("Tipp anzeigen ("+ tipsRemaining +")");
     }
 
     /**
@@ -252,6 +253,5 @@ public class InGameViewScaffold extends JFrame {
 
 
 // TODO Killer Frontend
-// TODO Hauptmenü-Button
-// TODO Rückgängig-Funktion
+// TODO Warnings entfernen
 // TODO Bug: Notizen bleiben zu sehen wenn Zahl drüber eingegeben bis Zellwechsel (genauso bei topInfoText)

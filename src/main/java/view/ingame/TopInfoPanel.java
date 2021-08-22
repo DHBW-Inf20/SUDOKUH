@@ -3,7 +3,6 @@ package view.ingame;
 import util.Themes;
 
 import javax.swing.*;
-import javax.swing.border.LineBorder;
 import java.awt.*;
 
 public class TopInfoPanel extends JPanel {
@@ -33,7 +32,7 @@ public class TopInfoPanel extends JPanel {
         this.setBackground(panelBackgroundColor);
         this.setBounds(20,20, 800,80);
 
-        this.gamemode = gamemode;
+        TopInfoPanel.gamemode = gamemode;
 
         textSet = false;
 

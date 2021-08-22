@@ -36,12 +36,12 @@ public class PlayPresenter implements Presenter{
 
     protected boolean solved;
 
-    public PlayPresenter(int size, String theme, boolean autoStepForward, int tipLimit) {
+    public PlayPresenter(int size, String theme, boolean autoStepForward, boolean highlighting, int tipLimit) {
         SudokuAndSolution sudokuAndSolution = SudokuGenerator.generateSudokuAndSolution(size);
         sudoku = sudokuAndSolution.sudoku();
         solution = sudokuAndSolution.solution();
 
-        inGameViewScaffold = new InGameViewScaffold(size, this::handleButtonListenerEvent, "Spielen", theme, Mode.SUDOKU_PLAY);
+        inGameViewScaffold = new InGameViewScaffold(size, this::handleButtonListenerEvent, "Spielen", theme, highlighting, Mode.SUDOKU_PLAY);
 
         inGameViewScaffold.addKeyListener(new KeyInputListener(this, autoStepForward));
 

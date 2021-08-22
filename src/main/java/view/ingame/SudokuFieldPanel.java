@@ -4,14 +4,11 @@ import model.AbstractPuzzle;
 import model.Str8ts;
 import util.Mode;
 import util.Themes;
-import view.CellLabel;
-import view.CustomButton;
 import view.LabelPanel;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -27,7 +24,7 @@ public class SudokuFieldPanel extends JPanel {
     /**
      * Reference to all {@link LabelPanel fields} of the sudoku game.
      */
-    private ArrayList<ArrayList<LabelPanel>> labels;
+    private final ArrayList<ArrayList<LabelPanel>> labels;
 
     /**
      * List of colors of each cell
@@ -66,9 +63,9 @@ public class SudokuFieldPanel extends JPanel {
     private final Color errorTextColor;
 
     /**
-     * Reference to an invalid {@link CellLabel cell} if there is one.
+     * Reference to an invalid {@link JLabel cell} if there is one.
      */
-    private CellLabel invalid;
+    private JLabel invalid;
     /**
      * List of conflicting cells.
      */
@@ -85,11 +82,16 @@ public class SudokuFieldPanel extends JPanel {
     private static util.Mode gamemode;
 
     /**
-     * The actual played gamemode.
+     * Defines wether highlighting of possible conflicting cell should be active or not.
+     */
+    private boolean highlighting;
+
+    /**
+     * The inputs set by the user
      */
     private ArrayList<view.LabelPanel> inputs;
 
-    public SudokuFieldPanel(int gridSize, String theme, util.Mode gamemode){
+    public SudokuFieldPanel(int gridSize, String theme, boolean highlighting, util.Mode gamemode){
         noteMode = false;
 
         Themes t = new Themes(theme);
@@ -105,11 +107,13 @@ public class SudokuFieldPanel extends JPanel {
         errorTextColor = t.getErrorTextColor();
         panelBackgroundColor = t.getPanelBackgroundColor();
 
-        this.gamemode = gamemode;
+        SudokuFieldPanel.gamemode = gamemode;
 
         conflicts = new HashSet<>();
 
         inputs = new ArrayList<>();
+
+        this.highlighting = highlighting;
 
         size = gridSize;
 
@@ -133,7 +137,8 @@ public class SudokuFieldPanel extends JPanel {
         for (int i = 0; i < gridSize * gridSize; i++) {
             ArrayList<LabelPanel> temp = new ArrayList<>();
             for (int j = 0; j < gridSize * gridSize; j++) {
-                CellLabel field = new CellLabel(" ");
+                JLabel field = new JLabel(" ");
+                field.setFont(new Font(getFont().getName(), Font.BOLD, 25));
                 LabelPanel labelPanel = new LabelPanel(field,i,j,gridSize, primaryTextColor);
                 labelPanel.setOpaque(true);
                 labelPanel.setBackground(primaryBackgroundColor);
@@ -203,25 +208,30 @@ public class SudokuFieldPanel extends JPanel {
                 // Unmarking of possible conflicting cells
                 int clickedRow = clicked.getRow();
                 int clickedCol = clicked.getCol();
-                for (int k = 0; k < labels.get(clickedRow).size(); k++) {
-                    labels.get(clickedRow).get(k).setBackground(primaryBackgroundColor);
-                    if(inputs.contains(labels.get(clickedRow).get(k))) labels.get(clickedRow).get(k).setBackground(predefinedColor);
-                    labels.get(clickedRow).get(k).setForeground(primaryTextColor);
-                }
-                for (int k = 0; k < labels.get(clickedRow).size(); k++) {
-                    labels.get(k).get(clickedCol).setBackground(primaryBackgroundColor);
-                    if(inputs.contains(labels.get(k).get(clickedCol))) labels.get(k).get(clickedCol).setBackground(predefinedColor);
-                    labels.get(k).get(clickedCol).setForeground(primaryTextColor);
-                }
                 int rowLowerBound = clicked.getRow() - (clicked.getRow() % size);
                 int rowUpperBound = rowLowerBound + size - 1;
                 int columnLowerBound = clicked.getCol() - (clicked.getCol() % size);
                 int columnUpperBound = columnLowerBound + size - 1;
-                for (int k = rowLowerBound; k <= rowUpperBound; k++) {
-                    for (int l = columnLowerBound; l <= columnUpperBound; l++) {
-                        labels.get(k).get(l).setBackground(primaryBackgroundColor);
-                        if(inputs.contains(labels.get(k).get(l))) labels.get(k).get(l).setBackground(predefinedColor);
-                        labels.get(k).get(l).setForeground(primaryTextColor);
+                if(highlighting) {
+                    for (int k = 0; k < labels.get(clickedRow).size(); k++) {
+                        labels.get(clickedRow).get(k).setBackground(primaryBackgroundColor);
+                        if (inputs.contains(labels.get(clickedRow).get(k)))
+                            labels.get(clickedRow).get(k).setBackground(predefinedColor);
+                        labels.get(clickedRow).get(k).setForeground(primaryTextColor);
+                    }
+                    for (int k = 0; k < labels.get(clickedRow).size(); k++) {
+                        labels.get(k).get(clickedCol).setBackground(primaryBackgroundColor);
+                        if (inputs.contains(labels.get(k).get(clickedCol)))
+                            labels.get(k).get(clickedCol).setBackground(predefinedColor);
+                        labels.get(k).get(clickedCol).setForeground(primaryTextColor);
+                    }
+                    for (int k = rowLowerBound; k <= rowUpperBound; k++) {
+                        for (int l = columnLowerBound; l <= columnUpperBound; l++) {
+                            labels.get(k).get(l).setBackground(primaryBackgroundColor);
+                            if (inputs.contains(labels.get(k).get(l)))
+                                labels.get(k).get(l).setBackground(predefinedColor);
+                            labels.get(k).get(l).setForeground(primaryTextColor);
+                        }
                     }
                 }
                 if (clicked != null) {
@@ -234,27 +244,32 @@ public class SudokuFieldPanel extends JPanel {
                 }
                 clicked = labelPanel;
                 // Marking of possible conflicting cells
-                clickedRow = clicked.getRow();
-                clickedCol = clicked.getCol();
-                for (int k = 0; k < labels.get(clickedRow).size(); k++) {
-                    labels.get(clickedRow).get(k).setBackground(markedColor);
-                    if(inputs.contains(labels.get(clickedRow).get(k))) labels.get(clickedRow).get(k).setBackground(predefinedMarkedColor);
-                    labels.get(clickedRow).get(k).setForeground(primaryTextColor);
-                }
-                for (int k = 0; k < labels.get(clickedRow).size(); k++) {
-                    labels.get(k).get(clickedCol).setBackground(markedColor);
-                    if(inputs.contains(labels.get(k).get(clickedCol))) labels.get(k).get(clickedCol).setBackground(predefinedMarkedColor);
-                    labels.get(k).get(clickedCol).setForeground(primaryTextColor);
-                }
-                rowLowerBound = clicked.getRow() - (clicked.getRow() % size);
-                rowUpperBound = rowLowerBound + size - 1;
-                columnLowerBound = clicked.getCol() - (clicked.getCol() % size);
-                columnUpperBound = columnLowerBound + size - 1;
-                for (int k = rowLowerBound; k <= rowUpperBound; k++) {
-                    for (int l = columnLowerBound; l <= columnUpperBound; l++) {
-                        labels.get(k).get(l).setBackground(markedColor);
-                        if(inputs.contains(labels.get(k).get(l))) labels.get(k).get(l).setBackground(predefinedMarkedColor);
-                        labels.get(k).get(l).setForeground(primaryTextColor);
+                if(highlighting) {
+                    clickedRow = clicked.getRow();
+                    clickedCol = clicked.getCol();
+                    for (int k = 0; k < labels.get(clickedRow).size(); k++) {
+                        labels.get(clickedRow).get(k).setBackground(markedColor);
+                        if (inputs.contains(labels.get(clickedRow).get(k)))
+                            labels.get(clickedRow).get(k).setBackground(predefinedMarkedColor);
+                        labels.get(clickedRow).get(k).setForeground(primaryTextColor);
+                    }
+                    for (int k = 0; k < labels.get(clickedRow).size(); k++) {
+                        labels.get(k).get(clickedCol).setBackground(markedColor);
+                        if (inputs.contains(labels.get(k).get(clickedCol)))
+                            labels.get(k).get(clickedCol).setBackground(predefinedMarkedColor);
+                        labels.get(k).get(clickedCol).setForeground(primaryTextColor);
+                    }
+                    rowLowerBound = clicked.getRow() - (clicked.getRow() % size);
+                    rowUpperBound = rowLowerBound + size - 1;
+                    columnLowerBound = clicked.getCol() - (clicked.getCol() % size);
+                    columnUpperBound = columnLowerBound + size - 1;
+                    for (int k = rowLowerBound; k <= rowUpperBound; k++) {
+                        for (int l = columnLowerBound; l <= columnUpperBound; l++) {
+                            labels.get(k).get(l).setBackground(markedColor);
+                            if (inputs.contains(labels.get(k).get(l)))
+                                labels.get(k).get(l).setBackground(predefinedMarkedColor);
+                            labels.get(k).get(l).setForeground(primaryTextColor);
+                        }
                     }
                 }
                 clicked.setBackground(clickedColor);
@@ -272,20 +287,24 @@ public class SudokuFieldPanel extends JPanel {
                 // Unmarking of possible conflicting cells
                 int clickedRow = clicked.getRow();
                 int clickedCol = clicked.getCol();
-                for (int k = 0; k < labels.get(clickedRow).size(); k++) {
-                    labels.get(clickedRow).get(k).setBackground(primaryBackgroundColor);
-                    if(inputs.contains(labels.get(clickedRow).get(k))) labels.get(clickedRow).get(k).setBackground(predefinedColor);
-                    if(colors.get(clickedRow).get(k) == Str8ts.Color.BLACK) {
-                        labels.get(clickedRow).get(k).setBackground(secondaryBackgroundColor);
-                        labels.get(clickedRow).get(k).getLabel().setForeground(secondaryTextColor);
+                if(highlighting) {
+                    for (int k = 0; k < labels.get(clickedRow).size(); k++) {
+                        labels.get(clickedRow).get(k).setBackground(primaryBackgroundColor);
+                        if (inputs.contains(labels.get(clickedRow).get(k)))
+                            labels.get(clickedRow).get(k).setBackground(predefinedColor);
+                        if (colors.get(clickedRow).get(k) == Str8ts.Color.BLACK) {
+                            labels.get(clickedRow).get(k).setBackground(secondaryBackgroundColor);
+                            labels.get(clickedRow).get(k).getLabel().setForeground(secondaryTextColor);
+                        }
                     }
-                }
-                for (int k = 0; k < labels.get(clickedRow).size(); k++) {
-                    labels.get(k).get(clickedCol).setBackground(primaryBackgroundColor);
-                    if(inputs.contains(labels.get(k).get(clickedCol))) labels.get(k).get(clickedCol).setBackground(predefinedColor);
-                    if(colors.get(k).get(clickedCol) == Str8ts.Color.BLACK) {
-                        labels.get(k).get(clickedCol).setBackground(secondaryBackgroundColor);
-                        labels.get(k).get(clickedCol).getLabel().setForeground(secondaryTextColor);
+                    for (int k = 0; k < labels.get(clickedRow).size(); k++) {
+                        labels.get(k).get(clickedCol).setBackground(primaryBackgroundColor);
+                        if (inputs.contains(labels.get(k).get(clickedCol)))
+                            labels.get(k).get(clickedCol).setBackground(predefinedColor);
+                        if (colors.get(k).get(clickedCol) == Str8ts.Color.BLACK) {
+                            labels.get(k).get(clickedCol).setBackground(secondaryBackgroundColor);
+                            labels.get(k).get(clickedCol).getLabel().setForeground(secondaryTextColor);
+                        }
                     }
                 }
                 if (clicked != null) {
@@ -300,22 +319,26 @@ public class SudokuFieldPanel extends JPanel {
                 }
                 clicked = labelPanel;
                 // Marking of possible conflicting cells
-                clickedRow = clicked.getRow();
-                clickedCol = clicked.getCol();
-                for (int k = 0; k < labels.get(clickedRow).size(); k++) {
-                    labels.get(clickedRow).get(k).setBackground(markedColor);
-                    if(inputs.contains(labels.get(clickedRow).get(k))) labels.get(clickedRow).get(k).setBackground(predefinedMarkedColor);
-                    if(colors.get(clickedRow).get(k) == Str8ts.Color.BLACK) {
-                        labels.get(clickedRow).get(k).setBackground(secondaryBackgroundColor);
-                        labels.get(clickedRow).get(k).getLabel().setForeground(secondaryTextColor);
+                if(highlighting) {
+                    clickedRow = clicked.getRow();
+                    clickedCol = clicked.getCol();
+                    for (int k = 0; k < labels.get(clickedRow).size(); k++) {
+                        labels.get(clickedRow).get(k).setBackground(markedColor);
+                        if (inputs.contains(labels.get(clickedRow).get(k)))
+                            labels.get(clickedRow).get(k).setBackground(predefinedMarkedColor);
+                        if (colors.get(clickedRow).get(k) == Str8ts.Color.BLACK) {
+                            labels.get(clickedRow).get(k).setBackground(secondaryBackgroundColor);
+                            labels.get(clickedRow).get(k).getLabel().setForeground(secondaryTextColor);
+                        }
                     }
-                }
-                for (int k = 0; k < labels.get(clickedRow).size(); k++) {
-                    labels.get(k).get(clickedCol).setBackground(markedColor);
-                    if(inputs.contains(labels.get(k).get(clickedCol))) labels.get(k).get(clickedCol).setBackground(predefinedMarkedColor);
-                    if(colors.get(k).get(clickedCol) == Str8ts.Color.BLACK) {
-                        labels.get(k).get(clickedCol).setBackground(secondaryBackgroundColor);
-                        labels.get(k).get(clickedCol).getLabel().setForeground(secondaryTextColor);
+                    for (int k = 0; k < labels.get(clickedRow).size(); k++) {
+                        labels.get(k).get(clickedCol).setBackground(markedColor);
+                        if (inputs.contains(labels.get(k).get(clickedCol)))
+                            labels.get(k).get(clickedCol).setBackground(predefinedMarkedColor);
+                        if (colors.get(k).get(clickedCol) == Str8ts.Color.BLACK) {
+                            labels.get(k).get(clickedCol).setBackground(secondaryBackgroundColor);
+                            labels.get(k).get(clickedCol).getLabel().setForeground(secondaryTextColor);
+                        }
                     }
                 }
                 clicked.setBackground(clickedColor);
@@ -334,28 +357,33 @@ public class SudokuFieldPanel extends JPanel {
                  */
                 int clickedRow = clicked.getRow();
                 int clickedCol = clicked.getCol();
-                // Unmarking the cells in the same row
-                for (int k = 0; k < labels.get(clickedRow).size(); k++) {
-                    labels.get(clickedRow).get(k).setBackground(primaryBackgroundColor);
-                    labels.get(clickedRow).get(k).setForeground(primaryTextColor);
-                    if (labels.get(clickedRow).get(k).isPredefined()) labels.get(clickedRow).get(k).setBackground(predefinedColor);
-                }
-                // Unmarking the cells in the same column
-                for (int k = 0; k < labels.get(clickedRow).size(); k++) {
-                    labels.get(k).get(clickedCol).setBackground(primaryBackgroundColor);
-                    labels.get(k).get(clickedCol).setForeground(primaryTextColor);
-                    if (labels.get(k).get(clickedCol).isPredefined()) labels.get(k).get(clickedCol).setBackground(predefinedColor);
-                }
-                // Unmarking the cells in the same subgrid
                 int rowLowerBound = clicked.getRow() - (clicked.getRow() % size);
                 int rowUpperBound = rowLowerBound + size - 1;
                 int columnLowerBound = clicked.getCol() - (clicked.getCol() % size);
                 int columnUpperBound = columnLowerBound + size - 1;
-                for (int k = rowLowerBound; k <= rowUpperBound; k++) {
-                    for (int l = columnLowerBound; l <= columnUpperBound; l++) {
-                        labels.get(k).get(l).setBackground(primaryBackgroundColor);
-                        labels.get(k).get(l).setForeground(primaryTextColor);
-                        if (labels.get(k).get(l).isPredefined()) labels.get(k).get(l).setBackground(predefinedColor);
+                if(highlighting) {
+                    // Unmarking the cells in the same row
+                    for (int k = 0; k < labels.get(clickedRow).size(); k++) {
+                        labels.get(clickedRow).get(k).setBackground(primaryBackgroundColor);
+                        labels.get(clickedRow).get(k).setForeground(primaryTextColor);
+                        if (labels.get(clickedRow).get(k).isPredefined())
+                            labels.get(clickedRow).get(k).setBackground(predefinedColor);
+                    }
+                    // Unmarking the cells in the same column
+                    for (int k = 0; k < labels.get(clickedRow).size(); k++) {
+                        labels.get(k).get(clickedCol).setBackground(primaryBackgroundColor);
+                        labels.get(k).get(clickedCol).setForeground(primaryTextColor);
+                        if (labels.get(k).get(clickedCol).isPredefined())
+                            labels.get(k).get(clickedCol).setBackground(predefinedColor);
+                    }
+                    // Unmarking the cells in the same subgrid
+                    for (int k = rowLowerBound; k <= rowUpperBound; k++) {
+                        for (int l = columnLowerBound; l <= columnUpperBound; l++) {
+                            labels.get(k).get(l).setBackground(primaryBackgroundColor);
+                            labels.get(k).get(l).setForeground(primaryTextColor);
+                            if (labels.get(k).get(l).isPredefined())
+                                labels.get(k).get(l).setBackground(predefinedColor);
+                        }
                     }
                 }
                 // Unmarking the clicked cell
@@ -372,27 +400,32 @@ public class SudokuFieldPanel extends JPanel {
                 clickedRow = clicked.getRow();
                 clickedCol = clicked.getCol();
                 // Highlighting the cells in the same row
-                for (int k = 0; k < labels.get(clickedRow).size(); k++) {
-                    labels.get(clickedRow).get(k).setBackground(markedColor);
-                    if (labels.get(clickedRow).get(k).isPredefined()) labels.get(clickedRow).get(k).setBackground(predefinedMarkedColor);
-                    labels.get(clickedRow).get(k).setForeground(primaryTextColor);
-                }
-                // Highlighting the cells in the same column
-                for (int k = 0; k < labels.get(clickedRow).size(); k++) {
-                    labels.get(k).get(clickedCol).setBackground(markedColor);
-                    if (labels.get(k).get(clickedCol).isPredefined()) labels.get(k).get(clickedCol).setBackground(predefinedMarkedColor);
-                    labels.get(k).get(clickedCol).setForeground(primaryTextColor);
-                }
-                // Highlighting the cells in the same subgrid
-                rowLowerBound = clicked.getRow() - (clicked.getRow() % size);
-                rowUpperBound = rowLowerBound + size - 1;
-                columnLowerBound = clicked.getCol() - (clicked.getCol() % size);
-                columnUpperBound = columnLowerBound + size - 1;
-                for (int k = rowLowerBound; k <= rowUpperBound; k++) {
-                    for (int l = columnLowerBound; l <= columnUpperBound; l++) {
-                        labels.get(k).get(l).setBackground(markedColor);
-                        if (labels.get(k).get(l).isPredefined()) labels.get(k).get(l).setBackground(predefinedMarkedColor);
-                        labels.get(k).get(l).setForeground(primaryTextColor);
+                if(highlighting) {
+                    for (int k = 0; k < labels.get(clickedRow).size(); k++) {
+                        labels.get(clickedRow).get(k).setBackground(markedColor);
+                        if (labels.get(clickedRow).get(k).isPredefined())
+                            labels.get(clickedRow).get(k).setBackground(predefinedMarkedColor);
+                        labels.get(clickedRow).get(k).setForeground(primaryTextColor);
+                    }
+                    // Highlighting the cells in the same column
+                    for (int k = 0; k < labels.get(clickedRow).size(); k++) {
+                        labels.get(k).get(clickedCol).setBackground(markedColor);
+                        if (labels.get(k).get(clickedCol).isPredefined())
+                            labels.get(k).get(clickedCol).setBackground(predefinedMarkedColor);
+                        labels.get(k).get(clickedCol).setForeground(primaryTextColor);
+                    }
+                    // Highlighting the cells in the same subgrid
+                    rowLowerBound = clicked.getRow() - (clicked.getRow() % size);
+                    rowUpperBound = rowLowerBound + size - 1;
+                    columnLowerBound = clicked.getCol() - (clicked.getCol() % size);
+                    columnUpperBound = columnLowerBound + size - 1;
+                    for (int k = rowLowerBound; k <= rowUpperBound; k++) {
+                        for (int l = columnLowerBound; l <= columnUpperBound; l++) {
+                            labels.get(k).get(l).setBackground(markedColor);
+                            if (labels.get(k).get(l).isPredefined())
+                                labels.get(k).get(l).setBackground(predefinedMarkedColor);
+                            labels.get(k).get(l).setForeground(primaryTextColor);
+                        }
                     }
                 }
                 // Highlighting the clicked cell
@@ -448,9 +481,7 @@ public class SudokuFieldPanel extends JPanel {
                     if(inputs.contains(labels.get(row).get(col))) labels.get(row).get(col).setBackground(predefinedColor);
                 }
             }
-            default -> {
-                labels.get(row).get(col).setForeground(primaryTextColor);
-            }
+            default -> labels.get(row).get(col).setForeground(primaryTextColor);
         }
     }
 
@@ -459,16 +490,12 @@ public class SudokuFieldPanel extends JPanel {
      */
     public void resetCell() {
         switch(gamemode) {
-            case SUDOKU_PLAY -> {
-                clicked.setText("");
-            }
+            case SUDOKU_PLAY -> clicked.setText("");
             case SUDOKU_SOLVE -> {
                 clicked.setText("");
                 inputs.remove(clicked);
             }
-            default -> {
-                clicked.getLabel().setText("");
-            }
+            default -> clicked.getLabel().setText("");
         }
     }
 
