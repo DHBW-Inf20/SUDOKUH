@@ -37,12 +37,19 @@ public class PlayPresenter implements Presenter{
 
     protected boolean solved;
 
+    /**
+     * Specifies whether the node mode is active or not
+     */
+    private boolean noteMode;
+
     public PlayPresenter(int size, String theme, boolean autoStepForward, boolean highlighting, int tipLimit) {
+        noteMode = false;
+
         SudokuAndSolution sudokuAndSolution = SudokuGenerator.generateSudokuAndSolution(size);
         sudoku = sudokuAndSolution.sudoku();
         solution = sudokuAndSolution.solution();
 
-        inGameViewScaffold = new InGameViewScaffold(size, this::handleButtonListenerEvent, "Spielen", theme, highlighting, Mode.SUDOKU_PLAY,this);
+        inGameViewScaffold = new InGameViewScaffold(size, this::handleButtonListenerEvent, "Spielen", theme, highlighting, Mode.SUDOKU_PLAY, this);
 
         inGameViewScaffold.addKeyListener(new KeyInputListener(this, autoStepForward));
 
@@ -75,6 +82,25 @@ public class PlayPresenter implements Presenter{
                     inGameViewScaffold.setPredefined(i, j, value);
                 }
             }
+        }
+    }
+
+    /**
+     * @return the actual set note mode
+     */
+    public boolean getNoteMode() {
+        return noteMode;
+    }
+
+    /**
+     * Changes the node mode and sets the color of the button
+     */
+    public void changeNoteMode() {
+        noteMode = !noteMode;
+        if (noteMode) {
+            inGameViewScaffold.setNoteMode();
+        } else {
+            inGameViewScaffold.setNormalMode();
         }
     }
 
@@ -113,7 +139,11 @@ public class PlayPresenter implements Presenter{
             case NUMBER -> {
                 int number = button.getValue();
                 if (!clickedCell.isPredefined()) {
-                    if (inGameViewScaffold.getNoteMode()) {
+                    if (noteMode) {
+                        if(clickedCell.getLabelValue() != null) {
+                            sudoku.resetCell(clickedCell.getRow(), clickedCell.getCol());
+                            clickedCell.setText("");
+                        }
                         inGameViewScaffold.setNote(number);
                     } else {
                         final SetResult result = sudoku.setCell(clickedCell.getRow(), clickedCell.getCol(), number);
@@ -166,7 +196,14 @@ public class PlayPresenter implements Presenter{
                     lastUpdateTime += 5000;
                 }
             }
-            case PEN -> inGameViewScaffold.changeNoteMode(button);
+            case PEN -> {
+                noteMode = !noteMode;
+                if(noteMode) {
+                    inGameViewScaffold.setNoteMode();
+                } else {
+                    inGameViewScaffold.setNormalMode();
+                }
+            }
         }
     }
 
@@ -215,6 +252,9 @@ public class PlayPresenter implements Presenter{
         startTime = ZonedDateTime.now().toInstant().toEpochMilli();
     }
 
+    /**
+     * @return the gui of the program
+     */
     public InGameViewScaffold getInGameViewScaffold() {
         return inGameViewScaffold;
     }

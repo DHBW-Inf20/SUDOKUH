@@ -17,11 +17,6 @@ import java.util.Set;
 
 public class SudokuFieldPanel extends JPanel {
     /**
-     * Specifies whether the node mode is active or not
-     */
-    private boolean noteMode;
-
-    /**
      * Reference to all {@link LabelPanel fields} of the sudoku game.
      */
     private final ArrayList<ArrayList<LabelPanel>> labels;
@@ -92,8 +87,6 @@ public class SudokuFieldPanel extends JPanel {
     private ArrayList<view.LabelPanel> inputs;
 
     public SudokuFieldPanel(int gridSize, String theme, boolean highlighting, util.Mode gamemode){
-        noteMode = false;
-
         Themes t = new Themes(theme);
         primaryBackgroundColor = t.getPrimaryBackgroundColor();
         secondaryBackgroundColor = t.getSecondaryBackgroundColor();
@@ -594,30 +587,11 @@ public class SudokuFieldPanel extends JPanel {
     }
 
     /**
-     * @return the actual set note mode
-     */
-    public boolean getNoteMode() {
-        return noteMode;
-    }
-
-    /**
      * Sets a note to the clicked cell
      */
     public void setNote(int value) {
         clicked.setNote(value);
         this.revalidate();
-    }
-
-    /**
-     * Changes the node mode and sets the color of the button
-     */
-    public void changeNoteMode() {
-        noteMode = !noteMode;
-        if (noteMode) {
-            clicked.setNoteMode();
-        } else {
-            clicked.setNormalMode();
-        }
     }
 
     /**

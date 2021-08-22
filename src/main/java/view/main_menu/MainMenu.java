@@ -216,12 +216,12 @@ public class MainMenu extends JFrame {
             }
             if (e.getSource() == backButtonGameSettings) {
                 setTitle("SUDOKUH Hauptmen\u00fc");
-                switch(tipSlider.getValue()) {
-                    case 0: tipLimit = 0; break;
-                    case 1: tipLimit = 3; break;
-                    case 2: tipLimit = 5; break;
-                    case 3: tipLimit = 10; break;
-                    case 4: tipLimit = 20; break;
+                switch (tipSlider.getValue()) {
+                    case 0 -> tipLimit = 0;
+                    case 1 -> tipLimit = 3;
+                    case 2 -> tipLimit = 5;
+                    case 3 -> tipLimit = 10;
+                    case 4 -> tipLimit = 20;
                 }
                 cl.first(cardsPanel);
             }
@@ -230,7 +230,9 @@ public class MainMenu extends JFrame {
         private void startGame(int size) {
             try {
                 UIManager.setLookAndFeel(new javax.swing.plaf.metal.MetalLookAndFeel());
-            } catch(Exception e) {}
+            } catch(Exception e) {
+                e.printStackTrace();
+            }
             switch (mode) {
                 case SUDOKU_SOLVE -> new presenter.SolveSudokuPresenter(size, theme, autoStepForward, highlighting);
                 case SUDOKU_PLAY -> new presenter.PlayPresenter(size, theme, autoStepForward, highlighting, tipLimit);

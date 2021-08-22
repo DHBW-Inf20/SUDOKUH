@@ -11,11 +11,6 @@ import static util.Type.*;
 
 public class RightControlsPanel extends JPanel {
     /**
-     * Specifies whether the node mode is active or not
-     */
-    protected boolean noteMode;
-
-    /**
      * Various {@link Color colors} for the game menu.
      */
     // Color for field-background
@@ -41,6 +36,8 @@ public class RightControlsPanel extends JPanel {
     // Color for text if there is an error
     protected Color errorTextColor;
 
+    CustomButton buttonPen;
+
     /**
      * The actual played gamemode.
      */
@@ -50,8 +47,6 @@ public class RightControlsPanel extends JPanel {
 
     public RightControlsPanel(int gridSize, ActionListener buttonListener, String theme, util.Mode gamemode){
         this.setBounds(840, 120,320,800);
-
-        noteMode = false;
 
         this.gamemode = gamemode;
 
@@ -125,7 +120,7 @@ public class RightControlsPanel extends JPanel {
                 buttonVerify.setOpaque(true);
                 this.add(buttonVerify);
                 buttonVerify.addActionListener(buttonListener);
-                CustomButton buttonPen = new CustomButton(PEN);
+                buttonPen = new CustomButton(PEN);
                 buttonPen.setForeground(primaryTextColor);
                 buttonPen.setBackground(primaryBackgroundColor);
                 buttonPen.setOpaque(true);
@@ -144,15 +139,17 @@ public class RightControlsPanel extends JPanel {
     }
 
     /**
-     * Changes the node mode and sets the color of the button
+     * Sets the color of the note button to green
      */
-    public void changeNoteMode(CustomButton button) {
-        noteMode = !noteMode;
-        if (noteMode) {
-            button.setBackground(Color.decode("#78B53A"));
-        } else {
-            button.setBackground(primaryBackgroundColor);
-        }
+    public void setNoteMode() {
+        buttonPen.setBackground(Color.decode("#78B53A"));
+    }
+
+    /**
+     * Sets the color of the note button to normal
+     */
+    public void setNormalMode() {
+        buttonPen.setBackground(primaryBackgroundColor);
     }
 
     /**

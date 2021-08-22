@@ -35,6 +35,7 @@ public class LabelPanel extends JPanel {
      * @param value value of the note
      */
     public void setNote(int value) {
+        this.setNoteMode();
         if (this.labelValue != null) {
             this.removeAll();
             this.labelValue = null;
@@ -96,6 +97,13 @@ public class LabelPanel extends JPanel {
     }
 
     /**
+     * @return the actual value of the label of the cell
+     */
+    public String getLabelValue() {
+        return labelValue;
+    }
+
+    /**
      * Makes the cell ready for normal inputs
      */
     public void setNormalMode() {
@@ -117,7 +125,9 @@ public class LabelPanel extends JPanel {
      * @param value the value to be set
      */
     public void setText(String value) {
+        this.setNormalMode();
         this.removeAll();
+        this.revalidate();
         notes = new ArrayList<>();
         this.add(label,BorderLayout.CENTER);
         label.setText(value);

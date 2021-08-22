@@ -209,11 +209,17 @@ public class InGameViewScaffold extends JFrame implements ActionListener{
     }
 
     /**
-     * Changes the node mode and sets the color of the button
+     * Changes the node mode
      */
-    public void changeNoteMode(CustomButton button) {
-        sudokuFieldPanel.changeNoteMode();
-        rightControlsPanel.changeNoteMode(button);
+    public void setNoteMode() {
+        rightControlsPanel.setNoteMode();
+    }
+
+    /**
+     * Changes the node mode
+     */
+    public void setNormalMode() {
+        rightControlsPanel.setNormalMode();
     }
 
     /**
@@ -225,13 +231,6 @@ public class InGameViewScaffold extends JFrame implements ActionListener{
     public void validInput(String input, int tipsRemaining) {
         sudokuFieldPanel.validInput(input);
         rightControlsPanel.setTipButtonText("Tipp anzeigen ("+ tipsRemaining +")");
-    }
-
-    /**
-     * @return the actual set note mode
-     */
-    public boolean getNoteMode() {
-        return sudokuFieldPanel.getNoteMode();
     }
 
     /**
