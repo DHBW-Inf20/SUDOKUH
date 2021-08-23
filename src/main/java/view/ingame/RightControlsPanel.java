@@ -46,7 +46,7 @@ public class RightControlsPanel extends JPanel {
     protected CustomButton buttonTip;
 
     public RightControlsPanel(int gridSize, ActionListener buttonListener, String theme, util.Mode gamemode){
-        this.setBounds(840, 120,320,800);
+        this.setBounds(840, 120,320,600);
 
         this.gamemode = gamemode;
 
@@ -81,6 +81,7 @@ public class RightControlsPanel extends JPanel {
         buttonDelete.setOpaque(true);
         this.add(buttonDelete);
         buttonDelete.addActionListener(buttonListener);
+        buttonPen = new CustomButton(PEN);
         setCustomButtons(buttonListener);
 
         this.setBackground(panelBackgroundColor);
@@ -114,18 +115,17 @@ public class RightControlsPanel extends JPanel {
                 buttonTip.setOpaque(true);
                 this.add(buttonTip);
                 buttonTip.addActionListener(buttonListener);
+                buttonPen.setForeground(primaryTextColor);
+                buttonPen.setBackground(primaryBackgroundColor);
+                buttonPen.setOpaque(true);
+                this.add(buttonPen);
+                buttonPen.addActionListener(buttonListener);
                 CustomButton buttonVerify = new CustomButton(VERIFY);
                 buttonVerify.setForeground(primaryTextColor);
                 buttonVerify.setBackground(primaryBackgroundColor);
                 buttonVerify.setOpaque(true);
                 this.add(buttonVerify);
                 buttonVerify.addActionListener(buttonListener);
-                buttonPen = new CustomButton(PEN);
-                buttonPen.setForeground(primaryTextColor);
-                buttonPen.setBackground(primaryBackgroundColor);
-                buttonPen.setOpaque(true);
-                this.add(buttonPen);
-                buttonPen.addActionListener(buttonListener);
             }
             default -> {
                 CustomButton buttonSolve = new CustomButton(SOLVE);
@@ -167,7 +167,7 @@ public class RightControlsPanel extends JPanel {
      * @param tipsRemaining the number how many tips are remaining
      */
     public void setRemainingTips(int tipsRemaining) {
-        buttonTip.setText("Tipp anzeigen ("+Integer.valueOf(tipsRemaining)+")");
+        buttonTip.setText(Integer.valueOf(tipsRemaining).toString());
     }
 
     /**

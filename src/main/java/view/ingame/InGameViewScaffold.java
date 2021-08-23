@@ -1,7 +1,6 @@
 package view.ingame;
 
 import util.Themes;
-import view.CustomButton;
 import view.LabelPanel;
 import view.PopUpWindow;
 import presenter.PlayPresenter;
@@ -62,7 +61,7 @@ public class InGameViewScaffold extends JFrame implements ActionListener{
         againButton.setBackground(backgroundColor);
         againButton.setBounds(980, 20,80,80);
         try {
-            Image img = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/again_icon.png")));
+            Image img = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/again.png")));
             againButton.setIcon(new ImageIcon(img));
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -230,7 +229,7 @@ public class InGameViewScaffold extends JFrame implements ActionListener{
      */
     public void validInput(String input, int tipsRemaining) {
         sudokuFieldPanel.validInput(input);
-        rightControlsPanel.setTipButtonText("Tipp anzeigen ("+ tipsRemaining +")");
+        rightControlsPanel.setTipButtonText(""+tipsRemaining);
     }
 
     /**

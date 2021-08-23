@@ -21,15 +21,14 @@ public class KeyInputListener implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
-        //System.out.println(e.getKeyCode());
         //NUMBERS ROW
-        if(e.getKeyCode()>=48 && e.getKeyCode()<=57){
+        if(e.getKeyCode()>=49 && e.getKeyCode()<=57){
             presenter.handleButton(new CustomButton(e.getKeyCode()-48, Type.NUMBER));
             if(autoStep)autoStepForward();
             return;
         }
         //NUMBERS PAD
-        if(e.getKeyCode()>=96 && e.getKeyCode()<=105){
+        if(e.getKeyCode()>=97 && e.getKeyCode()<=104){
             presenter.handleButton(new CustomButton(e.getKeyCode()-96, Type.NUMBER));
             if(autoStep)autoStepForward();
             return;
