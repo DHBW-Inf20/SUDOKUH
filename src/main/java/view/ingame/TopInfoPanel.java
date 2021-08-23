@@ -31,6 +31,7 @@ public class TopInfoPanel extends JPanel {
         primaryTextColor = t.getPrimaryTextColor();
         this.setBackground(panelBackgroundColor);
         this.setBounds(20,20, 800,80);
+        this.setLayout(new GridBagLayout());
 
         TopInfoPanel.gamemode = gamemode;
 
@@ -53,7 +54,7 @@ public class TopInfoPanel extends JPanel {
         guiText.setHorizontalAlignment(SwingConstants.CENTER);
         guiText.setVerticalAlignment(SwingConstants.CENTER);
         this.removeAll();
-        this.add(guiText, BorderLayout.NORTH);
+        this.add(guiText);
         this.validate();
         textSet = true;
     }
