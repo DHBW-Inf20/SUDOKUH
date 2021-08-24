@@ -12,9 +12,7 @@ import javax.swing.border.MatteBorder;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -82,7 +80,7 @@ public class SudokuFieldPanel extends JPanel {
     /**
      * Defines wether highlighting of possible conflicting cell should be active or not.
      */
-    private boolean highlighting;
+    private final boolean highlighting;
 
     /**
      * The inputs set by the user
@@ -94,6 +92,8 @@ public class SudokuFieldPanel extends JPanel {
     private ArrayList<Integer> groupSums;
 
     private boolean chooseGroup;
+
+    private boolean editGroup;
 
     private ArrayList<LabelPanel> group;
 
@@ -132,6 +132,8 @@ public class SudokuFieldPanel extends JPanel {
 
         groups = new ArrayList<>();
         groupSums = new ArrayList<>();
+        chooseGroup = false;
+        editGroup = false;
 
         this.setLayout(new GridLayout(gridSize, gridSize));
         this.setSize(400,400);
@@ -281,42 +283,7 @@ public class SudokuFieldPanel extends JPanel {
                 }
                 clicked.setBackground(clickedColor);
                 clicked.setForeground(primaryTextColor);
-                boolean isExisting = false;
-                for(ArrayList<view.LabelPanel> l : groups) {
-                    if(l.contains(clicked)) {
-                        isExisting = true;
-                    }
-                }
-                if(chooseGroup & !isExisting) {
-                    if(group.isEmpty()) {
-                        group.add(clicked);
-                        inputs.add(clicked);
-                        clicked.setBackground(predefinedColor);
-                        clicked.setForeground(primaryTextColor);
-                    } else {
-                        if (group.contains(clicked)) {
-                            group.remove(clicked);
-                            inputs.remove(clicked);
-                            clicked.setBackground(primaryBackgroundColor);
-                            clicked.setForeground(primaryTextColor);
-                        } else {
-                            ArrayList<Boolean> hasNeighborList = checkForNeighbors(clicked, group);
-                            boolean hasNeighbor = false;
-                            for (boolean b : hasNeighborList) {
-                                if (b) {
-                                    hasNeighbor = true;
-                                    break;
-                                }
-                            }
-                            if (hasNeighbor) {
-                                group.add(clicked);
-                                inputs.add(clicked);
-                                clicked.setBackground(predefinedColor);
-                                clicked.setForeground(primaryTextColor);
-                            }
-                        }
-                    }
-                }
+                addCellToGroup(clicked);
 
                 // Reset the value of an invalid cell
                 if (invalid != null) invalid.setText("");
@@ -536,14 +503,10 @@ public class SudokuFieldPanel extends JPanel {
      * Deletes the value of the actual clicked cell
      */
     public void resetCell() {
-        switch(gamemode) {
-            case SUDOKU_PLAY -> clicked.setText("");
-            case SUDOKU_SOLVE -> {
-                clicked.setText("");
-                inputs.remove(clicked);
-            }
-            default -> clicked.getLabel().setText("");
+        if (gamemode == Mode.SUDOKU_SOLVE) {
+            inputs.remove(clicked);
         }
+        clicked.setText("");
     }
 
     /**
@@ -668,7 +631,7 @@ public class SudokuFieldPanel extends JPanel {
     /**
      * Change the color of the actual clicked cell
      */
-    public void changeColor() {
+    public model.Str8ts.Color changeColor() {
         int row = clicked.getRow();
         int col = clicked.getCol();
         model.Str8ts.Color color = colors.get(row).get(col);
@@ -677,13 +640,16 @@ public class SudokuFieldPanel extends JPanel {
                 labels.get(row).get(col).setBackground(secondaryBackgroundColor);
                 labels.get(row).get(col).getLabel().setForeground(secondaryTextColor);
                 colors.get(row).set(col, model.Str8ts.Color.BLACK);
+                return model.Str8ts.Color.BLACK;
             }
             case BLACK -> {
                 labels.get(row).get(col).setBackground(primaryBackgroundColor);
                 labels.get(row).get(col).getLabel().setForeground(primaryTextColor);
                 colors.get(row).set(col, model.Str8ts.Color.WHITE);
+                return model.Str8ts.Color.WHITE;
             }
         }
+        return model.Str8ts.Color.WHITE;
     }
 
     /**
@@ -732,6 +698,7 @@ public class SudokuFieldPanel extends JPanel {
         if(groupIndex != -1) {
             for(view.LabelPanel l : groups.get(groupIndex)) {
                 l.setBorder(null);
+                l.setText("");
                 l.removeAll();
             }
             groupSums.remove(groupIndex);
@@ -771,6 +738,7 @@ public class SudokuFieldPanel extends JPanel {
     public void setChooseMode() {
         chooseGroup = true;
         group = new ArrayList<>();
+        addCellToGroup(clicked);
     }
 
     /**
@@ -785,5 +753,72 @@ public class SudokuFieldPanel extends JPanel {
             l.setBackground(primaryBackgroundColor);
         }
         return group;
+    }
+
+    /**
+     * Sets edit mode to true
+     */
+    public void setEditMode(ArrayList<LabelPanel> group) {
+        editGroup = true;
+        for(LabelPanel l : group) {
+            l.setBackground(predefinedColor);
+            inputs.add(l);
+        }
+        this.group = group;
+        this.groups.remove(this.group);
+    }
+
+    /**
+     * Sets edit mode to false
+     *
+     * @return the actual chosen group
+     */
+    public ArrayList<LabelPanel> setNoEditMode() {
+        editGroup = false;
+        inputs = new ArrayList<>();
+        for(LabelPanel l : group) {
+            l.setBackground(primaryBackgroundColor);
+        }
+        return group;
+    }
+
+    private void addCellToGroup(LabelPanel cell) {
+        boolean isExisting = false;
+        for(ArrayList<view.LabelPanel> l : groups) {
+            if (l.contains(cell)) {
+                isExisting = true;
+                break;
+            }
+        }
+        if((chooseGroup || editGroup) & !isExisting) {
+            if(group.isEmpty()) {
+                group.add(cell);
+                inputs.add(cell);
+                cell.setBackground(predefinedColor);
+                cell.setForeground(primaryTextColor);
+            } else {
+                if (group.contains(cell)) {
+                    group.remove(cell);
+                    inputs.remove(cell);
+                    cell.setBackground(primaryBackgroundColor);
+                    cell.setForeground(primaryTextColor);
+                } else {
+                    ArrayList<Boolean> hasNeighborList = checkForNeighbors(cell, group);
+                    boolean hasNeighbor = false;
+                    for (boolean b : hasNeighborList) {
+                        if (b) {
+                            hasNeighbor = true;
+                            break;
+                        }
+                    }
+                    if (hasNeighbor) {
+                        group.add(cell);
+                        inputs.add(cell);
+                        cell.setBackground(predefinedColor);
+                        cell.setForeground(primaryTextColor);
+                    }
+                }
+            }
+        }
     }
 }

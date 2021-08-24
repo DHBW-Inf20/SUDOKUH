@@ -11,7 +11,7 @@ public class KeyInputListener implements KeyListener {
 
     private final Presenter presenter;
 
-    private boolean autoStep;
+    private final boolean autoStep;
 
     public KeyInputListener(Presenter presenter, boolean autoStepForward) {
         this.presenter = presenter;
@@ -39,9 +39,10 @@ public class KeyInputListener implements KeyListener {
             case 78 -> presenter.handleButton(new CustomButton(Type.PEN));
             case 70 -> presenter.handleButton(new CustomButton(Type.CHANGECOLOR));
             case 69 -> presenter.handleButton(new CustomButton(Type.VERIFY));
-            //case 10 -> presenter.handleButton(new CustomButton(Type.SOLVE));
+            case 10 -> presenter.handleButton(new CustomButton(Type.SOLVE));
             case 71 -> presenter.handleButton(new CustomButton(Type.CHOOSEGROUP));
             case 76 -> presenter.handleButton(new CustomButton(Type.REMOVEGROUP));
+            case 66 -> presenter.handleButton(new CustomButton(Type.EDITGROUP));
         }
 
         if(e.getKeyCode()>=37 && e.getKeyCode()<=40){

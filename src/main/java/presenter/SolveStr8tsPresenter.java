@@ -66,7 +66,10 @@ public class SolveStr8tsPresenter extends SolvePresenter {
                     inGameViewScaffold.setGUIText("Dieses Sudoku kann nicht gelöst werden!", Color.red);
                 }
             }
-            case CHANGECOLOR -> inGameViewScaffold.changeColor();
+            case CHANGECOLOR -> {
+                model.Str8ts.Color color = inGameViewScaffold.changeColor();
+                ((model.Str8ts)sudoku).setColor(clickedCell.getRow(), clickedCell.getCol(), color);
+            }
         }
     }
 

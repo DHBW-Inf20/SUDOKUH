@@ -28,7 +28,7 @@ public class CustomButton extends JButton {
             choosegroup = ImageIO.read(getClass().getResource("/choosegroup.png"));
             removegroup = ImageIO.read(getClass().getResource("/removegroup.png"));
         } catch (Exception ex) {
-            System.out.println(ex);
+            ex.printStackTrace();
         }
         this.value = value;
         this.type = type;
@@ -38,7 +38,7 @@ public class CustomButton extends JButton {
             case SOLVE -> setIcon(new ImageIcon(solve));
             case TIP -> setIcon(new ImageIcon(tip));
             case VERIFY -> setIcon(new ImageIcon(verify));
-            case PEN -> setIcon(new ImageIcon(pen));
+            case PEN, EDITGROUP -> setIcon(new ImageIcon(pen));
             case CHANGECOLOR -> setIcon(new ImageIcon(color));
             case CHOOSEGROUP -> setIcon(new ImageIcon(choosegroup));
             case REMOVEGROUP -> setIcon(new ImageIcon(removegroup));

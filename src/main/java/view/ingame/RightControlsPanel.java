@@ -36,8 +36,7 @@ public class RightControlsPanel extends JPanel {
     // Color for text if there is an error
     protected Color errorTextColor;
 
-    CustomButton buttonPen;
-    CustomButton buttonChooseGroup;
+    CustomButton buttonPen, buttonChooseGroup, buttonEditGroup;
 
     /**
      * The actual played gamemode.
@@ -49,7 +48,7 @@ public class RightControlsPanel extends JPanel {
     public RightControlsPanel(int gridSize, ActionListener buttonListener, String theme, util.Mode gamemode){
         this.setBounds(840, 120,320,600);
 
-        this.gamemode = gamemode;
+        RightControlsPanel.gamemode = gamemode;
 
         Themes t = new Themes(theme);
         primaryBackgroundColor = t.getPrimaryBackgroundColor();
@@ -141,6 +140,12 @@ public class RightControlsPanel extends JPanel {
                 buttonDeleteGroup.setOpaque(true);
                 this.add(buttonDeleteGroup);
                 buttonDeleteGroup.addActionListener(buttonListener);
+                buttonEditGroup = new CustomButton(EDITGROUP);
+                buttonEditGroup.setForeground(primaryTextColor);
+                buttonEditGroup.setBackground(primaryBackgroundColor);
+                buttonEditGroup.setOpaque(true);
+                this.add(buttonEditGroup);
+                buttonEditGroup.addActionListener(buttonListener);
                 CustomButton buttonSolve = new CustomButton(SOLVE);
                 buttonSolve.setForeground(primaryTextColor);
                 buttonSolve.setBackground(primaryBackgroundColor);
@@ -185,6 +190,20 @@ public class RightControlsPanel extends JPanel {
      */
     public void setNoChooseMode() {
         buttonChooseGroup.setBackground(primaryBackgroundColor);
+    }
+
+    /**
+     * Sets the color of the edit group button to green
+     */
+    public void setEditMode() {
+        buttonEditGroup.setBackground(Color.decode("#78B53A"));
+    }
+
+    /**
+     * Sets the color of the edit group button to normal
+     */
+    public void setNoEditMode() {
+        buttonEditGroup.setBackground(primaryBackgroundColor);
     }
 
     /**

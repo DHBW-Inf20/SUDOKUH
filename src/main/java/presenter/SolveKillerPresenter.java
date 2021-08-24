@@ -2,6 +2,7 @@ package presenter;
 
 import model.AbstractPuzzle;
 import model.Killer;
+import util.Type;
 import view.CustomButton;
 import view.GroupPopUpWindow;
 import view.LabelPanel;
@@ -14,10 +15,12 @@ import java.util.Set;
 public class SolveKillerPresenter extends SolvePresenter {
 
     private boolean chooseGroup;
+    private boolean editGroup;
 
     public SolveKillerPresenter(int size, String theme, boolean autoStepForward, boolean highlighting) {
         super(size, util.Mode.KILLER_SOLVE, theme, highlighting, autoStepForward);
         chooseGroup = false;
+        editGroup = false;
     }
 
     /**
@@ -64,23 +67,16 @@ public class SolveKillerPresenter extends SolvePresenter {
                 }
             }
             case CHOOSEGROUP -> {
-                chooseGroup = !chooseGroup;
-                if(chooseGroup) {
-                    inGameViewScaffold.setChooseMode();
-                } else {
-                    GroupPopUpWindow userInput = new GroupPopUpWindow(inGameViewScaffold);
-                    int sum = userInput.getSum();
-                    ArrayList<LabelPanel> group = inGameViewScaffold.setNoChooseMode();
-                    model.Killer.Group cellGroup = null;
-                    for(LabelPanel l : group) {
-                        if(cellGroup != null) {
-                            ((Killer)sudoku).putCellIntoExistingGroup(l.getRow(), l.getCol(), cellGroup);
-                        } else {
-                            ((model.Killer)sudoku).putCellIntoNewGroup(l.getRow(), l.getCol(), sum);
-                        }
-                        cellGroup = ((model.Killer)sudoku).getGroupForCell(l.getRow(), l.getCol());
+                if(!editGroup) {
+                    chooseGroup = !chooseGroup;
+                    if (chooseGroup) {
+                        inGameViewScaffold.setChooseMode();
+                    } else {
+                        ArrayList<LabelPanel> group = inGameViewScaffold.setNoChooseMode();
+                        saveGroup(group);
                     }
-                    inGameViewScaffold.addGroup(group,sum);
+                } else {
+                    inGameViewScaffold.setGUIText("<html><body><center>Während der Bearbeitungsmodus aktiviert ist, kann der<br>Auswahlmodus nicht aktiviert werden.</center></body></html>");
                 }
             }
             case REMOVEGROUP -> {
@@ -89,10 +85,33 @@ public class SolveKillerPresenter extends SolvePresenter {
                     inGameViewScaffold.setNoChooseMode();
                 } else {
                     ArrayList<LabelPanel> group = inGameViewScaffold.removeGroup(clickedCell);
-                    for(LabelPanel l : group) {
-                        ((model.Killer)sudoku).removeCellFromGroup(l.getRow(), l.getCol());
-                        sudoku.resetCell(l.getRow(), l.getCol());
+                    if(group != null) {
+                        if (!group.isEmpty())
+                            ((model.Killer) sudoku).removeGroup(((model.Killer) sudoku).getGroupForCell(group.get(0).getRow(), group.get(0).getCol()));
+                        for (LabelPanel l : group) {
+                            sudoku.resetCell(l.getRow(), l.getCol());
+                        }
                     }
+                }
+            }
+            case EDITGROUP -> {
+                if(!chooseGroup) {
+                    editGroup = !editGroup;
+                    if (editGroup) {
+                        ArrayList<LabelPanel> group = inGameViewScaffold.removeGroup(clickedCell);
+                        if(group != null) {
+                            if (!group.isEmpty())
+                                ((model.Killer) sudoku).removeGroup(((model.Killer) sudoku).getGroupForCell(group.get(0).getRow(), group.get(0).getCol()));
+                            inGameViewScaffold.setEditMode(group);
+                        } else {
+                            editGroup = false;
+                        }
+                    } else {
+                        ArrayList<LabelPanel> group = inGameViewScaffold.setNoEditMode();
+                        saveGroup(group);
+                    }
+                } else {
+                    inGameViewScaffold.setGUIText("<html><body><center>Während der Auswahlmodus aktiviert ist, kann der<br>Bearbeitungsmodus nicht aktiviert werden.</center></body></html>");
                 }
             }
         }
@@ -100,5 +119,37 @@ public class SolveKillerPresenter extends SolvePresenter {
 
     public InGameViewScaffold getInGameViewScaffold() {
         return inGameViewScaffold;
+    }
+
+    private void saveGroup(ArrayList<LabelPanel> group) {
+        model.Killer.Group cellGroup = null;
+        if (!group.isEmpty()) {
+            GroupPopUpWindow userInput = new GroupPopUpWindow(group);
+            int sum = userInput.getSum();
+            // False input
+            if (sum == -1) {
+                inGameViewScaffold.setGUIText("Fehlerhafte Summe!", Color.red);
+                // Logical incorrect input
+            } else if (sum == -2) {
+                inGameViewScaffold.setGUIText("Logisch inkorrekte Summe!", Color.red);
+            } else {
+                for (LabelPanel l : group) {
+                    if (cellGroup != null) {
+                        if (((Killer) sudoku).putCellIntoExistingGroup(l.getRow(), l.getCol(), cellGroup).isSuccess()) {
+                            inGameViewScaffold.addGroup(group, sum);
+                        } else {
+                            inGameViewScaffold.setGUIText("Logisch inkorrekte Summe!", Color.red);
+                        }
+                    } else {
+                        if (((model.Killer) sudoku).putCellIntoNewGroup(l.getRow(), l.getCol(), sum).isSuccess()) {
+                            inGameViewScaffold.addGroup(group, sum);
+                        } else {
+                            inGameViewScaffold.setGUIText("Logisch inkorrekte Summe!", Color.red);
+                        }
+                    }
+                    cellGroup = ((model.Killer) sudoku).getGroupForCell(l.getRow(), l.getCol());
+                }
+            }
+        }
     }
 }

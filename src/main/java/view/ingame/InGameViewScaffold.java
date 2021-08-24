@@ -259,8 +259,8 @@ public class InGameViewScaffold extends JFrame implements ActionListener{
     /**
      * Change the color of the actual clicked cell
      */
-    public void changeColor() {
-        sudokuFieldPanel.changeColor();
+    public model.Str8ts.Color changeColor() {
+        return sudokuFieldPanel.changeColor();
     }
 
     /**
@@ -299,6 +299,24 @@ public class InGameViewScaffold extends JFrame implements ActionListener{
     public ArrayList<LabelPanel> setNoChooseMode() {
         rightControlsPanel.setNoChooseMode();
         return sudokuFieldPanel.setNoChooseMode();
+    }
+
+    /**
+     * Sets edit mode to true
+     */
+    public void setEditMode(ArrayList<LabelPanel> group) {
+        rightControlsPanel.setEditMode();
+        sudokuFieldPanel.setEditMode(group);
+    }
+
+    /**
+     * Sets edit mode to false
+     *
+     * @return the actual chosen group
+     */
+    public ArrayList<LabelPanel> setNoEditMode() {
+        rightControlsPanel.setNoEditMode();
+        return sudokuFieldPanel.setNoEditMode();
     }
 
     /**
