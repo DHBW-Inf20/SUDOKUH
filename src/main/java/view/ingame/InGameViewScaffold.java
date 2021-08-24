@@ -1,6 +1,7 @@
 package view.ingame;
 
 import util.Themes;
+import view.AgainPopUpWindow;
 import view.LabelPanel;
 import view.PopUpWindow;
 import presenter.PlayPresenter;
@@ -19,6 +20,11 @@ public class InGameViewScaffold extends JFrame implements ActionListener{
     Color panelBackgroundColor;
 
     String theme;
+    util.Mode gamemode;
+    int size;
+    boolean autoStepForward;
+    boolean highlighting;
+    int tipLimit;
 
     TopInfoPanel topInfoPanel;
     SudokuFieldPanel sudokuFieldPanel;
@@ -29,7 +35,7 @@ public class InGameViewScaffold extends JFrame implements ActionListener{
 
     private PlayPresenter playPresenter;
 
-    public InGameViewScaffold(int gridSize, ActionListener buttonListener, String title, String theme, boolean highlighting, util.Mode gamemode){
+    public InGameViewScaffold(int gridSize, ActionListener buttonListener, String title, String theme, boolean highlighting, boolean autoStepForward, util.Mode gamemode){
         //General Window Options
         super("SUDOKUH - "+title);
         this.setResizable(false);
@@ -90,11 +96,16 @@ public class InGameViewScaffold extends JFrame implements ActionListener{
         this.setVisible(true);
 
         this.theme = theme;
+        this.gamemode = gamemode;
+        this.size = gridSize;
+        this.autoStepForward = autoStepForward;
+        this.highlighting = highlighting;
     }
 
-    public InGameViewScaffold(int gridSize, ActionListener buttonListener, String title, String theme,boolean highlighting, util.Mode gamemode, PlayPresenter playPresenter){
-        this(gridSize, buttonListener, title, theme, highlighting,  gamemode);
+    public InGameViewScaffold(int gridSize, ActionListener buttonListener, String title, String theme,boolean highlighting, boolean autoStepForward, int tipLimit, util.Mode gamemode, PlayPresenter playPresenter){
+        this(gridSize, buttonListener, title, theme, highlighting, autoStepForward, gamemode);
         this.playPresenter = playPresenter;
+        this.tipLimit = tipLimit;
     }
 
 
@@ -281,6 +292,12 @@ public class InGameViewScaffold extends JFrame implements ActionListener{
             }
             new PopUpWindow(this);
         }
+        if(e.getSource() == againButton){
+            if(playPresenter!=null){
+                playPresenter.pauseTimer();
+            }
+            new AgainPopUpWindow(this, gamemode, size, theme, autoStepForward, highlighting, tipLimit);
+        }
     }
 
     /**
@@ -340,5 +357,4 @@ public class InGameViewScaffold extends JFrame implements ActionListener{
 }
 
 
-// TODO Killer Frontend
 // TODO Warnings entfernen

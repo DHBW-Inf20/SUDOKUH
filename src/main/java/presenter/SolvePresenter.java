@@ -27,15 +27,15 @@ public abstract class SolvePresenter implements Presenter{
         switch (gameMode) {
             case STRAITS_SOLVE -> {
                 sudoku = new Str8ts();
-                inGameViewScaffold = new InGameViewScaffold(size, this::handleButtonListenerEvent, "Str8ts lösen", theme, highlighting, gameMode);
+                inGameViewScaffold = new InGameViewScaffold(size, this::handleButtonListenerEvent, "Str8ts lösen", theme, highlighting, autoStepForward, gameMode);
             }
             case KILLER_SOLVE -> {
                 sudoku = new Killer();
-                inGameViewScaffold = new InGameViewScaffold(size, this::handleButtonListenerEvent, "Killer lösen", theme, highlighting, gameMode);
+                inGameViewScaffold = new InGameViewScaffold(size, this::handleButtonListenerEvent, "Killer lösen", theme, highlighting, autoStepForward, gameMode);
             }
             default -> {
                 sudoku = new Sudoku(size);
-                inGameViewScaffold = new InGameViewScaffold(size, this::handleButtonListenerEvent, "Sudoku lösen", theme, highlighting, gameMode);
+                inGameViewScaffold = new InGameViewScaffold(size, this::handleButtonListenerEvent, "Sudoku lösen", theme, highlighting, autoStepForward, gameMode);
             }
         }
         inGameViewScaffold.addKeyListener(new KeyInputListener(this, autoStepForward));
@@ -80,11 +80,20 @@ public abstract class SolvePresenter implements Presenter{
                 }
             }
             case SOLVE -> {
-                switch (sudoku.solve()) {
+                AbstractPuzzle.SolveResult solveResult = sudoku.solve();
+                switch (solveResult) {
                     case NO_SOLUTION -> inGameViewScaffold.setGUIText("Dieses Sudoku kann nicht gelöst werden!", Color.red);
-                    // todo handle cases differently (for example warning when solution is not unique)
-                    case MULTIPLE_SOLUTIONS, ONE_SOLUTION -> {
-                        inGameViewScaffold.resetGUIText();
+                    case NOT_IN_VALID_STATE_FOR_SOLVE -> inGameViewScaffold.setGUIText("Dieses Sudoku kann noch nicht gelöst werden!", Color.red);
+                    case ONE_SOLUTION -> {
+                        inGameViewScaffold.setGUIText("Das Sudoku wurde erfolgreich gelöst!", Color.green);
+                        for (int row = 0; row < sudoku.getGridSize(); row++) {
+                            for (int column = 0; column < sudoku.getGridSize(); column++) {
+                                inGameViewScaffold.setValue(row, column, sudoku.getCell(row, column));
+                            }
+                        }
+                    }
+                    case MULTIPLE_SOLUTIONS -> {
+                        inGameViewScaffold.setGUIText("<html><body><center>Das Sudoku wurde erfolgreich gelöst!<br>Es gibt allerdings mehr als eine Möglichkeit.</center></body></html>", Color.green);
                         for (int row = 0; row < sudoku.getGridSize(); row++) {
                             for (int column = 0; column < sudoku.getGridSize(); column++) {
                                 inGameViewScaffold.setValue(row, column, sudoku.getCell(row, column));

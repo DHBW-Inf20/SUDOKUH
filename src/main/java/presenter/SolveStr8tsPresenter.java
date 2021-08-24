@@ -55,15 +55,26 @@ public class SolveStr8tsPresenter extends SolvePresenter {
                 }
             }
             case SOLVE -> {
-                if (sudoku.solve() != AbstractPuzzle.SolveResult.NO_SOLUTION) {
-                    inGameViewScaffold.resetGUIText();
-                    for (int row = 0; row < sudoku.getGridSize(); row++) {
-                        for (int column = 0; column < sudoku.getGridSize(); column++) {
-                            inGameViewScaffold.setValue(row, column, sudoku.getCell(row, column));
+                AbstractPuzzle.SolveResult solveResult = sudoku.solve();
+                switch (solveResult) {
+                    case NO_SOLUTION -> inGameViewScaffold.setGUIText("Dieses Sudoku kann nicht gelöst werden!", Color.red);
+                    case NOT_IN_VALID_STATE_FOR_SOLVE -> inGameViewScaffold.setGUIText("Dieses Sudoku kann noch nicht gelöst werden!", Color.red);
+                    case ONE_SOLUTION -> {
+                        inGameViewScaffold.setGUIText("Das Sudoku wurde erfolgreich gelöst!", Color.green);
+                        for (int row = 0; row < sudoku.getGridSize(); row++) {
+                            for (int column = 0; column < sudoku.getGridSize(); column++) {
+                                inGameViewScaffold.setValue(row, column, sudoku.getCell(row, column));
+                            }
                         }
                     }
-                } else {
-                    inGameViewScaffold.setGUIText("Dieses Sudoku kann nicht gelöst werden!", Color.red);
+                    case MULTIPLE_SOLUTIONS -> {
+                        inGameViewScaffold.setGUIText("<html><body><center>Das Sudoku wurde erfolgreich gelöst!<br>Es gibt allerdings mehr als eine Möglichkeit.</center></body></html>", Color.green);
+                        for (int row = 0; row < sudoku.getGridSize(); row++) {
+                            for (int column = 0; column < sudoku.getGridSize(); column++) {
+                                inGameViewScaffold.setValue(row, column, sudoku.getCell(row, column));
+                            }
+                        }
+                    }
                 }
             }
             case CHANGECOLOR -> {

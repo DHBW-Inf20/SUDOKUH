@@ -3,7 +3,7 @@
 # SUDOKUH
 [![forthebadge made-with-java](https://forthebadge.com/images/badges/made-with-java.svg)](https://java.com/)
 
-SUDOKUH is a simple sudoku game for various sizes (2x2, 3x3, 4x4) and a sudoku solver for normal sudoku, Str8ts and Killer in various sizes (2x2, 3x3, 4x4).
+SUDOKUH is a simple sudoku game for various sizes (2x2, 3x3, 4x4) and a sudoku solver for normal sudoku (in various sizes: 2x2, 3x3, 4x4), Str8ts and Killer (for 3x3).
 
 SUDOKUH is created by [Luca Kellermann](https://github.com/Lukellmann), [Fabian Heinl](https://github.com/WHYZNSoftware) and [Philipp Kremling](https://github.com/KremlingP).
 

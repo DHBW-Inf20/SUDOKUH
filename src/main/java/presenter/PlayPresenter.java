@@ -49,7 +49,7 @@ public class PlayPresenter implements Presenter{
         sudoku = sudokuAndSolution.sudoku();
         solution = sudokuAndSolution.solution();
 
-        inGameViewScaffold = new InGameViewScaffold(size, this::handleButtonListenerEvent, "Spielen", theme, highlighting, Mode.SUDOKU_PLAY, this);
+        inGameViewScaffold = new InGameViewScaffold(size, this::handleButtonListenerEvent, "Spielen", theme, highlighting, autoStepForward, tipLimit, Mode.SUDOKU_PLAY, this);
 
         inGameViewScaffold.addKeyListener(new KeyInputListener(this, autoStepForward));
 
