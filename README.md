@@ -7,6 +7,8 @@ SUDOKUH is a simple sudoku game for various sizes (2x2, 3x3, 4x4) and a sudoku s
 
 SUDOKUH is created by [Luca Kellermann](https://github.com/Lukellmann), [Fabian Heinl](https://github.com/WHYZNSoftware) and [Philipp Kremling](https://github.com/KremlingP).
 
+Please note that you need Java 16 in order to run the program correctly.
+
 ## Getting started
 To start only run the SUDOKUH.jar, the start menu will automatically open. Here you can choose between the different categories: the sudoku player, the sudoku solver for a normal sudoku, the sudoku solver for Str8ts and the sudoku solver for Killer. With clicking on one of the categories you'll get a menu in which you can choose between the three sizes (2x2, 3x3, 4x4). Clicking on "Start" will open a new menu in which you have the game overlay. In the start menu there also is a settings button. Clicking on this you'll get a new menu and you can choose the theme (standard or dark mode), Auto Step (this means wether the next cell should automatically by selected when typing in a number), highlighting (this means wether possible conflicting cells for the actual chosen cell should be highlighted) and the tip limit (how much tips you want to have in the play mode). Clicking on the back button will bring you back to the home menu and the settings will automatically be saved.
 
@@ -35,9 +37,20 @@ Lastly there is the note button: Clicking on it will turn it green, symbolizing 
 In this category you can type in an unsolved sudoku and the algorithm will solve it for you. Therefore you've got a solve button alongside the normal numbers buttons and the delete button. Clicking on it will fill the sudoku with matching values. All inputs that were set by you will be displayed as predefined (but you can change them). When the sudoku is unsolveable a text will be displayed in the information panel. (Keyboard equivalent: ENTER)
 
 ### Solve Str8ts
-Str8ts is a special variant of sudoku: Here you don't have subgrids and only one big field: So the only conditions are that the same number mustn't be in the same row or column. Besides that there can be blocked fields (commonly displayed as black) which can't contain numbers or the predefined numbers in there can not be changed. For this there is a color change button: clicking on it will change the color of the actual chosen cell. Clicking it again will change it back. (Keyboard equivalent: F)
+Str8ts is a special variant of sudoku: Here you don't have subgrids and only one big field: So the only conditions are that the same number mustn't be in the same row or column. Besides that there can be blocked fields (commonly displayed as black) which can't contain numbers or the predefined numbers in there can not be changed. Also there only can be seamless sequences of digits, i.e. streets, in horizontally or vertically connected white fields. For the seperation between black and white fields there is a color change button: clicking on it will change the color of the actual chosen cell. Clicking it again will change it back. (Keyboard equivalent: F)
 
 For solving the sudoku there again is a solve button. Clicking on it will fill the sudoku with matching values. When the sudoku is unsolveable a text will be displayed in the information panel. (Keyboard equivalent: ENTER)
 
 ### Solve Killer
-Coming soon (maybe)
+Killer is also a special variant of sudoku: Alongside the normal sudoku rules you've also got sum fields in here: That means one or more cells are grouped together and are provided with a number. The sum of all the inserts of this group has to match this number. In reverse there are also grids in which you don't have given the insets for each cell, but only the sums and groups (mostly difficulty hard).
+
+Next to the normal numbers buttons and the delete button you've also got a link button. Clicking on it will turn it green signalizing the link mode is activated: The actual clicked cell will automatically turn predefined. Now you can choose all neighbors of this cell and neighbars of these cells and so on to build a group. All group members have the predefined color. Clicking again on a group member will remove the cell from the group. You can not add cells to the group which are already in another group. When ready with choosing all group members, click again on the link button: You'll see a new window in which you can type in the sum of the group. Confirming this  will display the group with the sum in the first chosen cell. (Keyboard equivalent: G)
+
+If you want to cancel the linking process while on selecting cells please use the unlink button. (Keyboard equivalent: L)
+
+To remove an entire group there is the unlink button. While you've selected a cell which is member of a group and you click this button, the entire group gets removed and all values of the member cells will get deleted too. (Keyboard equivalent: L)
+
+If you only want to remove or add seperate cells to a group (and don't want to remove it entirely) you can click the edit button while a cell which is member of a group is selected. Now the edit mode is activated: You can select or unselect cells for this group and when turning off the edit mode by clicking on the edit button again you can add a new sum to the group. You needn't (un)select cells while in editing mode, you can also only use it to select a new sum.
+Please note: You can not have the link mode and the edit mode activated at the same time. (Keyboard equivalent: B)
+
+For solving the sudoku there again is a solve button. Clicking on it will fill the sudoku with matching values. When the sudoku is unsolveable a text will be displayed in the information panel. (Keyboard equivalent: ENTER)
