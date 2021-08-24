@@ -48,7 +48,7 @@ Next to the normal numbers buttons and the delete button you've also got a link 
 
 If you want to cancel the linking process while on selecting cells please use the unlink button. (Keyboard equivalent: L)
 
-To remove an entire group there is the unlink button. While you've selected a cell which is member of a group and you click this button, the entire group gets removed and all values of the member cells will get deleted too. (Keyboard equivalent: L)
+To remove an entire group there is the unlink button. While you've selected a cell which is member of a group and you click this button, the entire group gets removed. (Keyboard equivalent: L)
 
 If you only want to remove or add seperate cells to a group (and don't want to remove it entirely) you can click the edit button while a cell which is member of a group is selected. Now the edit mode is activated: You can select or unselect cells for this group and when turning off the edit mode by clicking on the edit button again you can add a new sum to the group. You needn't (un)select cells while in editing mode, you can also only use it to select a new sum.
 Please note: You can not have the link mode and the edit mode activated at the same time. (Keyboard equivalent: B)

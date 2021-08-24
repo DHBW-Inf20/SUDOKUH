@@ -698,8 +698,8 @@ public class SudokuFieldPanel extends JPanel {
         if(groupIndex != -1) {
             for(view.LabelPanel l : groups.get(groupIndex)) {
                 l.setBorder(null);
-                l.setText("");
                 l.removeAll();
+                l.setText(l.getLabelValue());
             }
             groupSums.remove(groupIndex);
             return groups.remove(groupIndex);

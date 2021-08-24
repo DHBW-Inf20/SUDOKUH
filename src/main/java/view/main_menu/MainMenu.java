@@ -236,7 +236,7 @@ public class MainMenu extends JFrame {
             switch (mode) {
                 case SUDOKU_SOLVE -> new presenter.SolveSudokuPresenter(size, theme, autoStepForward, highlighting);
                 case SUDOKU_PLAY -> new presenter.PlayPresenter(size, theme, autoStepForward, highlighting, tipLimit);
-                case KILLER_SOLVE -> new presenter.SolveKillerPresenter(size, theme, autoStepForward, highlighting);
+                case KILLER_SOLVE -> new presenter.SolveKillerPresenter(size, theme, autoStepForward, false);
                 case STRAITS_SOLVE -> new presenter.SolveStr8tsPresenter(size, theme, autoStepForward, highlighting);
             }
             dispose();
