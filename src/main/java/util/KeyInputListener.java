@@ -37,8 +37,11 @@ public class KeyInputListener implements KeyListener {
             case 8, 127 -> presenter.handleButton(new CustomButton(Type.DELETE));
             case 84 -> presenter.handleButton(new CustomButton(Type.TIP));
             case 78 -> presenter.handleButton(new CustomButton(Type.PEN));
+            case 70 -> presenter.handleButton(new CustomButton(Type.CHANGECOLOR));
             case 69 -> presenter.handleButton(new CustomButton(Type.VERIFY));
-            case 10 -> presenter.handleButton(new CustomButton(Type.SOLVE));
+            //case 10 -> presenter.handleButton(new CustomButton(Type.SOLVE));
+            case 71 -> presenter.handleButton(new CustomButton(Type.CHOOSEGROUP));
+            case 76 -> presenter.handleButton(new CustomButton(Type.REMOVEGROUP));
         }
 
         if(e.getKeyCode()>=37 && e.getKeyCode()<=40){

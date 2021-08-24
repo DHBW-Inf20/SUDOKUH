@@ -37,6 +37,7 @@ public class RightControlsPanel extends JPanel {
     protected Color errorTextColor;
 
     CustomButton buttonPen;
+    CustomButton buttonChooseGroup;
 
     /**
      * The actual played gamemode.
@@ -127,6 +128,26 @@ public class RightControlsPanel extends JPanel {
                 this.add(buttonVerify);
                 buttonVerify.addActionListener(buttonListener);
             }
+            case KILLER_SOLVE -> {
+                buttonChooseGroup = new CustomButton(CHOOSEGROUP);
+                buttonChooseGroup.setForeground(primaryTextColor);
+                buttonChooseGroup.setBackground(primaryBackgroundColor);
+                buttonChooseGroup.setOpaque(true);
+                this.add(buttonChooseGroup);
+                buttonChooseGroup.addActionListener(buttonListener);
+                CustomButton buttonDeleteGroup = new CustomButton(REMOVEGROUP);
+                buttonDeleteGroup.setForeground(primaryTextColor);
+                buttonDeleteGroup.setBackground(primaryBackgroundColor);
+                buttonDeleteGroup.setOpaque(true);
+                this.add(buttonDeleteGroup);
+                buttonDeleteGroup.addActionListener(buttonListener);
+                CustomButton buttonSolve = new CustomButton(SOLVE);
+                buttonSolve.setForeground(primaryTextColor);
+                buttonSolve.setBackground(primaryBackgroundColor);
+                buttonSolve.setOpaque(true);
+                this.add(buttonSolve);
+                buttonSolve.addActionListener(buttonListener);
+            }
             default -> {
                 CustomButton buttonSolve = new CustomButton(SOLVE);
                 buttonSolve.setForeground(primaryTextColor);
@@ -150,6 +171,20 @@ public class RightControlsPanel extends JPanel {
      */
     public void setNormalMode() {
         buttonPen.setBackground(primaryBackgroundColor);
+    }
+
+    /**
+     * Sets the color of the choose group button to green
+     */
+    public void setChooseMode() {
+        buttonChooseGroup.setBackground(Color.decode("#78B53A"));
+    }
+
+    /**
+     * Sets the color of the choose group button to normal
+     */
+    public void setNoChooseMode() {
+        buttonChooseGroup.setBackground(primaryBackgroundColor);
     }
 
     /**

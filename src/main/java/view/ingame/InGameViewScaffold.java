@@ -10,6 +10,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.Objects;
 
 public class InGameViewScaffold extends JFrame implements ActionListener{
@@ -280,6 +281,43 @@ public class InGameViewScaffold extends JFrame implements ActionListener{
             }
             new PopUpWindow(this);
         }
+    }
+
+    /**
+     * Sets choose mode to true
+     */
+    public void setChooseMode() {
+        rightControlsPanel.setChooseMode();
+        sudokuFieldPanel.setChooseMode();
+    }
+
+    /**
+     * Sets choose mode to false
+     *
+     * @return the actual chosen group
+     */
+    public ArrayList<LabelPanel> setNoChooseMode() {
+        rightControlsPanel.setNoChooseMode();
+        return sudokuFieldPanel.setNoChooseMode();
+    }
+
+    /**
+     * Adds a group of cells to a group
+     *
+     * @param labels an arraylist of the {@link view.LabelPanel cells}
+     * @param sum the sum of the group
+     */
+    public void addGroup(ArrayList<view.LabelPanel> labels, int sum) {
+        sudokuFieldPanel.addGroup(labels, sum);
+    }
+
+    /**
+     * Removes a group completely
+     *
+     * @param cell the group of this cell will be deleted
+     */
+    public ArrayList<LabelPanel> removeGroup(view.LabelPanel cell) {
+        return sudokuFieldPanel.removeGroup(cell);
     }
 }
 

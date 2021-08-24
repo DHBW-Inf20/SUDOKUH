@@ -146,4 +146,17 @@ public class LabelPanel extends JPanel {
         this.labelValue = value;
         this.revalidate();
     }
+
+    /**
+     * Sets a text in the object for gamemode Killer
+     *
+     * @param value the value to be set
+     */
+    public void setKillerText(String value) {
+        this.setNormalMode();
+        this.add(label,BorderLayout.CENTER);
+        label.setText(value);
+        this.labelValue = value;
+        this.revalidate();
+    }
 }

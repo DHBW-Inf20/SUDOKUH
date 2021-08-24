@@ -10,7 +10,7 @@ public class CustomButton extends JButton {
 
     private final int value;
     private final Type type;
-    Image delete, solve, tip, verify, pen, color;
+    Image delete, solve, tip, verify, pen, color, choosegroup, removegroup;
 
     public CustomButton(Type type) {
         this(-1, type);
@@ -25,6 +25,8 @@ public class CustomButton extends JButton {
             verify = ImageIO.read(getClass().getResource("/verify.png"));
             pen = ImageIO.read(getClass().getResource("/pen.png"));
             color = ImageIO.read(getClass().getResource("/color.png"));
+            choosegroup = ImageIO.read(getClass().getResource("/choosegroup.png"));
+            removegroup = ImageIO.read(getClass().getResource("/removegroup.png"));
         } catch (Exception ex) {
             System.out.println(ex);
         }
@@ -38,6 +40,8 @@ public class CustomButton extends JButton {
             case VERIFY -> setIcon(new ImageIcon(verify));
             case PEN -> setIcon(new ImageIcon(pen));
             case CHANGECOLOR -> setIcon(new ImageIcon(color));
+            case CHOOSEGROUP -> setIcon(new ImageIcon(choosegroup));
+            case REMOVEGROUP -> setIcon(new ImageIcon(removegroup));
         }
         setFocusable(false);
         this.setMargin(new Insets(0,0,0,0));

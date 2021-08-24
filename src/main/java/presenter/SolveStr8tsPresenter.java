@@ -44,6 +44,7 @@ public class SolveStr8tsPresenter extends SolvePresenter {
                             inGameViewScaffold.highlightConflicts(c);
                         }
                         inGameViewScaffold.invalidInput(String.valueOf(number));
+                        inGameViewScaffold.setGUIText("Logisch falscher Input!",Color.red);
                     }
                 }
             }
