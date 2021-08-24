@@ -15,6 +15,9 @@ import static java.util.Arrays.deepEquals;
 import static java.util.Arrays.fill;
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * @author Luca Kellermann
+ */
 @DisplayName("Str8ts")
 public class Str8tsTest {
     private static final Str8ts.Color B = Str8ts.Color.BLACK;
@@ -167,10 +170,10 @@ public class Str8tsTest {
     @Test
     @DisplayName("should not set cell with invalid number")
     void shouldNotSetCellWithInvalidNumber() {
-        Str8ts.SetResult result;
+        Str8ts.SetCellResult result;
 
         result = gentleStr8ts.setCell(0, 0, gentleStr8ts.getGridSize() + 1); // number too big
-        assertSame(Str8ts.SetResult.INVALID_VALUE, result);
+        assertSame(Str8ts.SetCellResult.INVALID_VALUE, result);
         assertEquals(Str8ts.EMPTY_CELL, gentleStr8ts.getCell(0, 0));
 
         result = gentleStr8ts.setCell(0, 0, 5); // 5 is already in same row, see gentleGrid
@@ -179,14 +182,14 @@ public class Str8tsTest {
         assertEquals(Str8ts.EMPTY_CELL, gentleStr8ts.getCell(0, 0));
 
         result = gentleStr8ts.setCell(0, 0, Str8ts.EMPTY_CELL - 1); // number too small
-        assertSame(Str8ts.SetResult.INVALID_VALUE, result);
+        assertSame(Str8ts.SetCellResult.INVALID_VALUE, result);
         assertEquals(Str8ts.EMPTY_CELL, gentleStr8ts.getCell(0, 0));
     }
 
     @Test
     @DisplayName("should set cell with valid number")
     void shouldSetCellWithValidNumber() {
-        assertSame(Str8ts.SetResult.SUCCESS, gentleStr8ts.setCell(0, 2, 9)); // 9 is valid, see solution
+        assertSame(Str8ts.SetCellResult.SUCCESS, gentleStr8ts.setCell(0, 2, 9)); // 9 is valid, see solution
         assertEquals(9, gentleStr8ts.getCell(0, 2));
     }
 
@@ -194,16 +197,16 @@ public class Str8tsTest {
     @MethodSource("allCellRowsAndColumnsForGrid")
     @DisplayName("should set any cell with Str8ts.EMPTY_CELL")
     void shouldSetAnyCellWithStr8tsEmptyCell(final int row, final int column) {
-        assertSame(Str8ts.SetResult.SUCCESS, gentleStr8ts.setCell(row, column, Str8ts.EMPTY_CELL));
+        assertSame(Str8ts.SetCellResult.SUCCESS, gentleStr8ts.setCell(row, column, Str8ts.EMPTY_CELL));
         assertEquals(Str8ts.EMPTY_CELL, gentleStr8ts.getCell(row, column));
 
-        assertSame(Str8ts.SetResult.SUCCESS, gentleSolution.setCell(row, column, Str8ts.EMPTY_CELL));
+        assertSame(Str8ts.SetCellResult.SUCCESS, gentleSolution.setCell(row, column, Str8ts.EMPTY_CELL));
         assertEquals(Str8ts.EMPTY_CELL, gentleSolution.getCell(row, column));
 
-        assertSame(Str8ts.SetResult.SUCCESS, veryHardStr8ts.setCell(row, column, Str8ts.EMPTY_CELL));
+        assertSame(Str8ts.SetCellResult.SUCCESS, veryHardStr8ts.setCell(row, column, Str8ts.EMPTY_CELL));
         assertEquals(Str8ts.EMPTY_CELL, veryHardStr8ts.getCell(row, column));
 
-        assertSame(Str8ts.SetResult.SUCCESS, veryHardSolution.setCell(row, column, Str8ts.EMPTY_CELL));
+        assertSame(Str8ts.SetCellResult.SUCCESS, veryHardSolution.setCell(row, column, Str8ts.EMPTY_CELL));
         assertEquals(Str8ts.EMPTY_CELL, veryHardSolution.getCell(row, column));
     }
 
@@ -220,7 +223,7 @@ public class Str8tsTest {
     @DisplayName("should not set invalid color")
     void shouldNotSetInvalidColor() {
         // set this black cell to 9 is valid
-        assertSame(Str8ts.SetResult.SUCCESS, gentleSolution.setCell(8, 1, 9));
+        assertSame(Str8ts.SetCellResult.SUCCESS, gentleSolution.setCell(8, 1, 9));
         // but setting it to black causes the straight condition to be violated
         assertFalse(gentleSolution.setColor(8, 1, Str8ts.Color.WHITE));
         assertSame(Str8ts.Color.BLACK, gentleSolution.getColor(8, 1));

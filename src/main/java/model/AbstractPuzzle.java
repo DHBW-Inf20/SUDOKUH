@@ -8,10 +8,28 @@ import static java.util.Collections.*;
 import static java.util.Objects.hash;
 import static java.util.Objects.requireNonNull;
 
+/**
+ * Abstract base class for all puzzles like {@link Sudoku}, {@link Killer} and {@link Str8ts} that have a square grid
+ * with the constraints that each number has to be in the range from 1 to the number of rows/columns in the grid
+ * (see {@link #getGridSize()}) and no duplicate values are allowed in a row/column.
+ * <p>
+ * This class provides the following public interface:
+ * <ul>
+ * <li>{@link #getGridSize()} and {@link #getNumberOfCells()} - for providing information about a puzzle</li>
+ * <li>
+ * {@link Cell Cell}, {@link #getCell(int, int) getCell()}, {@link #setCell(int, int, int) setCell()},
+ * {@link #resetCell(int, int) resetCell()} and {@link SetCellResult SetCellResult} - for managing the cells of a puzzle
+ * </li>
+ * <li>{@link #solve()} and {@link SolveResult SolveResult} - for solving a puzzle</li>
+ * <li>{@link #equals(Object) equals()} and {@link #hashCode()} - for comparing puzzles</li>
+ * </ul>
+ *
+ * @author Luca Kellermann
+ */
 public abstract class AbstractPuzzle {
 
     /**
-     * A cell in the grid of a Puzzle.
+     * A cell in the grid of a Puzzle in the form of an ordered nominal Pair {@code (row, column)}.
      */
     public static final record Cell(int row, int column) {}
 
@@ -22,19 +40,19 @@ public abstract class AbstractPuzzle {
      * @param conflictingCells a {@link Set} of {@link Cell cells} that are responsible for the
      *                         {@link #setCell(int, int, int) setCell()} operation to fail
      */
-    public static final record SetResult(boolean isSuccess, Set<Cell> conflictingCells) {
+    public static final record SetCellResult(boolean isSuccess, Set<Cell> conflictingCells) {
 
         /**
          * Constant that {@link #setCell(int, int, int) setCell()} always returns on success and can therefore be
          * used for identity comparison.
          */
-        public static final SetResult SUCCESS = new SetResult(true, emptySet());
+        public static final SetCellResult SUCCESS = new SetCellResult(true, emptySet());
 
         /**
          * Constant that {@link #setCell(int, int, int) setCell()} always returns when you pass an invalid value for
          * {@code value} and can therefore be used for identity comparison.
          */
-        public static final SetResult INVALID_VALUE = new SetResult(false, emptySet());
+        public static final SetCellResult INVALID_VALUE = new SetCellResult(false, emptySet());
     }
 
     /**
@@ -114,22 +132,22 @@ public abstract class AbstractPuzzle {
      * {@code value} that is neither {@link #EMPTY_CELL} nor in the valid range from {@code 1} to
      * {@link #getGridSize() gridSize} (both inclusive).</p>
      *
-     * @return {@link SetResult#SUCCESS SetResult.SUCCESS} if successful,
-     * {@link SetResult#INVALID_VALUE SetResult.INVALID_VALUE} if you try to use a {@code value} that is out of range or
-     * another instance of {@link SetResult} that contains the {@link SetResult#conflictingCells() conflictingCells}
-     * that are responsible for the operation to fail
+     * @return {@link SetCellResult#SUCCESS SetCellResult.SUCCESS} if successful,
+     * {@link SetCellResult#INVALID_VALUE SetCellResult.INVALID_VALUE} if you try to use a {@code value} that is out of
+     * range or another instance of {@link SetCellResult} that contains the
+     * {@link SetCellResult#conflictingCells() conflictingCells} that are responsible for the operation to fail
      */
-    public final SetResult setCell(final int row, final int column, final int value) {
+    public final SetCellResult setCell(final int row, final int column, final int value) {
 
         // empty cell is always ok
         if (value == EMPTY_CELL) {
             grid[row][column] = EMPTY_CELL;
-            return SetResult.SUCCESS;
+            return SetCellResult.SUCCESS;
         }
 
         // invalid value -> don't check further
         if (value < 1 || value > gridSize) {
-            return SetResult.INVALID_VALUE;
+            return SetCellResult.INVALID_VALUE;
         }
 
         final int previousCellValue = grid[row][column];
@@ -138,10 +156,10 @@ public abstract class AbstractPuzzle {
         final Set<Cell> conflictingCells = getConflictingCells(row, column, true);
 
         if (conflictingCells.isEmpty()) {
-            return SetResult.SUCCESS;
+            return SetCellResult.SUCCESS;
         } else {
             grid[row][column] = previousCellValue; // undo setting invalid number
-            return new SetResult(false, conflictingCells);
+            return new SetCellResult(false, conflictingCells);
         }
     }
 
@@ -291,8 +309,11 @@ public abstract class AbstractPuzzle {
     }
 
 
-    // used to determine if there are requirements that need to be fulfilled before solving can be done
-    // those are then checked by isInvalid()
+    /**
+     * Used to determine if there are requirements that need to be fulfilled before solving can be done.
+     * If this returns {@code true}, the requirements are then checked by {@link #isInvalid()}.
+     * Implementations should just return a constant value.
+     */
     protected abstract boolean hasToValidateBeforeSolve();
 
     /**
@@ -330,8 +351,11 @@ public abstract class AbstractPuzzle {
 
     @Override
     public final boolean equals(final Object obj) {
-        if (this == obj) return true;
+        if (obj == this) return true;
+
+        // make sure that it's the same class -> isEqualTo() can safely cast to its own class
         if (obj == null || getClass() != obj.getClass()) return false;
+
         final AbstractPuzzle other = (AbstractPuzzle) obj;
         return this.gridSize == other.gridSize && deepEquals(this.grid, other.grid) && this.isEqualTo(other);
     }

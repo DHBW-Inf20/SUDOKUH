@@ -8,6 +8,9 @@ import java.util.Random;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
+/**
+ * @author Luca Kellermann
+ */
 @DisplayName("SudokuGenerator")
 public class SudokuGeneratorTest {
 

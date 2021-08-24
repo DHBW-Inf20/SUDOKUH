@@ -8,6 +8,17 @@ import static java.util.Objects.hash;
 import static util.Arrays.deepCopyOf;
 import static util.Checks.requireNonNegative;
 
+/**
+ * Abstract base class for all Sudoku-like puzzles like {@link Sudoku} and {@link Killer} with the additional constraint
+ * of sub-grids with unique values.
+ * <p>
+ * This class provides the following public interface in addition to {@link AbstractPuzzle}:
+ * <ul>
+ * <li>{@link #getSubGridSize()} - for providing information about the sub-grids of an AbstractSudoku</li>
+ * </ul>
+ *
+ * @author Luca Kellermann
+ */
 public abstract class AbstractSudoku extends AbstractPuzzle {
 
     protected final int subGridSize;

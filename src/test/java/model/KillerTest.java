@@ -17,6 +17,9 @@ import static java.util.Arrays.deepEquals;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
+/**
+ * @author Luca Kellermann
+ */
 @DisplayName("Killer")
 public class KillerTest {
 
@@ -106,7 +109,7 @@ public class KillerTest {
     @Test
     @DisplayName("should not set cell with invalid number")
     void shouldNotSetCellWithInvalidNumber() {
-        Killer.SetResult result;
+        Killer.SetCellResult result;
 
         result = killer.setCell(0, 0, 4); // higher number than sum of group
         assertFalse(result.isSuccess());
@@ -114,18 +117,18 @@ public class KillerTest {
         assertEquals(Killer.EMPTY_CELL, killer.getCell(0, 0));
 
         result = killer.setCell(0, 0, killer.getGridSize() + 1); // number too big
-        assertSame(Killer.SetResult.INVALID_VALUE, result);
+        assertSame(Killer.SetCellResult.INVALID_VALUE, result);
         assertEquals(Killer.EMPTY_CELL, killer.getCell(0, 0));
 
         result = killer.setCell(0, 0, Killer.EMPTY_CELL - 1); // number too small
-        assertSame(Killer.SetResult.INVALID_VALUE, result);
+        assertSame(Killer.SetCellResult.INVALID_VALUE, result);
         assertEquals(Killer.EMPTY_CELL, killer.getCell(0, 0));
     }
 
     @Test
     @DisplayName("should set cell with valid number")
     void shouldSetCellWithValidNumber() {
-        assertSame(Killer.SetResult.SUCCESS, killer.setCell(0, 0, 2)); // 2 is valid, see solution
+        assertSame(Killer.SetCellResult.SUCCESS, killer.setCell(0, 0, 2)); // 2 is valid, see solution
         assertEquals(2, killer.getCell(0, 0));
     }
 
@@ -133,7 +136,7 @@ public class KillerTest {
     @MethodSource("allCellRowsAndColumnsForGrid")
     @DisplayName("should set any cell with Killer.EMPTY_CELL")
     void shouldSetAnyCellWithKillerEmptyCell(final int row, final int column) {
-        assertSame(Killer.SetResult.SUCCESS, solution.setCell(row, column, Killer.EMPTY_CELL));
+        assertSame(Killer.SetCellResult.SUCCESS, solution.setCell(row, column, Killer.EMPTY_CELL));
         assertEquals(Killer.EMPTY_CELL, solution.getCell(row, column));
     }
 

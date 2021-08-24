@@ -15,6 +15,9 @@ import static java.util.Arrays.deepEquals;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
+/**
+ * @author Luca Kellermann
+ */
 @DisplayName("Sudoku")
 class SudokuTest {
 
@@ -84,10 +87,10 @@ class SudokuTest {
     @Test
     @DisplayName("should not set cell with invalid number")
     void shouldNotSetCellWithInvalidNumber() {
-        Sudoku.SetResult result;
+        Sudoku.SetCellResult result;
 
         result = sudoku.setCell(0, 0, sudoku.getGridSize() + 1); // number too big
-        assertSame(Sudoku.SetResult.INVALID_VALUE, result);
+        assertSame(Sudoku.SetCellResult.INVALID_VALUE, result);
         assertEquals(Sudoku.EMPTY_CELL, sudoku.getCell(0, 0));
 
         result = sudoku.setCell(0, 0, 2); // 2 is already in same row, see grid
@@ -97,14 +100,14 @@ class SudokuTest {
         assertEquals(Sudoku.EMPTY_CELL, sudoku.getCell(0, 0));
 
         result = sudoku.setCell(0, 0, Sudoku.EMPTY_CELL - 1); // number too small
-        assertSame(Sudoku.SetResult.INVALID_VALUE, result);
+        assertSame(Sudoku.SetCellResult.INVALID_VALUE, result);
         assertEquals(Sudoku.EMPTY_CELL, sudoku.getCell(0, 0));
     }
 
     @Test
     @DisplayName("should set cell with valid number")
     void shouldSetCellWithValidNumber() {
-        assertSame(Sudoku.SetResult.SUCCESS, sudoku.setCell(0, 0, 3)); // 3 is valid, see solution
+        assertSame(Sudoku.SetCellResult.SUCCESS, sudoku.setCell(0, 0, 3)); // 3 is valid, see solution
         assertEquals(3, sudoku.getCell(0, 0));
     }
 
@@ -112,10 +115,10 @@ class SudokuTest {
     @MethodSource("allCellRowsAndColumnsForGrid")
     @DisplayName("should set any cell with Sudoku.EMPTY_CELL")
     void shouldSetAnyCellWithSudokuEmptyCell(final int row, final int column) {
-        assertSame(Sudoku.SetResult.SUCCESS, sudoku.setCell(row, column, Sudoku.EMPTY_CELL));
+        assertSame(Sudoku.SetCellResult.SUCCESS, sudoku.setCell(row, column, Sudoku.EMPTY_CELL));
         assertEquals(Sudoku.EMPTY_CELL, sudoku.getCell(row, column));
 
-        assertSame(Sudoku.SetResult.SUCCESS, solution.setCell(row, column, Sudoku.EMPTY_CELL));
+        assertSame(Sudoku.SetCellResult.SUCCESS, solution.setCell(row, column, Sudoku.EMPTY_CELL));
         assertEquals(Sudoku.EMPTY_CELL, solution.getCell(row, column));
     }
 

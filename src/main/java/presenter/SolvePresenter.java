@@ -2,7 +2,7 @@ package presenter;
 
 import model.AbstractPuzzle;
 import model.AbstractPuzzle.Cell;
-import model.AbstractPuzzle.SetResult;
+import model.AbstractPuzzle.SetCellResult;
 import model.Killer;
 import model.Str8ts;
 import model.Sudoku;
@@ -58,8 +58,8 @@ public abstract class SolvePresenter implements Presenter{
             case NUMBER -> {
                 if (!clickedCell.isPredefined()) {
                     int number = button.getValue();
-                    final SetResult result = sudoku.setCell(clickedCell.getRow(), clickedCell.getCol(), number);
-                    if (result == SetResult.INVALID_VALUE) {
+                    final SetCellResult result = sudoku.setCell(clickedCell.getRow(), clickedCell.getCol(), number);
+                    if (result == SetCellResult.INVALID_VALUE) {
                         throw new IllegalStateException("Tried to set a cell to a number that was out of the valid range: " + number);
                     } else if (result.isSuccess()) {
                         inGameViewScaffold.validInput(String.valueOf(number));

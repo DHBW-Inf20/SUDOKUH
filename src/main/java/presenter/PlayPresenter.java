@@ -2,7 +2,7 @@ package presenter;
 
 import model.AbstractPuzzle;
 import model.AbstractPuzzle.Cell;
-import model.AbstractPuzzle.SetResult;
+import model.AbstractPuzzle.SetCellResult;
 import model.Sudoku;
 import model.SudokuAndSolution;
 import model.SudokuGenerator;
@@ -127,8 +127,8 @@ public class PlayPresenter implements Presenter{
                         }
                         inGameViewScaffold.setNote(number);
                     } else {
-                        final SetResult result = sudoku.setCell(clickedCell.getRow(), clickedCell.getCol(), number);
-                        if (result == SetResult.SUCCESS) {
+                        final SetCellResult result = sudoku.setCell(clickedCell.getRow(), clickedCell.getCol(), number);
+                        if (result == SetCellResult.SUCCESS) {
                             inGameViewScaffold.validInput(String.valueOf(number));
                             this.verifySolution();
                         } else {
@@ -156,7 +156,7 @@ public class PlayPresenter implements Presenter{
                     if (tipLimit >= tipsUsed) {
                         inGameViewScaffold.validInput(String.valueOf(solution.getCell(clickedCell.getRow(), clickedCell.getCol())), (tipLimit - tipsUsed));
                         inGameViewScaffold.setPredefined(clickedCell.getRow(), clickedCell.getCol(), solution.getCell(clickedCell.getRow(), clickedCell.getCol()));
-                        final SetResult result = sudoku.setCell(clickedCell.getRow(), clickedCell.getCol(), solution.getCell(clickedCell.getRow(), clickedCell.getCol()));
+                        final SetCellResult result = sudoku.setCell(clickedCell.getRow(), clickedCell.getCol(), solution.getCell(clickedCell.getRow(), clickedCell.getCol()));
                         if (!result.isSuccess()) {
                             final Set<Cell> conflicts = result.conflictingCells();
                             if (!conflicts.isEmpty()) {

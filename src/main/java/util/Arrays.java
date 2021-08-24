@@ -3,6 +3,11 @@ package util;
 import static java.lang.reflect.Array.newInstance;
 import static java.util.Arrays.copyOf;
 
+/**
+ * Uninstantiable class with static array related utility methods.
+ *
+ * @author Luca Kellermann
+ */
 public final class Arrays {
 
     public static int[][] deepCopyOf(final int[][] original) {

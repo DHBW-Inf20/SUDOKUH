@@ -4,6 +4,17 @@ import java.util.Random;
 
 import static java.util.Arrays.deepToString;
 
+/**
+ * Concrete final implementation of {@link AbstractSudoku}.
+ * <p>
+ * This class provides the following public interface in addition to {@link AbstractSudoku}:
+ * <ul>
+ * <li>{@link #DEFAULT_SUB_GRID_SIZE} and {@link #DEFAULT_GRID_SIZE} - default value constants</li>
+ * <li>{@link #getCopy()} - for creating new instances with the state of another instance</li>
+ * </ul>
+ *
+ * @author Luca Kellermann
+ */
 public final class Sudoku extends AbstractSudoku {
 
     public static final int DEFAULT_SUB_GRID_SIZE = 3;

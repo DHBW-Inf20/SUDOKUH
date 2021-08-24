@@ -9,6 +9,11 @@ import java.util.Random;
 import static java.util.Collections.shuffle;
 import static model.AbstractPuzzle.SolveResult;
 
+/**
+ * Uninstantiable class with a static method to generate a random unsolved {@link Sudoku} and its solution.
+ *
+ * @author Luca Kellermann
+ */
 public final class SudokuGenerator {
 
     public static SudokuAndSolution generateSudokuAndSolution(final int subGridSize) {

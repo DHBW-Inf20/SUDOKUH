@@ -1,7 +1,5 @@
 package model;
 
-import org.jetbrains.annotations.Nullable;
-
 import java.util.*;
 
 import static java.util.Arrays.deepToString;
@@ -10,6 +8,24 @@ import static java.util.List.copyOf;
 import static java.util.Objects.hash;
 import static java.util.stream.Collectors.toSet;
 
+/**
+ * Concrete final implementation of {@link AbstractSudoku} with the additional constraint of groups of cells that must
+ * have a certain sum and consist of unique values.
+ * <p>
+ * This class provides the following public interface in addition to {@link AbstractSudoku}:
+ * <ul>
+ * <li>{@link #SUB_GRID_SIZE}, {@link #GRID_SIZE}, {@link #MIN_GROUP_AMOUNT} and {@link #TOTAL_SUM} - constants</li>
+ * <li>
+ * {@link Group Group}, {@link GroupsUpdateResult GroupsUpdateResult}, {@link #getGroups()},
+ * {@link #getGroupForCell(int, int) getGroupForCell()},
+ * {@link #putCellIntoExistingGroup(int, int, Group) putCellIntoNewGroup()},
+ * {@link #setSumForGroup(Group, int) setSumForGroup()}, {@link #removeCellFromGroup(int, int) removeCellFromGroup()}
+ * and {@link #removeGroup(Group) removeGroup()} - for managing the groups of a Killer
+ * </li>
+ * </ul>
+ *
+ * @author Luca Kellermann
+ */
 public final class Killer extends AbstractSudoku {
 
     /**
@@ -262,7 +278,6 @@ public final class Killer extends AbstractSudoku {
      * Returns the {@link Group group} that the cell in the specified {@code row} and {@code column} is part of or
      * {@code null} if the cell is in no group.
      */
-    @Nullable
     public Group getGroupForCell(final int row, final int column) {
         return groupsForCells.get(new Cell(row, column));
     }

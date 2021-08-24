@@ -1,6 +1,7 @@
 package presenter;
 
 import model.AbstractPuzzle;
+import model.AbstractPuzzle.SetCellResult;
 import view.CustomButton;
 import view.LabelPanel;
 import view.ingame.InGameViewScaffold;
@@ -33,8 +34,8 @@ public class SolveStr8tsPresenter extends SolvePresenter {
             case NUMBER -> {
                 if (!clickedCell.isPredefined()) {
                     int number = button.getValue();
-                    final AbstractPuzzle.SetResult result = sudoku.setCell(clickedCell.getRow(), clickedCell.getCol(), number);
-                    if (result == AbstractPuzzle.SetResult.INVALID_VALUE) {
+                    final SetCellResult result = sudoku.setCell(clickedCell.getRow(), clickedCell.getCol(), number);
+                    if (result == SetCellResult.INVALID_VALUE) {
                         throw new IllegalStateException("Tried to set a cell to a number that was out of the valid range: " + number);
                     } else if (result.isSuccess()) {
                         inGameViewScaffold.validInput(String.valueOf(number));

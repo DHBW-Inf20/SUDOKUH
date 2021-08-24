@@ -9,6 +9,22 @@ import static model.Str8ts.Color.WHITE;
 import static util.Arrays.deepCopyOf;
 import static util.Arrays.twoLevelCopyOf;
 
+/**
+ * Concrete final implementation of {@link AbstractPuzzle} with the additional constraints of colored cells (white cells
+ * are just like every other cell in an AbstractPuzzle, black cells can be empty) and straights (each compartment of
+ * white cells must contain a set of consecutive numbers in any order).
+ * <p>
+ * This class provides the following public interface in addition to {@link AbstractPuzzle}:
+ * <ul>
+ * <li>{@link #GRID_SIZE} - constant</li>
+ * <li>
+ * {@link Color Color}, {@link #getColor(int, int) getColor()} and {@link #setColor(int, int, Color) setColor()} - for
+ * managing the colors of a Str8ts
+ * </li>
+ * </ul>
+ *
+ * @author Luca Kellermann
+ */
 public final class Str8ts extends AbstractPuzzle {
 
     /**
