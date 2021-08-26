@@ -44,7 +44,7 @@ public class KillerTest {
             {4, 3, 7,/**/ 1, 6, 5,/**/ 2, 8, 9},
     };
 
-    private static final List<Killer.Group> groups = List.of(
+    private static final Set<Killer.Group> groups = Set.of(
             new Killer.Group(Set.of(new Cell(0, 0), new Cell(0, 1)), 3),
             new Killer.Group(Set.of(new Cell(0, 2), new Cell(0, 3), new Cell(0, 4)), 15),
             new Killer.Group(Set.of(new Cell(0, 5), new Cell(1, 4), new Cell(1, 5), new Cell(2, 4)), 22),

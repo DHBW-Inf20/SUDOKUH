@@ -1,8 +1,10 @@
 package presenter;
 
 import model.AbstractPuzzle;
+import model.AbstractPuzzle.Cell;
 import model.AbstractPuzzle.SetCellResult;
 import model.Killer;
+import model.Killer.GroupsUpdateResult;
 import view.CustomButton;
 import view.GroupPopUpWindow;
 import view.LabelPanel;
@@ -11,6 +13,8 @@ import view.ingame.InGameViewScaffold;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Set;
+
+import static java.util.stream.Collectors.toSet;
 
 public class SolveKillerPresenter extends SolvePresenter {
 
@@ -27,7 +31,7 @@ public class SolveKillerPresenter extends SolvePresenter {
      * Handles the button events and triggers actions based on the clicked button
      */
     @Override
-    public void handleButton(CustomButton button){
+    public void handleButton(CustomButton button) {
         LabelPanel clickedCell = inGameViewScaffold.getClicked();
         switch (button.getType()) {
             case NUMBER -> {
@@ -39,8 +43,8 @@ public class SolveKillerPresenter extends SolvePresenter {
                     } else if (result.isSuccess()) {
                         inGameViewScaffold.validInput(String.valueOf(number));
                     } else {
-                        final Set<AbstractPuzzle.Cell> conflicts = result.conflictingCells();
-                        for (AbstractPuzzle.Cell c : conflicts) {
+                        final Set<Cell> conflicts = result.conflictingCells();
+                        for (Cell c : conflicts) {
                             inGameViewScaffold.highlightConflicts(c);
                         }
                         inGameViewScaffold.invalidInput(String.valueOf(number));
@@ -78,7 +82,7 @@ public class SolveKillerPresenter extends SolvePresenter {
                 }
             }
             case CHOOSEGROUP -> {
-                if(!editGroup) {
+                if (!editGroup) {
                     chooseGroup = !chooseGroup;
                     if (chooseGroup) {
                         inGameViewScaffold.setChooseMode();
@@ -91,12 +95,12 @@ public class SolveKillerPresenter extends SolvePresenter {
                 }
             }
             case REMOVEGROUP -> {
-                if(chooseGroup) {
+                if (chooseGroup) {
                     chooseGroup = false;
                     inGameViewScaffold.setNoChooseMode();
                 } else {
                     ArrayList<LabelPanel> group = inGameViewScaffold.removeGroup(clickedCell);
-                    if(group != null) {
+                    if (group != null) {
                         if (!group.isEmpty())
                             ((model.Killer) sudoku).removeGroup(((model.Killer) sudoku).getGroupForCell(group.get(0).getRow(), group.get(0).getCol()));
                         for (LabelPanel l : group) {
@@ -106,11 +110,11 @@ public class SolveKillerPresenter extends SolvePresenter {
                 }
             }
             case EDITGROUP -> {
-                if(!chooseGroup) {
+                if (!chooseGroup) {
                     editGroup = !editGroup;
                     if (editGroup) {
                         ArrayList<LabelPanel> group = inGameViewScaffold.removeGroup(clickedCell);
-                        if(group != null) {
+                        if (group != null) {
                             if (!group.isEmpty())
                                 ((model.Killer) sudoku).removeGroup(((model.Killer) sudoku).getGroupForCell(group.get(0).getRow(), group.get(0).getCol()));
                             inGameViewScaffold.setEditMode(group);
@@ -133,7 +137,6 @@ public class SolveKillerPresenter extends SolvePresenter {
     }
 
     private void saveGroup(ArrayList<LabelPanel> group) {
-        model.Killer.Group cellGroup = null;
         if (!group.isEmpty()) {
             GroupPopUpWindow userInput = new GroupPopUpWindow(group);
             int sum = userInput.getSum();
@@ -144,21 +147,20 @@ public class SolveKillerPresenter extends SolvePresenter {
             } else if (sum == -2) {
                 inGameViewScaffold.setGUIText("Logisch inkorrekte Summe!", Color.red);
             } else {
-                for (LabelPanel l : group) {
-                    if (cellGroup != null) {
-                        if (((Killer) sudoku).putCellIntoExistingGroup(l.getRow(), l.getCol(), cellGroup).isSuccess()) {
-                            inGameViewScaffold.addGroup(group, sum);
-                        } else {
-                            inGameViewScaffold.setGUIText("Logisch inkorrekte Summe!", Color.red);
-                        }
-                    } else {
-                        if (((model.Killer) sudoku).putCellIntoNewGroup(l.getRow(), l.getCol(), sum).isSuccess()) {
-                            inGameViewScaffold.addGroup(group, sum);
-                        } else {
-                            inGameViewScaffold.setGUIText("Logisch inkorrekte Summe!", Color.red);
-                        }
-                    }
-                    cellGroup = ((model.Killer) sudoku).getGroupForCell(l.getRow(), l.getCol());
+                final Set<Cell> cells = group.stream().map(it -> new Cell(it.getRow(), it.getCol())).collect(toSet());
+                final GroupsUpdateResult result = ((Killer) sudoku).putCellsIntoNewGroup(cells, sum);
+
+                if (result.isSuccess()) {
+                    inGameViewScaffold.addGroup(group, sum);
+                } else {
+                    inGameViewScaffold.setGUIText(switch (result.failureReason()) {
+                        case GROUP_VALUES_NOT_UNIQUE -> "Dies würde zu Gruppen mit doppelt vorkommenden Werten führen!";
+                        case GROUP_SUM_NOT_VALID -> "Die Summe ist ungültig!";
+                        case GROUP_IS_EMPTY -> "Es können keine leeren Gruppen hinzugefügt werden!";
+                        case GROUP_HAS_TOO_MANY_CELLS -> "Gruppen können maximal " + Killer.Group.MAX_CELLS + " Feldern haben!";
+                        case GROUP_CELLS_ARE_NOT_CONNECTED -> "Dies würde zu Gruppen mit nicht zusammenhängenden Feldern führen!";
+                        case GROUP_NOT_PART_OF_KILLER -> throw new IllegalStateException("Unexpected result for Killer#putCellsIntNewGroup()");
+                    }, Color.red);
                 }
             }
         }

@@ -1,11 +1,15 @@
 package model;
 
+import model.Killer.GroupsUpdateResult.FailureReason;
+
 import java.util.*;
 
 import static java.util.Arrays.deepToString;
+import static java.util.Collections.emptySet;
 import static java.util.Collections.unmodifiableSet;
-import static java.util.List.copyOf;
 import static java.util.Objects.hash;
+import static java.util.Set.copyOf;
+import static java.util.function.Predicate.not;
 import static java.util.stream.Collectors.toSet;
 
 /**
@@ -17,9 +21,7 @@ import static java.util.stream.Collectors.toSet;
  * <li>{@link #SUB_GRID_SIZE}, {@link #GRID_SIZE}, {@link #MIN_GROUP_AMOUNT} and {@link #TOTAL_SUM} - constants</li>
  * <li>
  * {@link Group Group}, {@link GroupsUpdateResult GroupsUpdateResult}, {@link #getGroups()},
- * {@link #getGroupForCell(int, int) getGroupForCell()},
- * {@link #putCellIntoExistingGroup(int, int, Group) putCellIntoNewGroup()},
- * {@link #setSumForGroup(Group, int) setSumForGroup()}, {@link #removeCellFromGroup(int, int) removeCellFromGroup()}
+ * {@link #getGroupForCell(int, int) getGroupForCell()}, {@link #putCellsIntoNewGroup(Set, int) putCellsIntoNewGroup()}
  * and {@link #removeGroup(Group) removeGroup()} - for managing the groups of a Killer
  * </li>
  * </ul>
@@ -41,17 +43,36 @@ public final class Killer extends AbstractSudoku {
          * The maximum {@link #sum} that a Group is allowed to have.
          */
         public static final int MAX_SUM = 1 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9; // 45, no duplicates allowed
+
+        /**
+         * The maximum amount of cells a Group is allowed to have.
+         */
+        public static final int MAX_CELLS = 9;
     }
 
     /**
-     * Result of group update operations like
-     * {@link #putCellIntoExistingGroup(int, int, Group) putCellIntoExistingGroup()}.
+     * Result of group update operations like {@link #putCellsIntoNewGroup(Set, int) putCellsIntoNewGroup()}.
      *
-     * @param isSuccess whether the update operation was successful
-     * @param groups    a {@link List} of {@link Group groups} that represent the state of all groups of a Killer after
-     *                  the update operation (will be the same as before if {@code isSuccess} is {@code false})
+     * @param isSuccess     whether the update operation was successful
+     * @param failureReason the {@link FailureReason reason} why this update operation failed, {@code null} otherwise
+     * @param groups        a {@link Set} of {@link Group groups} that represent the state of all groups of a Killer
+     *                      after the update operation (will be the same as before if {@code isSuccess} is
+     *                      {@code false})
      */
-    public static final record GroupsUpdateResult(boolean isSuccess, List<Group> groups) {}
+    public static final record GroupsUpdateResult(boolean isSuccess, FailureReason failureReason, Set<Group> groups) {
+
+        /**
+         * Reason why a group update operation failed.
+         */
+        public enum FailureReason {
+            GROUP_NOT_PART_OF_KILLER,
+            GROUP_VALUES_NOT_UNIQUE,
+            GROUP_SUM_NOT_VALID,
+            GROUP_IS_EMPTY,
+            GROUP_HAS_TOO_MANY_CELLS,
+            GROUP_CELLS_ARE_NOT_CONNECTED,
+        }
+    }
 
 
     public static final int SUB_GRID_SIZE = 3;
@@ -70,8 +91,7 @@ public final class Killer extends AbstractSudoku {
     public static final int TOTAL_SUM = (1 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9) * 9; // 405
 
 
-    private final List<Group> groups = new ArrayList<>();
-    private final Map<Group, Integer> groupIndices = new HashMap<>();
+    private final Set<Group> groups = new HashSet<>();
     private final Map<Cell, Group> groupsForCells = new HashMap<>(getNumberOfCells());
 
 
@@ -84,12 +104,10 @@ public final class Killer extends AbstractSudoku {
     }
 
     // package-private constructor for tests
-    Killer(final int[][] grid, final List<Group> groups) {
+    Killer(final int[][] grid, final Set<Group> groups) {
         super(grid);
-        this.groups.addAll(copyOf(groups)); // shallow copy ok, Group and Group#cells are immutable
-        int index = 0;
+        this.groups.addAll(groups);
         for (final Group group : this.groups) {
-            groupIndices.put(group, index++);
             for (final Cell cell : group.cells) {
                 groupsForCells.put(cell, group);
             }
@@ -106,46 +124,34 @@ public final class Killer extends AbstractSudoku {
     }
 
 
-    private GroupsUpdateResult createGroupsUpdateFailure() {
-        return new GroupsUpdateResult(false, copyOf(groups));
+    private GroupsUpdateResult newGroupsUpdateFailure(final FailureReason failureReason) {
+        return new GroupsUpdateResult(false, failureReason, copyOf(groups));
     }
 
-    private GroupsUpdateResult createGroupsUpdateSuccess() {
-        return new GroupsUpdateResult(true, copyOf(groups));
+    private GroupsUpdateResult newGroupsUpdateSuccess() {
+        return new GroupsUpdateResult(true, null, copyOf(groups));
     }
 
-    private void updateGroup(final int groupIndex, final Group newGroup) {
+    private FailureReason reasonWhyGroupIsInvalid(final Group group) {
+        return group.cells.isEmpty()
+                ? FailureReason.GROUP_IS_EMPTY
+                : reasonWhyGroupIsInvalidWithoutCells(group, emptySet());
+    }
 
-        // replace in list and update index in map
-        final Group oldGroup = groups.set(groupIndex, newGroup);
-        groupIndices.remove(oldGroup);
-        groupIndices.put(newGroup, groupIndex);
+    private FailureReason reasonWhyGroupIsInvalidWithoutCells(final Group group, final Set<Cell> withoutCells) {
 
-        // update group for all cells in newGroup (does not update them for oldGroup)
-        for (final Cell cell : newGroup.cells) {
-            groupsForCells.put(cell, newGroup);
+        if (group.sum < 1 || group.sum > Group.MAX_SUM) {
+            return FailureReason.GROUP_SUM_NOT_VALID;
         }
-    }
 
-    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-    private boolean groupIsValid(final Group group) {
-        return groupIsValid(group, null, null);
-    }
+        final Set<Cell> cells = group.cells.stream().filter(not(withoutCells::contains)).collect(toSet());
 
-    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-    private boolean groupIsValidWithoutCell(final Group group, final Cell withoutCell) {
-        return groupIsValid(group, null, withoutCell);
-    }
+        if (cells.size() > Group.MAX_CELLS) {
+            return FailureReason.GROUP_HAS_TOO_MANY_CELLS;
+        }
 
-    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-    private boolean groupIsValidWithAdditionalCell(final Group group, final Cell additionalCell) {
-        return groupIsValid(group, additionalCell, null);
-    }
-
-    private boolean groupIsValid(final Group group, Cell additionalCell, final Cell withoutCell) {
-
-        if (group == null) {
-            return true;
+        if (!allCellsAreConnected(cells)) {
+            return FailureReason.GROUP_CELLS_ARE_NOT_CONNECTED;
         }
 
         // occurrences[n] == true -> cell value n + 1 already occurred in this group
@@ -154,21 +160,7 @@ public final class Killer extends AbstractSudoku {
         boolean hasEmptyCells = false;
 
         // calculate sum and check for double occurrences
-        final Iterator<Cell> cellIterator = group.cells.iterator();
-        while (additionalCell != null || cellIterator.hasNext()) {
-
-            final Cell cell;
-            if (additionalCell != null) {
-                cell = additionalCell;
-                additionalCell = null;
-            } else {
-                cell = cellIterator.next();
-            }
-
-            if (cell.equals(withoutCell)) {
-                continue;
-            }
-
+        for (final Cell cell : cells) {
             final int cellValue = grid[cell.row()][cell.column()];
 
             if (cellValue == EMPTY_CELL) {
@@ -179,17 +171,25 @@ public final class Killer extends AbstractSudoku {
 
                 // cellValue already occurred in this group
                 if (occurrences[cellValue - 1]) {
-                    return false;
+                    return FailureReason.GROUP_VALUES_NOT_UNIQUE;
                 }
                 occurrences[cellValue - 1] = true;
             }
         }
 
-        return (hasEmptyCells && sum < group.sum) || (!hasEmptyCells && sum == group.sum);
+        final boolean sumIsValid = (hasEmptyCells && sum < group.sum) || (!hasEmptyCells && sum == group.sum);
+
+        return sumIsValid ? null : FailureReason.GROUP_SUM_NOT_VALID;
     }
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     private boolean allCellsAreConnected(final Set<Cell> cells) {
+        return allCellsAreConnectedWithoutCells(cells, emptySet());
+    }
+
+    private boolean allCellsAreConnectedWithoutCells(Set<Cell> cells, final Set<Cell> withoutCells) {
+
+        cells = cells.stream().filter(not(withoutCells::contains)).collect(toSet());
 
         // a single cell is always connected
         final int cellCount = cells.size();
@@ -217,60 +217,18 @@ public final class Killer extends AbstractSudoku {
         }
     }
 
-    private boolean remove(final Cell cell) {
-
-        final Group group = groupsForCells.get(cell);
-        if (group == null) { // cell is in no group
-            return true;
-        } else if (group.cells.size() <= 1) { // group only consists of cell -> remove whole group
-            return remove(group);
-        }
-
-        // keep all cells except cell
-        final Set<Cell> newCells = group.cells.stream().filter(c -> !c.equals(cell)).collect(toSet());
-
-        if (!allCellsAreConnected(newCells)) {
-            return false;
-        }
-
-        final Group newGroup = new Group(unmodifiableSet(newCells), group.sum);
-
-        // replace group with newGroup and update maps
-        groupsForCells.remove(cell);
-        groups.set(groupIndices.get(group), newGroup);
-        for (final Cell c : newCells) {
-            groupsForCells.put(c, newGroup);
-        }
-
-        return true;
-    }
-
-    private boolean remove(final Group group) {
-
-        final Integer index = groupIndices.get(group);
-        if (index == null) {
-            return false;
-        }
-
+    private void remove(final Group group) {
         // remove all references to group
-        groups.remove(index.intValue()); // remove(index) would try to remove the index object
-        groupIndices.remove(group);
+        groups.remove(group);
         for (final Cell cell : group.cells) {
             groupsForCells.remove(cell);
         }
-
-        // update every groupIndex >= index in the groupIndices map
-        for (int groupIndex = index; index < groups.size(); groupIndex++) {
-            groupIndices.put(groups.get(groupIndex), groupIndex);
-        }
-
-        return true;
     }
 
     /**
      * Returns an unmodifiable snapshot of the groups in this Killer.
      */
-    public List<Group> getGroups() {
+    public Set<Group> getGroups() {
         return copyOf(groups);
     }
 
@@ -283,129 +241,78 @@ public final class Killer extends AbstractSudoku {
     }
 
     /**
-     * Trys to put the cell in the specified {@code row} and {@code column} into a new {@link Group group} and removes
-     * it from the group it was previously part of (if any).
-     * <p>This will not work if {@code sum} is not in the valid range from {@code 1} to
-     * {@link Group#MAX_SUM Group#MAX_SUM} (both inclusive) or the removal of the cell from its previous group would
-     * lead to a group with unconnected cells or an invalid sum.</p>
+     * Trys to put the specified {@link Set} of {@link model.AbstractPuzzle.Cell cells} into a new {@link Group group}
+     * and removes them from the groups they were previously part of (if any).
      *
      * @param sum the {@link Group#sum sum} that the newly created {@link Group group} is supposed to have
-     * @return a {@link GroupsUpdateResult GroupsUpdateResult}
+     * @return a {@link GroupsUpdateResult GroupsUpdateResult} that provides information about the result of this
+     * operation
      * @see GroupsUpdateResult GroupsUpdateResult
      */
-    public GroupsUpdateResult putCellIntoNewGroup(final int row, final int column, final int sum) {
+    public GroupsUpdateResult putCellsIntoNewGroup(final Set<Cell> cells, final int sum) {
 
-        // check for invalid sum
-        if (sum < 1 || sum > Group.MAX_SUM) {
-            return createGroupsUpdateFailure();
+        final Group newGroup = new Group(copyOf(cells), sum);
+        FailureReason reason = reasonWhyGroupIsInvalid(newGroup);
+        if (reason != null) {
+            return newGroupsUpdateFailure(reason);
         }
 
-        final Cell cell = new Cell(row, column);
-        // check if old group would be valid without cell and if removal from previous group was successful
-        if (!groupIsValidWithoutCell(groupsForCells.get(cell), cell) || !remove(cell)) {
-            return createGroupsUpdateFailure();
+        final Set<Group> groups = cells.stream().map(groupsForCells::get).filter(Objects::nonNull).collect(toSet());
+
+        for (final Group group : groups) {
+            // check if old groups would be valid without cells
+            reason = reasonWhyGroupIsInvalidWithoutCells(group, cells);
+            if (reason != null) {
+                return newGroupsUpdateFailure(reason);
+            }
         }
 
-        final Group newGroup = new Group(Set.of(cell), sum);
-        final int index = groups.size(); // will be added to end of groups
+        // remove cells after checking if valid
+        for (final Group group : groups) {
 
-        // add the new group and update maps
-        groups.add(newGroup);
-        groupIndices.put(newGroup, index);
-        groupsForCells.put(cell, newGroup);
+            final Set<Cell> oldCells = group.cells;
+            final Set<Cell> updatedCells = oldCells.stream().filter(not(cells::contains)).collect(toSet());
 
-        return createGroupsUpdateSuccess();
-    }
+            if (updatedCells.isEmpty()) {
+                remove(group);
+            } else {
+                final Group updatedGroup = new Group(unmodifiableSet(updatedCells), group.sum);
 
-    /**
-     * Trys to put the cell in the specified {@code row} and {@code column} into an existing {@link Group group} and
-     * removes it from the group it was previously part of (if any).
-     * <p>This will not work if {@code group} is no longer part of this Killer (also happens after updates to the
-     * group) or the removal of the cell from its previous group / addition of the cell to {@code group} would lead to a
-     * group with unconnected cells or an invalid sum.</p>
-     *
-     * @return a {@link GroupsUpdateResult GroupsUpdateResult}
-     * @see GroupsUpdateResult GroupsUpdateResult
-     */
-    public GroupsUpdateResult putCellIntoExistingGroup(final int row, final int column, final Group group) {
+                // replace old group with newGroup
+                this.groups.remove(group);
+                this.groups.add(updatedGroup);
+                for (final Cell cell : updatedCells) {
+                    groupsForCells.put(cell, updatedGroup);
+                }
 
-        // was removed, updated or did never exist
-        if (groupIndices.get(group) == null) {
-            return createGroupsUpdateFailure();
+                // remove group mappings for removed cells
+                oldCells.stream().filter(cells::contains).forEach(groupsForCells::remove);
+            }
         }
 
-        final Cell cell = new Cell(row, column);
-        if (!groupIsValidWithoutCell(groupsForCells.get(cell), cell) // old group valid without cell?
-                || !groupIsValidWithAdditionalCell(group, cell)      // new group valid with additional cell?
-                || !remove(cell)) {                                  // removal from previous group successful?
-            return createGroupsUpdateFailure();
+        this.groups.add(newGroup);
+        for (final Cell cell : cells) {
+            groupsForCells.put(cell, newGroup);
         }
 
-        // add the cell to a copy of the group and replace the group
-        final Set<Cell> newCells = new HashSet<>(group.cells);
-        newCells.add(cell);
-        if (!allCellsAreConnected(newCells)) {
-            return createGroupsUpdateFailure();
-        }
-        // remove might have changed groupIndices -> get index again
-        updateGroup(groupIndices.get(group), new Group(unmodifiableSet(newCells), group.sum));
-
-        return createGroupsUpdateSuccess();
-    }
-
-    /**
-     * Trys to set the sum of the specified {@code group} to {@code sum}.
-     * <p>This will not work if {@code sum} is not in the valid range from {@code 1} to
-     * {@link Group#MAX_SUM Group#MAX_SUM} (both inclusive) or if {@code group} is no longer part of this Killer (also
-     * happens after updates to the group).</p>
-     *
-     * @return a {@link GroupsUpdateResult GroupsUpdateResult}
-     * @see GroupsUpdateResult GroupsUpdateResult
-     */
-    public GroupsUpdateResult setSumForGroup(final Group group, final int sum) {
-
-        // check for invalid sum
-        if (sum < 1 || sum > Group.MAX_SUM) {
-            return createGroupsUpdateFailure();
-        }
-
-        final Integer index = groupIndices.get(group);
-        if (index == null) { // was removed, updated or did never exist
-            return createGroupsUpdateFailure();
-        }
-
-        final Group newGroup = new Group(group.cells, sum);
-        if (!groupIsValid(newGroup)) { // sum is not valid for this group
-            return createGroupsUpdateFailure();
-        }
-
-        // replace with copy with updated sum
-        updateGroup(index, newGroup);
-
-        return createGroupsUpdateSuccess();
-    }
-
-    /**
-     * Trys to remove the cell in the specified {@code row} and {@code column} from the {@link Group group} it is part
-     * of.
-     * <p>This will not work if the removal of the cell would lead to a group with unconnected cells.</p>
-     *
-     * @return a {@link GroupsUpdateResult GroupsUpdateResult}
-     * @see GroupsUpdateResult GroupsUpdateResult
-     */
-    public GroupsUpdateResult removeCellFromGroup(final int row, final int column) {
-        return remove(new Cell(row, column)) ? createGroupsUpdateSuccess() : createGroupsUpdateFailure();
+        return newGroupsUpdateSuccess();
     }
 
     /**
      * Trys to remove the specified {@code group}.
      * <p>This will not work if the group is no longer part of this Killer.</p>
      *
-     * @return a {@link GroupsUpdateResult GroupsUpdateResult}
+     * @return a {@link GroupsUpdateResult GroupsUpdateResult} that provides information about the result of this
+     * operation
      * @see GroupsUpdateResult GroupsUpdateResult
      */
     public GroupsUpdateResult removeGroup(final Group group) {
-        return remove(group) ? createGroupsUpdateSuccess() : createGroupsUpdateFailure();
+        if (groups.contains(group)) {
+            remove(group);
+            return newGroupsUpdateSuccess();
+        } else {
+            return newGroupsUpdateFailure(FailureReason.GROUP_NOT_PART_OF_KILLER);
+        }
     }
 
 
@@ -497,11 +404,11 @@ public final class Killer extends AbstractSudoku {
     /**
      * Returns {@code false} if and only if {@link #grid} is a square with {@link #gridSize} {@code *} {@link #gridSize}
      * cells, every cell is either {@link #EMPTY_CELL} or in the valid range from {@code 1} to {@link #gridSize}
-     * (both inclusive), every cell is part of exactly one {@link Group group}, no group is empty, the
-     * {@link Group#sum sum} of each group is in the valid range from {@code 1} to {@link Group#MAX_SUM Group#MAX_SUM}
-     * (both inclusive), all cells in a group are connected, the total sum of all group sums is the same as
-     * {@link #TOTAL_SUM}, there are at least {@link #MIN_GROUP_AMOUNT} groups and there are no
-     * {@link #getConflictingCells(int, int, boolean) conflicts}.
+     * (both inclusive), every cell is part of exactly one {@link Group group}, no group is empty, all groups have at
+     * most {@link Group#MAX_CELLS Group#MAX_CELLS} cells, the {@link Group#sum sum} of each group is in the valid range
+     * from {@code 1} to {@link Group#MAX_SUM Group#MAX_SUM} (both inclusive), all cells in a group are connected, the
+     * total sum of all group sums is the same as {@link #TOTAL_SUM}, there are at least {@link #MIN_GROUP_AMOUNT}
+     * groups and there are no {@link #getConflictingCells(int, int, boolean) conflicts}.
      */
     @Override
     protected boolean isInvalid() {
@@ -520,6 +427,7 @@ public final class Killer extends AbstractSudoku {
             if (group.sum < 1
                     || group.sum > Group.MAX_SUM // sum is not in valid range
                     || group.cells.isEmpty() // group is empty
+                    || group.cells.size() > Group.MAX_CELLS // too many cells
                     || !allCellsAreConnected(group.cells)) { // cells are not connected
                 return true;
             }
