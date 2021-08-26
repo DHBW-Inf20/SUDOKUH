@@ -1,7 +1,6 @@
 package view;
 
 import view.ingame.InGameViewScaffold;
-import view.main_menu.MainMenu;
 
 import javax.swing.*;
 
@@ -10,7 +9,7 @@ import static javax.swing.JOptionPane.*;
 public class AgainPopUpWindow {
 
     public AgainPopUpWindow(InGameViewScaffold frame, util.Mode gamemode, int size, String theme, boolean autoStepForward, boolean highlighting, int tipLimit) {
-        int selectedValue = JOptionPane.showOptionDialog(null, "Neues Spiel starten? Der Fortschritt geht verloren!", "SUDOKUH", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, new String[]{"JA", "NEIN"},"NEIN");
+        int selectedValue = JOptionPane.showOptionDialog(null, "Spielfeld zurücksetzen? Der Fortschritt geht verloren!", "SUDOKUH", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, new String[]{"JA", "NEIN"},"NEIN");
 
         //Button Events
         if(selectedValue == YES_OPTION){

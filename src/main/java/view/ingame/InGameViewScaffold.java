@@ -76,6 +76,7 @@ public class InGameViewScaffold extends JFrame implements ActionListener{
         againButton.setFocusable(false);
         againButton.setBorder(null);
         againButton.addActionListener(this);
+        againButton.setToolTipText("Spielfeld zurücksetzen");
         mainContainer.add(againButton);
 
         homeButton.setBackground(backgroundColor);
@@ -91,6 +92,7 @@ public class InGameViewScaffold extends JFrame implements ActionListener{
         homeButton.setFocusable(false);
         homeButton.setBorder(null);
         homeButton.addActionListener(this);
+        homeButton.setToolTipText("Zum Hauptmenü");
         mainContainer.add(homeButton);
 
         this.setVisible(true);

@@ -33,15 +33,43 @@ public class CustomButton extends JButton {
         this.value = value;
         this.type = type;
         switch (type) {
-            case NUMBER -> setText(Integer.toString(value));
-            case DELETE -> setIcon(new ImageIcon(delete));
-            case SOLVE -> setIcon(new ImageIcon(solve));
-            case TIP -> setIcon(new ImageIcon(tip));
-            case VERIFY -> setIcon(new ImageIcon(verify));
-            case PEN, EDITGROUP -> setIcon(new ImageIcon(pen));
-            case CHANGECOLOR -> setIcon(new ImageIcon(color));
-            case CHOOSEGROUP -> setIcon(new ImageIcon(choosegroup));
-            case REMOVEGROUP -> setIcon(new ImageIcon(removegroup));
+            case NUMBER -> {
+                setText(Integer.toString(value));
+                setToolTipText(Integer.toString(value)+" setzen");
+            }
+            case DELETE -> {
+                setIcon(new ImageIcon(delete));
+                setToolTipText("Löschen");
+            }
+            case SOLVE -> {
+                setIcon(new ImageIcon(solve));
+                setToolTipText("Lösung suchen");
+            }
+            case TIP -> {
+                setIcon(new ImageIcon(tip));
+                setToolTipText("Tipp anzeigen");
+            }
+            case VERIFY -> {
+                setIcon(new ImageIcon(verify));
+                setToolTipText("Lösung überprüfen");
+            }
+            case PEN, EDITGROUP -> {
+                setIcon(new ImageIcon(pen));
+                if(type==Type.PEN)setToolTipText("Stift-Funktion");
+                if(type==Type.EDITGROUP)setToolTipText("Gruppe bearbeiten");
+            }
+            case CHANGECOLOR -> {
+                setIcon(new ImageIcon(color));
+                setToolTipText("Farbe wechseln");
+            }
+            case CHOOSEGROUP -> {
+                setIcon(new ImageIcon(choosegroup));
+                setToolTipText("Gruppe auswählen");
+            }
+            case REMOVEGROUP -> {
+                setIcon(new ImageIcon(removegroup));
+                setToolTipText("Gruppe löschen");
+            }
         }
         setFocusable(false);
         this.setMargin(new Insets(0,0,0,0));
