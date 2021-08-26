@@ -752,6 +752,7 @@ public class SudokuFieldPanel extends JPanel {
         for(LabelPanel l : group) {
             l.setBackground(primaryBackgroundColor);
         }
+        clicked.setBackground(clickedColor);
         return group;
     }
 
@@ -779,6 +780,7 @@ public class SudokuFieldPanel extends JPanel {
         for(LabelPanel l : group) {
             l.setBackground(primaryBackgroundColor);
         }
+        clicked.setBackground(clickedColor);
         return group;
     }
 

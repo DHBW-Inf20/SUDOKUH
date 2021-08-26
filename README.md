@@ -19,7 +19,7 @@ On the right edge there is the buttons menu: Here you have got all the buttons t
 
 On the top there is the information panel: in here you can see relevant information such as the playing time or wether the solution is correct or not (depends on the category). 
 
-On the right top corner there also is the home-button. Clicking on this button will bring you back to the home menu. All actions taken in the games will be deleted.
+On the right top corner there also is the home-button and the play-again-button. Clicking on the home-button will bring you back to the home menu. Clicking on the play-again-button will reopen the same game category with the same settings. In both cases all actions taken in the games will be deleted.
 
 ## Categories
 ### Play Sudoku
