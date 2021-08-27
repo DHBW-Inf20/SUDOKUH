@@ -61,10 +61,14 @@ public class RightControlsPanel extends JPanel {
         secondaryTextColor = t.getSecondaryTextColor();
         errorTextColor = t.getErrorTextColor();
         borderColor = t.getBorderColor();
-        panelBackgroundColor = t.getPanelBackgroundColor();
+        panelBackgroundColor = t.getMenuBackgroundColor();
 
+        //Layout for buttons
+        GridLayout layout = new GridLayout(gridSize + 1, gridSize);
+        layout.setHgap(12);
+        layout.setVgap(12);
+        this.setLayout(layout);
         // Buttons for input
-        this.setLayout(new GridLayout(gridSize + 1, gridSize));
         this.setBackground(primaryBackgroundColor);
         this.setForeground(primaryTextColor);
         for (int i = 1; i <= gridSize * gridSize; i++) {

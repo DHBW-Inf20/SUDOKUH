@@ -357,6 +357,3 @@ public class InGameViewScaffold extends JFrame implements ActionListener{
         return sudokuFieldPanel.removeGroup(cell);
     }
 }
-
-
-// TODO Warnings entfernen
