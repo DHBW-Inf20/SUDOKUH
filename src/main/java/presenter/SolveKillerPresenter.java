@@ -137,6 +137,11 @@ public class SolveKillerPresenter extends SolvePresenter {
         return inGameViewScaffold;
     }
 
+    @Override
+    public boolean getNoteMode() {
+        return false;
+    }
+
     private void saveGroup(ArrayList<LabelPanel> group) {
         if (!group.isEmpty()) {
             GroupPopUpWindow userInput = new GroupPopUpWindow(group);

@@ -89,4 +89,9 @@ public class SolveStr8tsPresenter extends SolvePresenter {
     public InGameViewScaffold getInGameViewScaffold() {
         return inGameViewScaffold;
     }
+
+    @Override
+    public boolean getNoteMode() {
+        return false;
+    }
 }

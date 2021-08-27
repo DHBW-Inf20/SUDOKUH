@@ -85,14 +85,21 @@ public class KeyInputListener implements KeyListener {
     }
 
     private void autoStepForward() {
-        LabelPanel lastClicked = presenter.getInGameViewScaffold().getClicked();
-        if(lastClicked.getCol()+1 != presenter.getInGameViewScaffold().getGridSize()*presenter.getInGameViewScaffold().getGridSize()){
-            presenter.getInGameViewScaffold().setClicked(lastClicked.getRow(),lastClicked.getCol()+1);
-        }else if(lastClicked.getRow()+1 > presenter.getInGameViewScaffold().getGridSize()*presenter.getInGameViewScaffold().getGridSize()){
-            presenter.getInGameViewScaffold().setClicked(lastClicked.getRow()+1,0);
+        if(!presenter.getNoteMode()){
+            LabelPanel lastClicked = presenter.getInGameViewScaffold().getClicked();
+            if(lastClicked.getCol()+1 != presenter.getInGameViewScaffold().getGridSize()*presenter.getInGameViewScaffold().getGridSize()){
+                System.out.println("a");
+                presenter.getInGameViewScaffold().setClicked(lastClicked.getRow(),lastClicked.getCol()+1);
+            }else if(lastClicked.getRow()+1 < presenter.getInGameViewScaffold().getGridSize()*presenter.getInGameViewScaffold().getGridSize()){
+                System.out.println("b");
+                presenter.getInGameViewScaffold().setClicked(lastClicked.getRow()+1,0);
+            }
         }
     }
 
+    /**
+        Not used KeyListener Methods
+     */
 
     @Override
     public void keyReleased(KeyEvent e) {
