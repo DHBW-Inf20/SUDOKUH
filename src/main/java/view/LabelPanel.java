@@ -50,6 +50,7 @@ public class LabelPanel extends JPanel {
                 }
             }
             notes.remove(value);
+            this.repaint();
             this.revalidate();
             return;
         }
@@ -139,11 +140,13 @@ public class LabelPanel extends JPanel {
     public void setText(String value) {
         this.setNormalMode();
         this.removeAll();
+        this.repaint();
         this.revalidate();
         notes = new ArrayList<>();
         this.add(label,BorderLayout.CENTER);
         label.setText(value);
         this.labelValue = value;
+        this.repaint();
         this.revalidate();
     }
 
@@ -157,6 +160,7 @@ public class LabelPanel extends JPanel {
         this.add(label,BorderLayout.CENTER);
         label.setText(value);
         this.labelValue = value;
+        this.repaint();
         this.revalidate();
     }
 }

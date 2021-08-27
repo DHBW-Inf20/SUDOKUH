@@ -87,9 +87,7 @@ public class SudokuFieldPanel extends JPanel {
      */
     private ArrayList<view.LabelPanel> inputs;
 
-    private ArrayList<ArrayList<view.LabelPanel>> groups;
-
-    private ArrayList<Integer> groupSums;
+    private final ArrayList<ArrayList<view.LabelPanel>> groups;
 
     private boolean chooseGroup;
 
@@ -131,7 +129,6 @@ public class SudokuFieldPanel extends JPanel {
         }
 
         groups = new ArrayList<>();
-        groupSums = new ArrayList<>();
         chooseGroup = false;
         editGroup = false;
 
@@ -625,6 +622,7 @@ public class SudokuFieldPanel extends JPanel {
      */
     public void setNote(int value) {
         clicked.setNote(value);
+        this.repaint();
         this.revalidate();
     }
 
@@ -661,21 +659,22 @@ public class SudokuFieldPanel extends JPanel {
     public void addGroup(ArrayList<view.LabelPanel> labels, int sum) {
         boolean condition = true;
         groups.add(labels);
-        groupSums.add(sum);
         for(view.LabelPanel l : labels) {
             ArrayList<Boolean> neighbors = checkForNeighbors(l, labels);
             int top=0,left=0,bottom=0,right=0;
             for (int i = 0; i < neighbors.size(); i++) {
                 switch (i) {
-                    case 0 -> top = neighbors.get(i) ? 0 : 1;
-                    case 1 -> right = neighbors.get(i) ? 0 : 1;
-                    case 2 -> bottom = neighbors.get(i) ? 0 : 1;
-                    case 3 -> left = neighbors.get(i) ? 0 : 1;
+                    case 0 -> top = neighbors.get(i) ? 0 : 3;
+                    case 1 -> right = neighbors.get(i) ? 0 : 3;
+                    case 2 -> bottom = neighbors.get(i) ? 0 : 3;
+                    case 3 -> left = neighbors.get(i) ? 0 : 3;
                 }
             }
-            l.setBorder(new MatteBorder(top,left,bottom,right,borderColor));
+            l.setBorder(new MatteBorder(top,left,bottom,right,Color.decode("#5ba122")));
             if(condition) {
-                l.add(new JLabel(String.valueOf(sum)),BorderLayout.NORTH);
+                JLabel sumLabel = new JLabel(String.valueOf(sum));
+                sumLabel.setForeground(primaryTextColor);
+                l.add(sumLabel,BorderLayout.NORTH);
                 condition = false;
             }
         }
@@ -701,7 +700,6 @@ public class SudokuFieldPanel extends JPanel {
                 l.removeAll();
                 l.setText(l.getLabelValue());
             }
-            groupSums.remove(groupIndex);
             return groups.remove(groupIndex);
         }
         return null;

@@ -30,6 +30,7 @@ public class SolveStr8tsPresenter extends SolvePresenter {
     @Override
     public void handleButton(CustomButton button){
         LabelPanel clickedCell = inGameViewScaffold.getClicked();
+        inGameViewScaffold.resetGUIText();
         switch (button.getType()) {
             case NUMBER -> {
                 if (!clickedCell.isPredefined()) {

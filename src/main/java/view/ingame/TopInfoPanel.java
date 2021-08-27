@@ -22,7 +22,7 @@ public class TopInfoPanel extends JPanel {
     /**
      * A text that is shown in the menu when various events are triggered.
      */
-    protected JLabel guiText = new JLabel("");;
+    protected JLabel guiText = new JLabel("");
     protected boolean textSet;
 
     public TopInfoPanel(String theme, util.Mode gamemode){
@@ -74,6 +74,7 @@ public class TopInfoPanel extends JPanel {
     public void resetGUIText() {
         if (textSet) {
             this.removeAll();
+            this.repaint();
             this.revalidate();
             textSet = false;
         }
