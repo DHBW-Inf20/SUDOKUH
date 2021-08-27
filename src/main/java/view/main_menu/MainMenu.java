@@ -6,6 +6,7 @@ import util.Themes;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.plaf.metal.MetalLookAndFeel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -64,9 +65,9 @@ public class MainMenu extends JFrame {
             BufferedImage logoImg = ImageIO.read(getClass().getResourceAsStream("/logo_200.png"));
             JLabel logo = new JLabel(new ImageIcon(logoImg));
             mainMenuPanel.add(logo);
-            logo.setBounds(75, 25 ,200,200);
-        } catch (Exception ex){
-            System.out.println(ex);
+            logo.setBounds(75, 25, 200, 200);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
 
@@ -75,17 +76,17 @@ public class MainMenu extends JFrame {
         mainMenuPanel.add(playSudokuButton);
         playSudokuButton.setBounds(75, 250, 200, 50);
 
-        solveSudokuButton = new JButton("Sudoku Löser");
+        solveSudokuButton = new JButton("Sudoku L\u00f6ser");
         solveSudokuButton.addActionListener(new MainMenu.ButtonListener());
         mainMenuPanel.add(solveSudokuButton);
         solveSudokuButton.setBounds(75, 325, 200, 50);
 
-        solveKillerButton = new JButton("Killer Löser");
+        solveKillerButton = new JButton("Killer L\u00f6ser");
         solveKillerButton.addActionListener(new MainMenu.ButtonListener());
         mainMenuPanel.add(solveKillerButton);
         solveKillerButton.setBounds(75, 400, 200, 50);
 
-        solveStraitsButton = new JButton("Str8ts Löser");
+        solveStraitsButton = new JButton("Str8ts L\u00f6ser");
         solveStraitsButton.addActionListener(new MainMenu.ButtonListener());
         mainMenuPanel.add(solveStraitsButton);
         solveStraitsButton.setBounds(75, 475, 200, 50);
@@ -93,15 +94,15 @@ public class MainMenu extends JFrame {
         settingsButton = new JButton("Einstellungen");
         settingsButton.addActionListener(new MainMenu.ButtonListener());
         mainMenuPanel.add(settingsButton);
-        settingsButton.setBounds(75,550,200,50);
+        settingsButton.setBounds(75, 550, 200, 50);
 
         //Back Button Settings
-        backButtonSettings = new JButton("Zurück");
+        backButtonSettings = new JButton("Zur\u00fcck");
         backButtonSettings.addActionListener(new MainMenu.ButtonListener());
         backButtonSettings.setBounds(100, 25, 150, 50);
 
         //Back Button Game Settings
-        backButtonGameSettings = new JButton("Zurück");
+        backButtonGameSettings = new JButton("Zur\u00fcck");
         backButtonGameSettings.addActionListener(new MainMenu.ButtonListener());
         backButtonGameSettings.setBounds(100, 25, 150, 50);
 
@@ -137,7 +138,7 @@ public class MainMenu extends JFrame {
         highlightSwitch.setBounds(100, 400, 150, 50);
         highlightSwitch.setFocusable(false);
         settingsPanel.add(highlightSwitch);
-        tipText.setBounds(100,450,150,50);
+        tipText.setBounds(100, 450, 150, 50);
         settingsPanel.add(tipText);
         tipSlider = new JSlider();
         tipSlider.setMinimum(0);
@@ -171,7 +172,7 @@ public class MainMenu extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() == solveSudokuButton) {
-                setTitle("Neuer Sudoku Löser");
+                setTitle("Neuer Sudoku L\u00f6ser");
                 mode = Mode.SUDOKU_SOLVE;
                 cl.show(cardsPanel, "gameSettingsPanel");
             }
@@ -188,7 +189,7 @@ public class MainMenu extends JFrame {
                 mode = Mode.STRAITS_SOLVE;
                 startGame(3);
             }
-            if(e.getSource() == settingsButton){
+            if (e.getSource() == settingsButton) {
                 setTitle("Einstellungen");
                 cl.show(cardsPanel, "settingsPanel");
             }
@@ -200,7 +201,7 @@ public class MainMenu extends JFrame {
             }
             if (e.getSource() == darkModeSwitch) {
                 darkMode = !darkMode;
-                if(darkMode) {
+                if (darkMode) {
                     theme = "dark";
                 } else {
                     theme = "default";
@@ -229,8 +230,8 @@ public class MainMenu extends JFrame {
 
         private void startGame(int size) {
             try {
-                UIManager.setLookAndFeel(new javax.swing.plaf.metal.MetalLookAndFeel());
-            } catch(Exception e) {
+                UIManager.setLookAndFeel(new MetalLookAndFeel());
+            } catch (UnsupportedLookAndFeelException e) {
                 e.printStackTrace();
             }
             switch (mode) {

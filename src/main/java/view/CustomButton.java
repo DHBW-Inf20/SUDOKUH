@@ -35,15 +35,15 @@ public class CustomButton extends JButton {
         switch (type) {
             case NUMBER -> {
                 setText(Integer.toString(value));
-                setToolTipText(Integer.toString(value)+" setzen");
+                setToolTipText(value + " setzen");
             }
             case DELETE -> {
                 setIcon(new ImageIcon(delete));
-                setToolTipText("Löschen");
+                setToolTipText("L\u00f6schen");
             }
             case SOLVE -> {
                 setIcon(new ImageIcon(solve));
-                setToolTipText("Lösung suchen");
+                setToolTipText("L\u00f6sung suchen");
             }
             case TIP -> {
                 setIcon(new ImageIcon(tip));
@@ -51,12 +51,12 @@ public class CustomButton extends JButton {
             }
             case VERIFY -> {
                 setIcon(new ImageIcon(verify));
-                setToolTipText("Lösung überprüfen");
+                setToolTipText("L\u00f6sung \u00fcberpr\u00fcfen");
             }
             case PEN, EDITGROUP -> {
                 setIcon(new ImageIcon(pen));
-                if(type==Type.PEN)setToolTipText("Stift-Funktion");
-                if(type==Type.EDITGROUP)setToolTipText("Gruppe bearbeiten");
+                if (type == Type.PEN) setToolTipText("Stift-Funktion");
+                if (type == Type.EDITGROUP) setToolTipText("Gruppe bearbeiten");
             }
             case CHANGECOLOR -> {
                 setIcon(new ImageIcon(color));
@@ -64,15 +64,15 @@ public class CustomButton extends JButton {
             }
             case CHOOSEGROUP -> {
                 setIcon(new ImageIcon(choosegroup));
-                setToolTipText("Gruppe auswählen");
+                setToolTipText("Gruppe ausw\u00e4hlen");
             }
             case REMOVEGROUP -> {
                 setIcon(new ImageIcon(removegroup));
-                setToolTipText("Gruppe löschen");
+                setToolTipText("Gruppe l\u00f6schen");
             }
         }
         setFocusable(false);
-        this.setMargin(new Insets(0,0,0,0));
+        this.setMargin(new Insets(0, 0, 0, 0));
         this.setFont(new Font(getFont().getName(), Font.BOLD, 40));
     }
 

@@ -15,11 +15,11 @@ import view.ingame.InGameViewScaffold;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.util.Set;
 import java.time.ZonedDateTime;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-public class PlayPresenter implements Presenter{
+public class PlayPresenter implements Presenter {
 
     protected final AbstractPuzzle sudoku;
     protected final AbstractPuzzle solution;
@@ -58,8 +58,8 @@ public class PlayPresenter implements Presenter{
         this.tipLimit = tipLimit;
         this.tipsUsed = 0;
         this.autoStepForward = autoStepForward;
-        inGameViewScaffold.setRemainingTips(tipLimit-tipsUsed);
-        if(tipLimit-tipsUsed == 0) inGameViewScaffold.reachedMaxTips();
+        inGameViewScaffold.setRemainingTips(tipLimit - tipsUsed);
+        if (tipLimit - tipsUsed == 0) inGameViewScaffold.reachedMaxTips();
 
         startTime = ZonedDateTime.now().toInstant().toEpochMilli();
         lastUpdateTime = 0;
@@ -92,8 +92,8 @@ public class PlayPresenter implements Presenter{
         if (sudoku.equals(solution)) {
             timer.stop();
             long actualTime = ZonedDateTime.now().toInstant().toEpochMilli();
-            long timeDif = actualTime-startTime;
-            inGameViewScaffold.setGUIText(("<html><body><center>Korrekte Lösung!<br>"+this.getTimerText(timeDif)+"</center></body></html>"), Color.green);
+            long timeDif = actualTime - startTime;
+            inGameViewScaffold.setGUIText(("<html><body><center>Korrekte L\u00f6sung!<br>" + this.getTimerText(timeDif) + "</center></body></html>"), Color.green);
             solved = true;
             return true;
         }
@@ -113,7 +113,7 @@ public class PlayPresenter implements Presenter{
      */
     @Override
     public void handleButton(CustomButton button) {
-        if(solved) return;
+        if (solved) return;
         LabelPanel clickedCell = inGameViewScaffold.getClicked();
 
         switch (button.getType()) {
@@ -121,7 +121,7 @@ public class PlayPresenter implements Presenter{
                 int number = button.getValue();
                 if (!clickedCell.isPredefined()) {
                     if (noteMode) {
-                        if(clickedCell.getLabelValue() != null) {
+                        if (clickedCell.getLabelValue() != null) {
                             sudoku.resetCell(clickedCell.getRow(), clickedCell.getCol());
                             clickedCell.setText("");
                         }
@@ -133,11 +133,11 @@ public class PlayPresenter implements Presenter{
                             this.verifySolution();
                         } else {
                             final Set<Cell> conflicts = result.conflictingCells();
-                            for(Cell c : conflicts) {
+                            for (Cell c : conflicts) {
                                 inGameViewScaffold.highlightConflicts(c);
                             }
                             inGameViewScaffold.invalidInput(String.valueOf(number));
-                            inGameViewScaffold.setGUIText("Logisch falscher Input!",Color.red);
+                            inGameViewScaffold.setGUIText("Logisch falscher Input!", Color.red);
                             // Pause time display for 1 seconds
                             lastUpdateTime += 1000;
                         }
@@ -151,7 +151,7 @@ public class PlayPresenter implements Presenter{
                 }
             }
             case TIP -> {
-                if(! clickedCell.isPredefined()) {
+                if (!clickedCell.isPredefined()) {
                     tipsUsed++;
                     if (tipLimit >= tipsUsed) {
                         inGameViewScaffold.validInput(String.valueOf(solution.getCell(clickedCell.getRow(), clickedCell.getCol())), (tipLimit - tipsUsed));
@@ -175,14 +175,14 @@ public class PlayPresenter implements Presenter{
             }
             case VERIFY -> {
                 if (!this.verifySolution()) {
-                    inGameViewScaffold.setGUIText("Diese Lösung ist falsch oder unvollständig!", Color.red);
+                    inGameViewScaffold.setGUIText("Diese L\u00f6sung ist falsch oder unvollst\u00e4ndig!", Color.red);
                     // Pause time display for 5 seconds
                     lastUpdateTime += 5000;
                 }
             }
             case PEN -> {
                 noteMode = !noteMode;
-                if(noteMode) {
+                if (noteMode) {
                     inGameViewScaffold.setNoteMode();
                 } else {
                     inGameViewScaffold.setNormalMode();
@@ -197,8 +197,8 @@ public class PlayPresenter implements Presenter{
     protected void setTimer() {
         long actualTime = ZonedDateTime.now().toInstant().toEpochMilli();
         // Only set the time if there is a difference of one second
-        if(actualTime >= lastUpdateTime+1000) {
-            long timeDif = actualTime-startTime+pausedTime;
+        if (actualTime >= lastUpdateTime + 1000) {
+            long timeDif = actualTime - startTime + pausedTime;
             inGameViewScaffold.setGUIText(this.getTimerText(timeDif));
             lastUpdateTime = actualTime;
         }
@@ -214,20 +214,20 @@ public class PlayPresenter implements Presenter{
         long hours = TimeUnit.MILLISECONDS.toHours(timeDif);
         long minutes = TimeUnit.MILLISECONDS.toMinutes(timeDif) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(timeDif));
         long seconds = TimeUnit.MILLISECONDS.toSeconds(timeDif) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(timeDif));
-        String hoursText = hours == 1 ? " Stunde, ":" Stunden, ";
-        String minutesText = minutes == 1 ? " Minute, ":" Minuten, ";
-        String secondsText = seconds == 1 ? " Sekunde":" Sekunden";
+        String hoursText = hours == 1 ? " Stunde, " : " Stunden, ";
+        String minutesText = minutes == 1 ? " Minute, " : " Minuten, ";
+        String secondsText = seconds == 1 ? " Sekunde" : " Sekunden";
         String text = "Spielzeit: ";
-        if(hours != 0) text += hours+hoursText;
-        if(minutes != 0) text += minutes+minutesText;
-        return (text+seconds+secondsText);
+        if (hours != 0) text += hours + hoursText;
+        if (minutes != 0) text += minutes + minutesText;
+        return (text + seconds + secondsText);
     }
 
     /**
      * Saves current time to add later when the timer is resumed
      */
     public void pauseTimer() {
-        pausedTime = pausedTime + lastUpdateTime-startTime;
+        pausedTime = pausedTime + lastUpdateTime - startTime;
         timer.stop();
     }
 

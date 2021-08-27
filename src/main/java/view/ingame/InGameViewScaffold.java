@@ -1,10 +1,10 @@
 package view.ingame;
 
+import presenter.PlayPresenter;
 import util.Themes;
 import view.AgainPopUpWindow;
 import view.LabelPanel;
 import view.PopUpWindow;
-import presenter.PlayPresenter;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -14,7 +14,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class InGameViewScaffold extends JFrame implements ActionListener{
+public class InGameViewScaffold extends JFrame implements ActionListener {
 
     Color backgroundColor;
     Color panelBackgroundColor;
@@ -35,9 +35,9 @@ public class InGameViewScaffold extends JFrame implements ActionListener{
 
     private PlayPresenter playPresenter;
 
-    public InGameViewScaffold(int gridSize, ActionListener buttonListener, String title, String theme, boolean highlighting, boolean autoStepForward, util.Mode gamemode){
+    public InGameViewScaffold(int gridSize, ActionListener buttonListener, String title, String theme, boolean highlighting, boolean autoStepForward, util.Mode gamemode) {
         //General Window Options
-        super("SUDOKUH - "+title);
+        super("SUDOKUH - " + title);
         this.setResizable(false);
         this.setSize(1195, 980);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -66,7 +66,7 @@ public class InGameViewScaffold extends JFrame implements ActionListener{
 
         //Control Buttons
         againButton.setBackground(backgroundColor);
-        againButton.setBounds(980, 20,80,80);
+        againButton.setBounds(980, 20, 80, 80);
         try {
             Image img = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/again.png")));
             againButton.setIcon(new ImageIcon(img));
@@ -76,11 +76,11 @@ public class InGameViewScaffold extends JFrame implements ActionListener{
         againButton.setFocusable(false);
         againButton.setBorder(null);
         againButton.addActionListener(this);
-        againButton.setToolTipText("Spielfeld zurücksetzen");
+        againButton.setToolTipText("Spielfeld zur\u00fccksetzen");
         mainContainer.add(againButton);
 
         homeButton.setBackground(backgroundColor);
-        homeButton.setBounds(1080, 20,80,80);
+        homeButton.setBounds(1080, 20, 80, 80);
         try {
             Image img = ImageIO.read(getClass().getResourceAsStream("/logo_80.png"));
             homeButton.setIcon(new ImageIcon(img));
@@ -92,7 +92,7 @@ public class InGameViewScaffold extends JFrame implements ActionListener{
         homeButton.setFocusable(false);
         homeButton.setBorder(null);
         homeButton.addActionListener(this);
-        homeButton.setToolTipText("Zum Hauptmenü");
+        homeButton.setToolTipText("Zum Hauptmen\u00fc");
         mainContainer.add(homeButton);
 
         this.setVisible(true);
@@ -104,7 +104,7 @@ public class InGameViewScaffold extends JFrame implements ActionListener{
         this.highlighting = highlighting;
     }
 
-    public InGameViewScaffold(int gridSize, ActionListener buttonListener, String title, String theme,boolean highlighting, boolean autoStepForward, int tipLimit, util.Mode gamemode, PlayPresenter playPresenter){
+    public InGameViewScaffold(int gridSize, ActionListener buttonListener, String title, String theme, boolean highlighting, boolean autoStepForward, int tipLimit, util.Mode gamemode, PlayPresenter playPresenter) {
         this(gridSize, buttonListener, title, theme, highlighting, autoStepForward, gamemode);
         this.playPresenter = playPresenter;
         this.tipLimit = tipLimit;
@@ -114,23 +114,23 @@ public class InGameViewScaffold extends JFrame implements ActionListener{
     /**
      * @return the actual clicked cell
      */
-    public LabelPanel getClicked() { return sudokuFieldPanel.getClicked(); }
+    public LabelPanel getClicked() {return sudokuFieldPanel.getClicked();}
 
     /**
      * Set the clicked cell to specified coordinates
      *
-     * @param row the cell-row
+     * @param row    the cell-row
      * @param column the cell-column
      */
-    public void setClicked(int row, int column){
+    public void setClicked(int row, int column) {
         sudokuFieldPanel.setClicked(row, column);
     }
 
     /**
      * Sets a value to a cell of specified coordinates
      *
-     * @param row the cell-row
-     * @param col the cell-column
+     * @param row   the cell-row
+     * @param col   the cell-column
      * @param value the value to be set
      */
     public void setValue(int row, int col, int value) {
@@ -175,7 +175,7 @@ public class InGameViewScaffold extends JFrame implements ActionListener{
     /**
      * Prints a text to the top of the gui
      *
-     * @param text text to be printed
+     * @param text  text to be printed
      * @param color color in which the text should be printed
      */
     public void setGUIText(String text, Color color) {
@@ -238,12 +238,12 @@ public class InGameViewScaffold extends JFrame implements ActionListener{
     /**
      * Sets a valid input to cell with changing the tip-button to the remaining tips
      *
-     * @param input the input value from type integer
+     * @param input         the input value from type integer
      * @param tipsRemaining the number how many tips are remaining
      */
     public void validInput(String input, int tipsRemaining) {
         sudokuFieldPanel.validInput(input);
-        rightControlsPanel.setTipButtonText(""+tipsRemaining);
+        rightControlsPanel.setTipButtonText(Integer.toString(tipsRemaining));
     }
 
     /**
@@ -279,7 +279,7 @@ public class InGameViewScaffold extends JFrame implements ActionListener{
     /**
      * @return the playPresenter for PopUpWindow
      */
-    public PlayPresenter getPlayPresenter(){
+    public PlayPresenter getPlayPresenter() {
         return playPresenter;
     }
 
@@ -288,14 +288,14 @@ public class InGameViewScaffold extends JFrame implements ActionListener{
      */
     @Override
     public void actionPerformed(ActionEvent e) {
-        if(e.getSource() == homeButton){
-            if(playPresenter!=null){
+        if (e.getSource() == homeButton) {
+            if (playPresenter != null) {
                 playPresenter.pauseTimer();
             }
             new PopUpWindow(this);
         }
-        if(e.getSource() == againButton){
-            if(playPresenter!=null){
+        if (e.getSource() == againButton) {
+            if (playPresenter != null) {
                 playPresenter.pauseTimer();
             }
             new AgainPopUpWindow(this, gamemode, size, theme, autoStepForward, highlighting, tipLimit);
@@ -342,7 +342,7 @@ public class InGameViewScaffold extends JFrame implements ActionListener{
      * Adds a group of cells to a group
      *
      * @param labels an arraylist of the {@link view.LabelPanel cells}
-     * @param sum the sum of the group
+     * @param sum    the sum of the group
      */
     public void addGroup(ArrayList<view.LabelPanel> labels, int sum) {
         sudokuFieldPanel.addGroup(labels, sum);

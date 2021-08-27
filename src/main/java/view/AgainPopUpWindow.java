@@ -9,10 +9,10 @@ import static javax.swing.JOptionPane.*;
 public class AgainPopUpWindow {
 
     public AgainPopUpWindow(InGameViewScaffold frame, util.Mode gamemode, int size, String theme, boolean autoStepForward, boolean highlighting, int tipLimit) {
-        int selectedValue = JOptionPane.showOptionDialog(null, "Spielfeld zurücksetzen? Der Fortschritt geht verloren!", "SUDOKUH", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, new String[]{"JA", "NEIN"},"NEIN");
+        int selectedValue = JOptionPane.showOptionDialog(null, "Spielfeld zur\u00fccksetzen? Der Fortschritt geht verloren!", "SUDOKUH", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, new String[]{"JA", "NEIN"}, "NEIN");
 
         //Button Events
-        if(selectedValue == YES_OPTION){
+        if (selectedValue == YES_OPTION) {
             frame.dispose();
             switch (gamemode) {
                 case SUDOKU_SOLVE -> new presenter.SolveSudokuPresenter(size, theme, autoStepForward, highlighting);
@@ -21,7 +21,7 @@ public class AgainPopUpWindow {
                 case STRAITS_SOLVE -> new presenter.SolveStr8tsPresenter(size, theme, autoStepForward, highlighting);
             }
         }
-        if((selectedValue == NO_OPTION || selectedValue == CLOSED_OPTION)&& frame.getPlayPresenter() != null){
+        if ((selectedValue == NO_OPTION || selectedValue == CLOSED_OPTION) && frame.getPlayPresenter() != null) {
             frame.getPlayPresenter().resumeTimer();
         }
     }

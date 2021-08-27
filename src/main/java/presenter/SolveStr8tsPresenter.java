@@ -28,7 +28,7 @@ public class SolveStr8tsPresenter extends SolvePresenter {
      * Handles the button events and triggers actions based on the clicked button
      */
     @Override
-    public void handleButton(CustomButton button){
+    public void handleButton(CustomButton button) {
         LabelPanel clickedCell = inGameViewScaffold.getClicked();
         inGameViewScaffold.resetGUIText();
         switch (button.getType()) {
@@ -42,11 +42,11 @@ public class SolveStr8tsPresenter extends SolvePresenter {
                         inGameViewScaffold.validInput(String.valueOf(number));
                     } else {
                         final Set<AbstractPuzzle.Cell> conflicts = result.conflictingCells();
-                        for(AbstractPuzzle.Cell c : conflicts) {
+                        for (AbstractPuzzle.Cell c : conflicts) {
                             inGameViewScaffold.highlightConflicts(c);
                         }
                         inGameViewScaffold.invalidInput(String.valueOf(number));
-                        inGameViewScaffold.setGUIText("Logisch falscher Input!",Color.red);
+                        inGameViewScaffold.setGUIText("Logisch falscher Input!", Color.red);
                     }
                 }
             }
@@ -59,10 +59,10 @@ public class SolveStr8tsPresenter extends SolvePresenter {
             case SOLVE -> {
                 AbstractPuzzle.SolveResult solveResult = sudoku.solve();
                 switch (solveResult) {
-                    case NO_SOLUTION -> inGameViewScaffold.setGUIText("Dieses Sudoku kann nicht gelöst werden!", Color.red);
-                    case NOT_IN_VALID_STATE_FOR_SOLVE -> inGameViewScaffold.setGUIText("Dieses Sudoku kann noch nicht gelöst werden!", Color.red);
+                    case NO_SOLUTION -> inGameViewScaffold.setGUIText("Dieses Sudoku kann nicht gel\u00f6st werden!", Color.red);
+                    case NOT_IN_VALID_STATE_FOR_SOLVE -> inGameViewScaffold.setGUIText("Dieses Sudoku kann noch nicht gel\u00f6st werden!", Color.red);
                     case ONE_SOLUTION -> {
-                        inGameViewScaffold.setGUIText("Das Sudoku wurde erfolgreich gelöst!", Color.green);
+                        inGameViewScaffold.setGUIText("Das Sudoku wurde erfolgreich gel\u00f6st!", Color.green);
                         for (int row = 0; row < sudoku.getGridSize(); row++) {
                             for (int column = 0; column < sudoku.getGridSize(); column++) {
                                 inGameViewScaffold.setValue(row, column, sudoku.getCell(row, column));
@@ -70,7 +70,7 @@ public class SolveStr8tsPresenter extends SolvePresenter {
                         }
                     }
                     case MULTIPLE_SOLUTIONS -> {
-                        inGameViewScaffold.setGUIText("<html><body><center>Das Sudoku wurde erfolgreich gelöst!<br>Es gibt allerdings mehr als eine Möglichkeit.</center></body></html>", Color.green);
+                        inGameViewScaffold.setGUIText("<html><body><center>Das Sudoku wurde erfolgreich gel\u00f6st!<br>Es gibt allerdings mehr als eine M\u00f6glichkeit.</center></body></html>", Color.green);
                         for (int row = 0; row < sudoku.getGridSize(); row++) {
                             for (int column = 0; column < sudoku.getGridSize(); column++) {
                                 inGameViewScaffold.setValue(row, column, sudoku.getCell(row, column));
@@ -81,7 +81,7 @@ public class SolveStr8tsPresenter extends SolvePresenter {
             }
             case CHANGECOLOR -> {
                 model.Str8ts.Color color = inGameViewScaffold.changeColor();
-                ((model.Str8ts)sudoku).setColor(clickedCell.getRow(), clickedCell.getCol(), color);
+                ((model.Str8ts) sudoku).setColor(clickedCell.getRow(), clickedCell.getCol(), color);
             }
         }
     }
