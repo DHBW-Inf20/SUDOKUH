@@ -242,4 +242,9 @@ public class PlayPresenter implements Presenter{
     public InGameViewScaffold getInGameViewScaffold() {
         return inGameViewScaffold;
     }
+
+    @Override
+    public boolean getNoteMode() {
+        return noteMode;
+    }
 }
