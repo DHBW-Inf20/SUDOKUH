@@ -1,7 +1,8 @@
 package view.ingame;
 
 import presenter.PlayPresenter;
-import view.Themes;
+import util.Mode;
+import view.Theme;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -17,11 +18,9 @@ import java.util.Objects;
  */
 public class InGameViewScaffold extends JFrame implements ActionListener {
 
-    Color backgroundColor;
-    Color panelBackgroundColor;
+    private final Theme theme;
 
-    String theme;
-    util.Mode gamemode;
+    Mode gamemode;
     int size;
     boolean autoStepForward;
     boolean highlighting;
@@ -36,7 +35,7 @@ public class InGameViewScaffold extends JFrame implements ActionListener {
 
     private PlayPresenter playPresenter;
 
-    public InGameViewScaffold(int gridSize, ActionListener buttonListener, String title, String theme, boolean highlighting, boolean autoStepForward, util.Mode gamemode) {
+    public InGameViewScaffold(int gridSize, ActionListener buttonListener, String title, Theme theme, boolean highlighting, boolean autoStepForward, util.Mode gamemode) {
         //General Window Options
         super("SUDOKUH - " + title);
         this.setResizable(false);
@@ -46,15 +45,13 @@ public class InGameViewScaffold extends JFrame implements ActionListener {
         this.getContentPane().setLayout(null);
 
         //JFrame Container Settings
-        Themes t = new Themes(theme);
-        backgroundColor = t.getMenuBackgroundColor();
-        panelBackgroundColor = t.getPanelBackgroundColor();
+        this.theme = theme;
         Container mainContainer = this.getContentPane();
-        mainContainer.setBackground(backgroundColor);
+        mainContainer.setBackground(theme.menuBackgroundColor);
         mainContainer.setLayout(null);
 
         //Top information panel
-        topInfoPanel = new TopInfoPanel(theme, gamemode);
+        topInfoPanel = new TopInfoPanel(theme);
         mainContainer.add(topInfoPanel);
 
         //Sudoku field panel
@@ -66,7 +63,7 @@ public class InGameViewScaffold extends JFrame implements ActionListener {
         mainContainer.add(rightControlsPanel);
 
         //Control Buttons
-        againButton.setBackground(backgroundColor);
+        againButton.setBackground(theme.menuBackgroundColor);
         againButton.setBounds(980, 20, 80, 80);
         try {
             Image img = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/again.png")));
@@ -80,7 +77,7 @@ public class InGameViewScaffold extends JFrame implements ActionListener {
         againButton.setToolTipText("Spielfeld zur\u00fccksetzen");
         mainContainer.add(againButton);
 
-        homeButton.setBackground(backgroundColor);
+        homeButton.setBackground(theme.menuBackgroundColor);
         homeButton.setBounds(1080, 20, 80, 80);
         try {
             Image img = ImageIO.read(getClass().getResourceAsStream("/logo_80.png"));
@@ -98,14 +95,13 @@ public class InGameViewScaffold extends JFrame implements ActionListener {
 
         this.setVisible(true);
 
-        this.theme = theme;
         this.gamemode = gamemode;
         this.size = gridSize;
         this.autoStepForward = autoStepForward;
         this.highlighting = highlighting;
     }
 
-    public InGameViewScaffold(int gridSize, ActionListener buttonListener, String title, String theme, boolean highlighting, boolean autoStepForward, int tipLimit, util.Mode gamemode, PlayPresenter playPresenter) {
+    public InGameViewScaffold(int gridSize, ActionListener buttonListener, String title, Theme theme, boolean highlighting, boolean autoStepForward, int tipLimit, util.Mode gamemode, PlayPresenter playPresenter) {
         this(gridSize, buttonListener, title, theme, highlighting, autoStepForward, gamemode);
         this.playPresenter = playPresenter;
         this.tipLimit = tipLimit;

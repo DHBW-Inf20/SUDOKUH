@@ -6,6 +6,7 @@ import model.AbstractPuzzle.SetCellResult;
 import model.Sudoku;
 import model.SudokuGenerator;
 import util.Mode;
+import view.Theme;
 import view.ingame.CustomButton;
 import view.ingame.LabelPanel;
 import view.ingame.InGameViewScaffold;
@@ -43,7 +44,7 @@ public class PlayPresenter implements Presenter {
      */
     private boolean noteMode;
 
-    public PlayPresenter(int size, String theme, boolean autoStepForward, boolean highlighting, int tipLimit) {
+    public PlayPresenter(int size, Theme theme, boolean autoStepForward, boolean highlighting, int tipLimit) {
         noteMode = false;
 
         SudokuGenerator.SudokuAndSolution sudokuAndSolution = SudokuGenerator.generateSudokuAndSolution(size);

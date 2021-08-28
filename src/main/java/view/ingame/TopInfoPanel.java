@@ -1,6 +1,6 @@
 package view.ingame;
 
-import view.Themes;
+import view.Theme;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,49 +10,35 @@ import java.awt.*;
  * @author Fabian Heinl
  */
 public class TopInfoPanel extends JPanel {
-    /**
-     * Various {@link Color colors} for the game menu.
-     */
-    // Color for field-background
-    protected Color panelBackgroundColor;
-    // Color for text
-    protected Color primaryTextColor;
 
-    /**
-     * The actual played gamemode.
-     */
-    protected static util.Mode gamemode;
+    private final Theme theme;
 
     /**
      * A text that is shown in the menu when various events are triggered.
      */
-    protected JLabel guiText = new JLabel("");
-    protected boolean textSet;
+    private final JLabel guiText = new JLabel("");
+    private boolean textSet;
 
-    public TopInfoPanel(String theme, util.Mode gamemode){
-        Themes t = new Themes(theme);
-        panelBackgroundColor = t.getPanelBackgroundColor();
-        primaryTextColor = t.getPrimaryTextColor();
-        this.setBackground(panelBackgroundColor);
-        this.setBounds(20,20, 800,80);
+    public TopInfoPanel(Theme theme) {
+        this.theme = theme;
+
+        setBackground(theme.panelBackgroundColor);
+        this.setBounds(20, 20, 800, 80);
         this.setLayout(new GridBagLayout());
 
-        TopInfoPanel.gamemode = gamemode;
-
         textSet = false;
-
     }
 
     /**
      * Prints a text to the top of the gui
      *
-     * @param text text to be printed
+     * @param text  text to be printed
      * @param color color in which the text should be printed
      */
     public void setGUIText(String text, Color color) {
         guiText.setText(text);
         guiText.setOpaque(true);
-        guiText.setBackground(panelBackgroundColor);
+        guiText.setBackground(theme.panelBackgroundColor);
         guiText.setForeground(color);
         guiText.setFont(new Font(getFont().getName(), Font.BOLD, 25));
         guiText.setHorizontalAlignment(SwingConstants.CENTER);
@@ -69,7 +55,7 @@ public class TopInfoPanel extends JPanel {
      * @param text text to be printed
      */
     public void setGUIText(String text) {
-        this.setGUIText(text, primaryTextColor);
+        this.setGUIText(text, theme.primaryTextColor);
     }
 
     /**

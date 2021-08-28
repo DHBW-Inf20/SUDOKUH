@@ -1,7 +1,7 @@
 package view.main_menu;
 
 import util.Mode;
-import view.Themes;
+import view.Theme;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -10,13 +10,17 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
-import java.util.Hashtable;
+
+import static view.Theme.DARK;
+import static view.Theme.LIGHT;
 
 /**
  * @author Philipp Kremling
  * @author Fabian Heinl
  */
 public class MainMenu extends JFrame {
+
+    Theme theme = LIGHT;
 
     CardLayout cl = new CardLayout();
     JPanel cardsPanel;
@@ -28,18 +32,14 @@ public class MainMenu extends JFrame {
 
     Mode mode;
 
-    String theme = "default";
-
     JButton playSudokuButton, solveSudokuButton, solveKillerButton, solveStraitsButton, settingsButton, startButton, backButtonGameSettings, backButtonSettings;
 
     JToggleButton darkModeSwitch, autoStepForwardSwitch, highlightSwitch;
 
     boolean darkMode = false, autoStepForward = true, highlighting = true;
 
-    SizeChooseSlider slider;
-    JSlider tipSlider;
-
-    Themes t = new Themes(theme);
+    SizeChooseSlider sizeSlider;
+    TipChooseSlider tipSlider;
 
     int tipLimit = 3;
 
@@ -60,7 +60,7 @@ public class MainMenu extends JFrame {
 
 
         //Main Menu Panel
-        mainMenuPanel.setBackground(t.getPrimaryBackgroundColor());
+        mainMenuPanel.setBackground(theme.normalCellColor);
         mainMenuPanel.setLayout(null);
         add(mainMenuPanel);
 
@@ -110,12 +110,13 @@ public class MainMenu extends JFrame {
         backButtonGameSettings.setBounds(100, 25, 150, 50);
 
         //Game Settings Panel
-        slider = new SizeChooseSlider();
-        slider.setBackground(t.getPrimaryBackgroundColor());
+        sizeSlider = new SizeChooseSlider();
+        sizeSlider.setBackground(theme.normalCellColor);
+        sizeSlider.setLabelColors(theme.primaryTextColor);
         gameSettingsPanel.add(backButtonSettings);
         gameSettingsPanel.setLayout(null);
-        gameSettingsPanel.add(slider);
-        gameSettingsPanel.setBackground(t.getPrimaryBackgroundColor());
+        gameSettingsPanel.add(sizeSlider);
+        gameSettingsPanel.setBackground(theme.normalCellColor);
         startButton = new JButton("Start");
         startButton.addActionListener(new MainMenu.ButtonListener());
         startButton.setBounds(100, 450, 150, 50);
@@ -124,7 +125,7 @@ public class MainMenu extends JFrame {
 
         //Settings Panel
         settingsPanel.setLayout(null);
-        settingsPanel.setBackground(t.getPrimaryBackgroundColor());
+        settingsPanel.setBackground(theme.normalCellColor);
         settingsPanel.add(backButtonGameSettings);
         darkModeSwitch = new JToggleButton("DarkMode", darkMode);
         darkModeSwitch.addActionListener(new MainMenu.ButtonListener());
@@ -143,22 +144,9 @@ public class MainMenu extends JFrame {
         settingsPanel.add(highlightSwitch);
         tipText.setBounds(100, 450, 150, 50);
         settingsPanel.add(tipText);
-        tipSlider = new JSlider();
-        tipSlider.setMinimum(0);
-        tipSlider.setMaximum(4);
-        tipSlider.setValue(1);
-        tipSlider.setPaintTicks(true);
-        tipSlider.setPaintLabels(true);
-        Hashtable<Integer, JLabel> labels = new Hashtable<>();
-        labels.put(0, new JLabel("0"));
-        labels.put(1, new JLabel("3"));
-        labels.put(2, new JLabel("5"));
-        labels.put(3, new JLabel("10"));
-        labels.put(4, new JLabel("20"));
-        tipSlider.setLabelTable(labels);
-        tipSlider.setBounds(100, 500, 150, 50);
+        tipSlider = new TipChooseSlider();
         tipSlider.setFocusable(false);
-        tipSlider.setBackground(t.getPrimaryBackgroundColor());
+        tipSlider.setBackground(theme.normalCellColor);
         settingsPanel.add(tipSlider);
 
         cardsPanel = new JPanel(cl);
@@ -204,11 +192,7 @@ public class MainMenu extends JFrame {
             }
             if (e.getSource() == darkModeSwitch) {
                 darkMode = !darkMode;
-                if (darkMode) {
-                    theme = "dark";
-                } else {
-                    theme = "default";
-                }
+                theme = darkMode ? DARK : LIGHT;
                 updateBackgrounds();
             }
             if (e.getSource() == backButtonSettings) {
@@ -216,7 +200,7 @@ public class MainMenu extends JFrame {
                 cl.first(cardsPanel);
             }
             if (e.getSource() == startButton) {
-                startGame(slider.getValue());
+                startGame(sizeSlider.getValue());
             }
             if (e.getSource() == backButtonGameSettings) {
                 setTitle("SUDOKUH Hauptmen\u00fc");
@@ -248,12 +232,13 @@ public class MainMenu extends JFrame {
     }
 
     private void updateBackgrounds() {
-        t = new Themes(theme);
-        mainMenuPanel.setBackground(t.getPrimaryBackgroundColor());
-        settingsPanel.setBackground(t.getPrimaryBackgroundColor());
-        tipSlider.setBackground(t.getPrimaryBackgroundColor());
-        tipText.setForeground(t.getPrimaryTextColor());
-        gameSettingsPanel.setBackground(t.getPrimaryBackgroundColor());
-        slider.setBackground(t.getPrimaryBackgroundColor());
+        mainMenuPanel.setBackground(theme.normalCellColor);
+        settingsPanel.setBackground(theme.normalCellColor);
+        tipSlider.setBackground(theme.normalCellColor);
+        tipSlider.setLabelColors(theme.primaryTextColor);
+        tipText.setForeground(theme.primaryTextColor);
+        gameSettingsPanel.setBackground(theme.normalCellColor);
+        sizeSlider.setBackground(theme.normalCellColor);
+        sizeSlider.setLabelColors(theme.primaryTextColor);
     }
 }

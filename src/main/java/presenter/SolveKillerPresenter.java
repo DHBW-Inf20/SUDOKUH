@@ -5,6 +5,7 @@ import model.AbstractPuzzle.Cell;
 import model.AbstractPuzzle.SetCellResult;
 import model.Killer;
 import model.Killer.GroupsUpdateResult;
+import view.Theme;
 import view.ingame.CustomButton;
 import view.ingame.GroupPopUpWindow;
 import view.ingame.LabelPanel;
@@ -24,7 +25,7 @@ public class SolveKillerPresenter extends SolvePresenter {
     private boolean chooseGroup;
     private boolean editGroup;
 
-    public SolveKillerPresenter(int size, String theme, boolean autoStepForward, boolean highlighting) {
+    public SolveKillerPresenter(int size, Theme theme, boolean autoStepForward, boolean highlighting) {
         super(size, util.Mode.KILLER_SOLVE, theme, highlighting, autoStepForward);
         chooseGroup = false;
         editGroup = false;

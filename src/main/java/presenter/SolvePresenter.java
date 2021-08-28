@@ -6,6 +6,7 @@ import model.AbstractPuzzle.SetCellResult;
 import model.Killer;
 import model.Str8ts;
 import model.Sudoku;
+import view.Theme;
 import view.ingame.CustomButton;
 import view.ingame.LabelPanel;
 import view.ingame.InGameViewScaffold;
@@ -24,7 +25,7 @@ public abstract class SolvePresenter implements Presenter {
 
     protected boolean autoStepForward;
 
-    public SolvePresenter(int size, util.Mode gameMode, String theme, boolean highlighting, boolean autoStepForward) {
+    public SolvePresenter(int size, util.Mode gameMode, Theme theme, boolean highlighting, boolean autoStepForward) {
         this.autoStepForward = autoStepForward;
         switch (gameMode) {
             case STRAITS_SOLVE -> {

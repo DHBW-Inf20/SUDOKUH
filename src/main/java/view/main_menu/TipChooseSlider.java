@@ -6,23 +6,26 @@ import java.util.Hashtable;
 
 /**
  * @author Fabian Heinl
+ * @author Luca Kellermann
  */
-public final class SizeChooseSlider extends JSlider {
+public final class TipChooseSlider extends JSlider {
 
     private final Hashtable<Integer, JLabel> labels;
 
-    public SizeChooseSlider() {
-        setMinimum(2);
+    public TipChooseSlider() {
+        setMinimum(0);
         setMaximum(4);
-        setValue(3);
+        setValue(1);
         setPaintTicks(true);
         setPaintLabels(true);
         labels = new Hashtable<>();
-        labels.put(2, new JLabel("4"));
-        labels.put(3, new JLabel("9"));
-        labels.put(4, new JLabel("16"));
+        labels.put(0, new JLabel("0"));
+        labels.put(1, new JLabel("3"));
+        labels.put(2, new JLabel("5"));
+        labels.put(3, new JLabel("10"));
+        labels.put(4, new JLabel("20"));
         setLabelTable(labels);
-        setBounds(70, 325, 200, 50);
+        setBounds(100, 500, 150, 50);
     }
 
     public void setLabelColors(Color color) {
