@@ -31,7 +31,7 @@ public class InGameViewScaffold extends JFrame implements ActionListener {
     int tipLimit;
 
     TopInfoPanel topInfoPanel;
-    SudokuFieldPanel sudokuFieldPanel;
+    GridPanel gridPanel;
     RightControlsPanel rightControlsPanel;
 
     JButton againButton = new JButton();
@@ -58,9 +58,9 @@ public class InGameViewScaffold extends JFrame implements ActionListener {
         topInfoPanel = new TopInfoPanel(theme);
         mainContainer.add(topInfoPanel);
 
-        //Sudoku field panel
-        sudokuFieldPanel = new SudokuFieldPanel(gridSize, theme, highlighting, gamemode);
-        mainContainer.add(sudokuFieldPanel);
+        //Sudoku grid panel
+        gridPanel = new GridPanel(gridSize, theme, highlighting, gamemode);
+        mainContainer.add(gridPanel);
 
         //Right controls panel
         rightControlsPanel = new RightControlsPanel(gridSize, buttonListener, theme, gamemode);
@@ -115,7 +115,7 @@ public class InGameViewScaffold extends JFrame implements ActionListener {
     /**
      * @return the actual clicked cell
      */
-    public LabelPanel getClicked() {return sudokuFieldPanel.getClicked();}
+    public CellPanel getClicked() {return gridPanel.getClicked();}
 
     /**
      * Set the clicked cell to specified coordinates
@@ -124,7 +124,7 @@ public class InGameViewScaffold extends JFrame implements ActionListener {
      * @param column the cell-column
      */
     public void setClicked(int row, int column) {
-        sudokuFieldPanel.setClicked(row, column);
+        gridPanel.setClicked(row, column);
     }
 
     /**
@@ -135,14 +135,14 @@ public class InGameViewScaffold extends JFrame implements ActionListener {
      * @param value the value to be set
      */
     public void setValue(int row, int col, int value) {
-        sudokuFieldPanel.setValue(row, col, value);
+        gridPanel.setValue(row, col, value);
     }
 
     /**
      * Deletes the value of the actual clicked cell
      */
     public void resetCell() {
-        sudokuFieldPanel.resetCell();
+        gridPanel.resetCell();
     }
 
     /**
@@ -151,7 +151,7 @@ public class InGameViewScaffold extends JFrame implements ActionListener {
      * @param input the input value from type String
      */
     public void validInput(String input) {
-        sudokuFieldPanel.validInput(input);
+        gridPanel.validInput(input);
     }
 
     /**
@@ -160,7 +160,7 @@ public class InGameViewScaffold extends JFrame implements ActionListener {
      * @param input the input value from type String
      */
     public void invalidInput(String input) {
-        sudokuFieldPanel.invalidInput(input);
+        gridPanel.invalidInput(input);
     }
 
     /**
@@ -170,7 +170,7 @@ public class InGameViewScaffold extends JFrame implements ActionListener {
      * @param col the cell-column
      */
     public void invalidInput(int row, int col) {
-        sudokuFieldPanel.invalidInput(row, col);
+        gridPanel.invalidInput(row, col);
     }
 
     /**
@@ -205,21 +205,21 @@ public class InGameViewScaffold extends JFrame implements ActionListener {
      * @param c the invalid cell
      */
     public void highlightConflicts(AbstractPuzzle.Cell c) {
-        sudokuFieldPanel.highlightConflicts(c);
+        gridPanel.highlightConflicts(c);
     }
 
     /**
      * @return the grid size
      */
     public int getGridSize() {
-        return sudokuFieldPanel.getGridSize();
+        return gridPanel.getGridSize();
     }
 
     /**
      * Marks a specific cell as predifined in order to cannot be changed and has another color
      */
     public void setPredefined(int row, int col, int value) {
-        sudokuFieldPanel.setPredefined(row, col, value);
+        gridPanel.setPredefined(row, col, value);
     }
 
     /**
@@ -243,7 +243,7 @@ public class InGameViewScaffold extends JFrame implements ActionListener {
      * @param tipsRemaining the number how many tips are remaining
      */
     public void validInput(String input, int tipsRemaining) {
-        sudokuFieldPanel.validInput(input);
+        gridPanel.validInput(input);
         rightControlsPanel.setTipButtonText(Integer.toString(tipsRemaining));
     }
 
@@ -251,7 +251,7 @@ public class InGameViewScaffold extends JFrame implements ActionListener {
      * Sets a note to the clicked cell
      */
     public void setNote(int value) {
-        sudokuFieldPanel.setNote(value);
+        gridPanel.setNote(value);
     }
 
     /**
@@ -274,7 +274,7 @@ public class InGameViewScaffold extends JFrame implements ActionListener {
      * Change the color of the actual clicked cell
      */
     public model.Str8ts.Color changeColor() {
-        return sudokuFieldPanel.changeColor();
+        return gridPanel.changeColor();
     }
 
     /**
@@ -308,7 +308,7 @@ public class InGameViewScaffold extends JFrame implements ActionListener {
      */
     public void setChooseMode() {
         rightControlsPanel.setChooseMode();
-        sudokuFieldPanel.setChooseMode();
+        gridPanel.setChooseMode();
     }
 
     /**
@@ -316,17 +316,17 @@ public class InGameViewScaffold extends JFrame implements ActionListener {
      *
      * @return the actual chosen group
      */
-    public ArrayList<LabelPanel> setNoChooseMode() {
+    public ArrayList<CellPanel> setNoChooseMode() {
         rightControlsPanel.setNoChooseMode();
-        return sudokuFieldPanel.setNoChooseMode();
+        return gridPanel.setNoChooseMode();
     }
 
     /**
      * Sets edit mode to true
      */
-    public void setEditMode(ArrayList<LabelPanel> group) {
+    public void setEditMode(ArrayList<CellPanel> group) {
         rightControlsPanel.setEditMode();
-        sudokuFieldPanel.setEditMode(group);
+        gridPanel.setEditMode(group);
     }
 
     /**
@@ -334,19 +334,19 @@ public class InGameViewScaffold extends JFrame implements ActionListener {
      *
      * @return the actual chosen group
      */
-    public ArrayList<LabelPanel> setNoEditMode() {
+    public ArrayList<CellPanel> setNoEditMode() {
         rightControlsPanel.setNoEditMode();
-        return sudokuFieldPanel.setNoEditMode();
+        return gridPanel.setNoEditMode();
     }
 
     /**
      * Adds a group of cells to a group
      *
-     * @param labels an arraylist of the {@link LabelPanel cells}
+     * @param labels an arraylist of the {@link CellPanel cells}
      * @param sum    the sum of the group
      */
-    public void addGroup(ArrayList<LabelPanel> labels, int sum) {
-        sudokuFieldPanel.addGroup(labels, sum);
+    public void addGroup(ArrayList<CellPanel> labels, int sum) {
+        gridPanel.addGroup(labels, sum);
     }
 
     /**
@@ -354,7 +354,7 @@ public class InGameViewScaffold extends JFrame implements ActionListener {
      *
      * @param cell the group of this cell will be deleted
      */
-    public ArrayList<LabelPanel> removeGroup(LabelPanel cell) {
-        return sudokuFieldPanel.removeGroup(cell);
+    public ArrayList<CellPanel> removeGroup(CellPanel cell) {
+        return gridPanel.removeGroup(cell);
     }
 }

@@ -12,13 +12,13 @@ import static util.Strings.WHICH_SUM_DOES_THIS_GROUP_HAVE;
 public final class GroupPopUpWindow {
     int sum;
 
-    public GroupPopUpWindow(ArrayList<LabelPanel> group) {
+    public GroupPopUpWindow(ArrayList<CellPanel> group) {
         sum = -1;
         String selectedValue = JOptionPane.showInputDialog(WHICH_SUM_DOES_THIS_GROUP_HAVE);
         int minSum = 0;
-        for (LabelPanel l : group) {
-            if (!Objects.equals(l.getLabelValue(), "") && l.getLabelValue() != null) {
-                minSum += Integer.parseInt(l.getLabelValue());
+        for (CellPanel cellPanel : group) {
+            if (!Objects.equals(cellPanel.getLabelValue(), "") && cellPanel.getLabelValue() != null) {
+                minSum += Integer.parseInt(cellPanel.getLabelValue());
             }
         }
         try {

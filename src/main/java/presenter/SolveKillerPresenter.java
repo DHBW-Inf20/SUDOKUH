@@ -10,7 +10,7 @@ import view.Theme;
 import view.ingame.CustomButton;
 import view.ingame.GroupPopUpWindow;
 import view.ingame.InGameViewScaffold;
-import view.ingame.LabelPanel;
+import view.ingame.CellPanel;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -38,7 +38,7 @@ public final class SolveKillerPresenter extends SolvePresenter {
      */
     @Override
     public void handleButton(CustomButton button) {
-        LabelPanel clickedCell = inGameViewScaffold.getClicked();
+        CellPanel clickedCell = inGameViewScaffold.getClicked();
         inGameViewScaffold.resetGUIText();
         switch (button.getType()) {
             case NUMBER -> {
@@ -94,7 +94,7 @@ public final class SolveKillerPresenter extends SolvePresenter {
                     if (chooseGroup) {
                         inGameViewScaffold.setChooseMode();
                     } else {
-                        ArrayList<LabelPanel> group = inGameViewScaffold.setNoChooseMode();
+                        ArrayList<CellPanel> group = inGameViewScaffold.setNoChooseMode();
                         saveGroup(group);
                     }
                 } else {
@@ -106,12 +106,12 @@ public final class SolveKillerPresenter extends SolvePresenter {
                     chooseGroup = false;
                     inGameViewScaffold.setNoChooseMode();
                 } else {
-                    ArrayList<LabelPanel> group = inGameViewScaffold.removeGroup(clickedCell);
+                    ArrayList<CellPanel> group = inGameViewScaffold.removeGroup(clickedCell);
                     if (group != null) {
                         if (!group.isEmpty())
                             ((Killer) sudoku).removeGroup(((Killer) sudoku).getGroupForCell(group.get(0).getRow(), group.get(0).getCol()));
-                        for (LabelPanel l : group) {
-                            sudoku.resetCell(l.getRow(), l.getCol());
+                        for (CellPanel cellPanel : group) {
+                            sudoku.resetCell(cellPanel.getRow(), cellPanel.getCol());
                         }
                     }
                 }
@@ -120,7 +120,7 @@ public final class SolveKillerPresenter extends SolvePresenter {
                 if (!chooseGroup) {
                     editGroup = !editGroup;
                     if (editGroup) {
-                        ArrayList<LabelPanel> group = inGameViewScaffold.removeGroup(clickedCell);
+                        ArrayList<CellPanel> group = inGameViewScaffold.removeGroup(clickedCell);
                         if (group != null) {
                             if (!group.isEmpty())
                                 ((Killer) sudoku).removeGroup(((Killer) sudoku).getGroupForCell(group.get(0).getRow(), group.get(0).getCol()));
@@ -129,7 +129,7 @@ public final class SolveKillerPresenter extends SolvePresenter {
                             editGroup = false;
                         }
                     } else {
-                        ArrayList<LabelPanel> group = inGameViewScaffold.setNoEditMode();
+                        ArrayList<CellPanel> group = inGameViewScaffold.setNoEditMode();
                         saveGroup(group);
                     }
                 } else {
@@ -148,7 +148,7 @@ public final class SolveKillerPresenter extends SolvePresenter {
         return false;
     }
 
-    private void saveGroup(ArrayList<LabelPanel> group) {
+    private void saveGroup(ArrayList<CellPanel> group) {
         if (!group.isEmpty()) {
             GroupPopUpWindow userInput = new GroupPopUpWindow(group);
             int sum = userInput.getSum();

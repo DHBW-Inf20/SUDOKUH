@@ -37,7 +37,7 @@ Sie `./gradlew help` für weitere Informationen aus.
 ## Das Ingame-Menü
 
 Nach Auswahl einer Kategorie gelangt man in das Ingame-Menü, das im Allgemeinen aus drei Elementen besteht: In der Mitte
-befindet sich das Sudoku-Feld. Wenn Sie auf eine Zelle klicken, können Sie diese Zelle zur Eingabe auswählen. Wenn die
+befindet sich das Sudoku-Raster. Wenn Sie auf eine Zelle klicken, können Sie diese Zelle zur Eingabe auswählen. Wenn die
 Hervorhebungsoption aktiviert ist, können Sie auch alle möglichen widersprüchlichen Zellen hervorgehoben sehen. Sie
 können im Sudoku-Menü auch mit den Pfeiltasten auf Ihrer Tastatur navigieren.
 
@@ -108,9 +108,9 @@ ENTER)
 ### Killer lösen
 
 Killer ist auch eine besondere Variante von Sudoku: Neben den normalen Sudoku-Regeln gibt es hier auch Summenfelder: Das
-heißt, eine oder mehrere Zellen werden zusammengefaßt und mit einer Nummer versehen. Die Summe aller Werte dieser Gruppe
-muss dieser Zahl entsprechen. Umgekehrt gibt es auch Sudokus, bei denen Sie gar keine Werte vordefiniert haben, sondern
-nur die Summen und Gruppen (meist auf Schwierigkeitsstufe schwer).
+heißt, eine oder mehrere Zellen werden zusammengefasst und mit einer Nummer versehen. Die Summe aller Werte dieser
+Gruppe muss dieser Zahl entsprechen. Umgekehrt gibt es auch Sudokus, bei denen Sie gar keine Werte vordefiniert haben,
+sondern nur die Summen und Gruppen (meist auf Schwierigkeitsstufe schwer).
 
 Neben den normalen Nummern-Buttons und dem Löschen-Button gibt es auch einen Verbinden-Button. Wenn Sie darauf klicken,
 wird dieser grün und signalisiert, dass der Verbindungs-Modus aktiviert ist: Die aktuell angeklickte Zelle wird

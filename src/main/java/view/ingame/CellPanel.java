@@ -7,7 +7,7 @@ import java.util.ArrayList;
 /**
  * @author Philipp Kremling
  */
-public final class LabelPanel extends JPanel {
+public final class CellPanel extends JPanel {
     private final JLabel label;
     private State state;
     public enum State {
@@ -21,7 +21,7 @@ public final class LabelPanel extends JPanel {
     private final Color primaryTextColor;
     int size;
 
-    public LabelPanel(JLabel lab, int row, int col, int size, Color primTextColor) {
+    public CellPanel(JLabel lab, int row, int col, int size, Color primTextColor) {
         label = lab;
         state = State.LABEL;
         this.row = row;

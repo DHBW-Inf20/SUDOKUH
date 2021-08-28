@@ -7,7 +7,7 @@ import util.GameMode;
 import view.Theme;
 import view.ingame.CustomButton;
 import view.ingame.InGameViewScaffold;
-import view.ingame.LabelPanel;
+import view.ingame.CellPanel;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -37,7 +37,7 @@ public final class SolveStr8tsPresenter extends SolvePresenter {
      */
     @Override
     public void handleButton(CustomButton button) {
-        LabelPanel clickedCell = inGameViewScaffold.getClicked();
+        CellPanel clickedCell = inGameViewScaffold.getClicked();
         inGameViewScaffold.resetGUIText();
         switch (button.getType()) {
             case NUMBER -> {

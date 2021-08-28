@@ -1,7 +1,7 @@
 package presenter;
 
 import view.ingame.CustomButton;
-import view.ingame.LabelPanel;
+import view.ingame.CellPanel;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -50,7 +50,7 @@ public final class KeyInputListener implements KeyListener {
         }
 
         if(e.getKeyCode()>=37 && e.getKeyCode()<=40){
-           LabelPanel lastClicked = presenter.getInGameViewScaffold().getClicked();
+           CellPanel lastClicked = presenter.getInGameViewScaffold().getClicked();
             switch (e.getKeyCode()){
                 //LEFT ARROW BUTTON
                 case 37 ->{
@@ -90,7 +90,7 @@ public final class KeyInputListener implements KeyListener {
 
     private void autoStepForward() {
         if(!presenter.getNoteMode()){
-            LabelPanel lastClicked = presenter.getInGameViewScaffold().getClicked();
+            CellPanel lastClicked = presenter.getInGameViewScaffold().getClicked();
             if(lastClicked.getCol()+1 != presenter.getInGameViewScaffold().getGridSize()*presenter.getInGameViewScaffold().getGridSize()){
                 presenter.getInGameViewScaffold().setClicked(lastClicked.getRow(),lastClicked.getCol()+1);
             }else if(lastClicked.getRow()+1 < presenter.getInGameViewScaffold().getGridSize()*presenter.getInGameViewScaffold().getGridSize()){

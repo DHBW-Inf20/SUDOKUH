@@ -35,7 +35,7 @@ distributions in `build/distributions` and test reports in `build/reports`. Run 
 ## The ingame menu
 
 After selecting a category you will get to the ingame menu which in general has three elements: In the center you've got
-the sudoku field. When clicking on a cell you can choose this cell for input. If the highlighting option is activated
+the sudoku grid. When clicking on a cell you can choose this cell for input. If the highlighting option is activated
 you can also see all possible conflicting cells highlighted. You can also navigate in the sudoku menu using the arrow
 keys on your keyboard.
 
@@ -85,11 +85,11 @@ sudoku is unsolveable a text will be displayed in the information panel. (Keyboa
 
 ### Solve Str8ts
 
-Str8ts is a special variant of sudoku: Here you don't have subgrids and only one big field: So the only conditions are
-that the same number mustn't be in the same row or column. Besides that there can be blocked fields (commonly displayed
+Str8ts is a special variant of sudoku: Here you don't have sub-grids and only one big field: So the only conditions are
+that the same number mustn't be in the same row or column. Besides that there can be blocked cells (commonly displayed
 as black) which can't contain numbers or the predefined numbers in there can not be changed. Also there only can be
-seamless sequences of digits, i.e. streets, in horizontally or vertically connected white fields. For the seperation
-between black and white fields there is a color change button: clicking on it will change the color of the actual chosen
+seamless sequences of digits, i.e. streets, in horizontally or vertically connected white cells. For the seperation
+between black and white cells there is a color change button: clicking on it will change the color of the actual chosen
 cell. Clicking it again will change it back. (Keyboard equivalent: F)
 
 For solving the sudoku there again is a solve button. Clicking on it will fill the sudoku with matching values. When the

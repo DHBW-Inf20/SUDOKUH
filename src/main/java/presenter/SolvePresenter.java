@@ -10,7 +10,7 @@ import util.GameMode;
 import view.Theme;
 import view.ingame.CustomButton;
 import view.ingame.InGameViewScaffold;
-import view.ingame.LabelPanel;
+import view.ingame.CellPanel;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -58,7 +58,7 @@ public abstract class SolvePresenter implements Presenter {
      * Handles the button events and triggers actions based on the clicked button
      */
     public void handleButton(CustomButton button) {
-        LabelPanel clickedCell = inGameViewScaffold.getClicked();
+        CellPanel clickedCell = inGameViewScaffold.getClicked();
 
         inGameViewScaffold.resetGUIText();
         switch (button.getType()) {

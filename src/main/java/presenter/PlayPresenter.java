@@ -9,7 +9,7 @@ import util.GameMode;
 import view.Theme;
 import view.ingame.CustomButton;
 import view.ingame.InGameViewScaffold;
-import view.ingame.LabelPanel;
+import view.ingame.CellPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -115,7 +115,7 @@ public final class PlayPresenter implements Presenter {
     @Override
     public void handleButton(CustomButton button) {
         if (solved) return;
-        LabelPanel clickedCell = inGameViewScaffold.getClicked();
+        CellPanel clickedCell = inGameViewScaffold.getClicked();
 
         switch (button.getType()) {
             case NUMBER -> {

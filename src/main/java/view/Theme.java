@@ -61,7 +61,7 @@ public enum Theme {
     public final Color predefinedCellColor;
 
     /**
-     * The {@link Color} for cell background when cell is predefined and possible conflicting to field.
+     * The {@link Color} for cell background when cell is predefined and possible conflicting to clicked cell.
      */
     public final Color predefinedCellMarkedColor;
 

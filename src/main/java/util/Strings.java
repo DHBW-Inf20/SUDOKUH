@@ -3,6 +3,9 @@ package util;
 import java.util.Locale;
 import java.util.Objects;
 
+/**
+ * @author Luca Kellermann
+ */
 public final class Strings {
 
     public static final boolean isGerman = Objects.equals(Locale.getDefault().getLanguage(), "de");
