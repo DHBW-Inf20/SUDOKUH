@@ -26,7 +26,7 @@ public class AgainPopUpWindow {
                 case SUDOKU_SOLVE -> new SolveSudokuPresenter(size, theme, autoStepForward, highlighting);
                 case SUDOKU_PLAY -> new PlayPresenter(size, theme, autoStepForward, highlighting, tipLimit);
                 case KILLER_SOLVE -> new SolveKillerPresenter(size, theme, autoStepForward, highlighting);
-                case STRAITS_SOLVE -> new SolveStr8tsPresenter(size, theme, autoStepForward, highlighting);
+                case STR8TS_SOLVE -> new SolveStr8tsPresenter(size, theme, autoStepForward, highlighting);
             }
         }
         if ((selectedValue == NO_OPTION || selectedValue == CLOSED_OPTION) && frame.getPlayPresenter() != null) {

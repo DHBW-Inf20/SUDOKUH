@@ -67,7 +67,7 @@ public class RightControlsPanel extends JPanel {
      */
     public void setCustomButtons(ActionListener buttonListener) {
         switch(gamemode) {
-            case STRAITS_SOLVE -> {
+            case STR8TS_SOLVE -> {
                 CustomButton buttonSolve = new CustomButton(SOLVE);
                 buttonSolve.setForeground(theme.primaryTextColor);
                 buttonSolve.setBackground(theme.normalCellColor);

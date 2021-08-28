@@ -11,6 +11,6 @@ public class Main {
             e.printStackTrace();
         }
 
-        new MainMenu().setLocationRelativeTo(null);
+        new MainMenu();
     }
 }

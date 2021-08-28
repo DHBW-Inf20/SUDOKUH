@@ -2,10 +2,11 @@ package presenter;
 
 import model.AbstractPuzzle;
 import model.AbstractPuzzle.SetCellResult;
+import util.Mode;
 import view.Theme;
 import view.ingame.CustomButton;
-import view.ingame.LabelPanel;
 import view.ingame.InGameViewScaffold;
+import view.ingame.LabelPanel;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -16,7 +17,7 @@ import java.util.Set;
  */
 public class SolveStr8tsPresenter extends SolvePresenter {
     public SolveStr8tsPresenter(int size, Theme theme, boolean autoStepForward, boolean highlighting) {
-        super(size, util.Mode.STRAITS_SOLVE, theme, highlighting, autoStepForward);
+        super(size, Mode.STR8TS_SOLVE, theme, highlighting, autoStepForward);
     }
 
     /**

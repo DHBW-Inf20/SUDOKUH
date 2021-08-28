@@ -28,7 +28,7 @@ public abstract class SolvePresenter implements Presenter {
     public SolvePresenter(int size, util.Mode gameMode, Theme theme, boolean highlighting, boolean autoStepForward) {
         this.autoStepForward = autoStepForward;
         switch (gameMode) {
-            case STRAITS_SOLVE -> {
+            case STR8TS_SOLVE -> {
                 sudoku = new Str8ts();
                 inGameViewScaffold = new InGameViewScaffold(size, this::handleButtonListenerEvent, "Str8ts l\u00f6sen", theme, highlighting, autoStepForward, gameMode);
             }

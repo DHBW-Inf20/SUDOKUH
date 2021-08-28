@@ -17,6 +17,7 @@ import java.util.Set;
 
 import static model.Str8ts.Color.BLACK;
 import static model.Str8ts.Color.WHITE;
+import static util.Mode.STR8TS_SOLVE;
 
 /**
  * @author Philipp Kremling
@@ -147,7 +148,7 @@ public class SudokuFieldPanel extends JPanel {
                 panel.setBackground(theme.normalCellColor);
                 panel.setForeground(theme.primaryTextColor);
                 panel.setLayout(new GridLayout(gridSize, gridSize));
-                if (gamemode != Mode.STRAITS_SOLVE) panel.setBorder(new LineBorder(theme.cellBorderColor, 2));
+                if (gamemode != STR8TS_SOLVE) panel.setBorder(new LineBorder(theme.cellBorderColor, 2));
                 temp.add(panel);
             }
             panels.add(temp);
@@ -263,7 +264,7 @@ public class SudokuFieldPanel extends JPanel {
                     }
                 }
             }
-            case STRAITS_SOLVE -> {
+            case STR8TS_SOLVE -> {
                 // Unmarking of possible conflicting cells
                 int clickedRow = clicked.getRow();
                 int clickedCol = clicked.getCol();
@@ -460,7 +461,7 @@ public class SudokuFieldPanel extends JPanel {
                 if (inputs.contains(labels.get(row).get(col)))
                     labels.get(row).get(col).setBackground(theme.predefinedCellColor);
             }
-            case STRAITS_SOLVE -> {
+            case STR8TS_SOLVE -> {
                 if (colors.get(row).get(col) == BLACK) {
                     labels.get(row).get(col).setForeground(theme.secondaryTextColor);
                 } else {
@@ -502,7 +503,7 @@ public class SudokuFieldPanel extends JPanel {
                 inputs.add(clicked);
                 clicked.setText(input);
             }
-            case STRAITS_SOLVE -> {
+            case STR8TS_SOLVE -> {
                 if (colors.get(clicked.getRow()).get(clicked.getCol()) == BLACK) {
                     clicked.setForeground(theme.secondaryTextColor);
                     clicked.getLabel().setForeground(theme.secondaryTextColor);
