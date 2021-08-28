@@ -1,8 +1,7 @@
 package view.main_menu;
 
-
 import util.Mode;
-import util.Themes;
+import view.Themes;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -13,6 +12,10 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.util.Hashtable;
 
+/**
+ * @author Philipp Kremling
+ * @author Fabian Heinl
+ */
 public class MainMenu extends JFrame {
 
     CardLayout cl = new CardLayout();

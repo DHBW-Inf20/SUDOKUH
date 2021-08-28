@@ -1,7 +1,6 @@
 package view.ingame;
 
-import util.Themes;
-import view.CustomButton;
+import view.Themes;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,6 +8,10 @@ import java.awt.event.ActionListener;
 
 import static util.Type.*;
 
+/**
+ * @author Philipp Kremling
+ * @author Fabian Heinl
+ */
 public class RightControlsPanel extends JPanel {
     /**
      * Various {@link Color colors} for the game menu.

@@ -1,10 +1,13 @@
 package presenter;
 
-import view.CustomButton;
+import view.ingame.CustomButton;
 import view.ingame.InGameViewScaffold;
 
 import java.awt.event.ActionEvent;
 
+/**
+ * @author Fabian Heinl
+ */
 public interface Presenter {
 
     void handleButtonListenerEvent(ActionEvent e);

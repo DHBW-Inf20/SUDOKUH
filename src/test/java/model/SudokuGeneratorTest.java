@@ -17,7 +17,7 @@ class SudokuGeneratorTest {
     @Test
     @DisplayName("should generate a Sudoku which has only one Solution")
     void shouldGenerateASudokuWhichHasOnlyOneSolution() {
-        final SudokuAndSolution sudokuAndSolution = SudokuGenerator.generateSudokuAndSolution(3);
+        final SudokuGenerator.SudokuAndSolution sudokuAndSolution = SudokuGenerator.generateSudokuAndSolution(3);
 
         final Sudoku firstCopy = sudokuAndSolution.sudoku().getCopy();
         final Sudoku secondCopy = sudokuAndSolution.sudoku().getCopy();

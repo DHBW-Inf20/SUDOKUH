@@ -1,12 +1,15 @@
-package util;
+package presenter;
 
-import presenter.Presenter;
-import view.CustomButton;
-import view.LabelPanel;
+import util.Type;
+import view.ingame.CustomButton;
+import view.ingame.LabelPanel;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+/**
+ * @author Fabian Heinl
+ */
 public class KeyInputListener implements KeyListener {
 
     private final Presenter presenter;

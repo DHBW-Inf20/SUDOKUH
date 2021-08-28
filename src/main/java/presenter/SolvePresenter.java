@@ -6,15 +6,17 @@ import model.AbstractPuzzle.SetCellResult;
 import model.Killer;
 import model.Str8ts;
 import model.Sudoku;
-import util.KeyInputListener;
-import view.CustomButton;
-import view.LabelPanel;
+import view.ingame.CustomButton;
+import view.ingame.LabelPanel;
 import view.ingame.InGameViewScaffold;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.Set;
 
+/**
+ * @author Philipp Kremling
+ */
 public abstract class SolvePresenter implements Presenter {
 
     protected final AbstractPuzzle sudoku;

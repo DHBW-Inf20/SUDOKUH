@@ -5,9 +5,9 @@ import model.AbstractPuzzle.Cell;
 import model.AbstractPuzzle.SetCellResult;
 import model.Killer;
 import model.Killer.GroupsUpdateResult;
-import view.CustomButton;
-import view.GroupPopUpWindow;
-import view.LabelPanel;
+import view.ingame.CustomButton;
+import view.ingame.GroupPopUpWindow;
+import view.ingame.LabelPanel;
 import view.ingame.InGameViewScaffold;
 
 import java.awt.*;
@@ -16,6 +16,9 @@ import java.util.Set;
 
 import static java.util.stream.Collectors.toSet;
 
+/**
+ * @author Philipp Kremling
+ */
 public class SolveKillerPresenter extends SolvePresenter {
 
     private boolean chooseGroup;

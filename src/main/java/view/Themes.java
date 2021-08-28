@@ -1,7 +1,10 @@
-package util;
+package view;
 
 import java.awt.*;
 
+/**
+ * @author Philipp Kremling
+ */
 public class Themes {
     private final Color primaryBackgroundColor;
     // Color for field-background (secondary)

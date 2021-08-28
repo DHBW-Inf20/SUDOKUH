@@ -16,6 +16,12 @@ import static model.AbstractPuzzle.SolveResult;
  */
 public final class SudokuGenerator {
 
+    /**
+     * A {@link Sudoku} and its solution in the form of an ordered nominal Pair {@code (sudoku, solution)}.
+     */
+    public final record SudokuAndSolution(Sudoku sudoku, Sudoku solution) {}
+
+
     public static SudokuAndSolution generateSudokuAndSolution(final int subGridSize) {
         final Random random = new Random();
         final Sudoku randomSudoku = new Sudoku(subGridSize, random);

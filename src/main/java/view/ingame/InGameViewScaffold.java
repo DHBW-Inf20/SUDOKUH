@@ -1,10 +1,7 @@
 package view.ingame;
 
 import presenter.PlayPresenter;
-import util.Themes;
-import view.AgainPopUpWindow;
-import view.LabelPanel;
-import view.PopUpWindow;
+import view.Themes;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -14,6 +11,10 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Objects;
 
+/**
+ * @author Philipp Kremling
+ * @author Fabian Heinl
+ */
 public class InGameViewScaffold extends JFrame implements ActionListener {
 
     Color backgroundColor;
@@ -341,10 +342,10 @@ public class InGameViewScaffold extends JFrame implements ActionListener {
     /**
      * Adds a group of cells to a group
      *
-     * @param labels an arraylist of the {@link view.LabelPanel cells}
+     * @param labels an arraylist of the {@link LabelPanel cells}
      * @param sum    the sum of the group
      */
-    public void addGroup(ArrayList<view.LabelPanel> labels, int sum) {
+    public void addGroup(ArrayList<LabelPanel> labels, int sum) {
         sudokuFieldPanel.addGroup(labels, sum);
     }
 
@@ -353,7 +354,7 @@ public class InGameViewScaffold extends JFrame implements ActionListener {
      *
      * @param cell the group of this cell will be deleted
      */
-    public ArrayList<LabelPanel> removeGroup(view.LabelPanel cell) {
+    public ArrayList<LabelPanel> removeGroup(LabelPanel cell) {
         return sudokuFieldPanel.removeGroup(cell);
     }
 }

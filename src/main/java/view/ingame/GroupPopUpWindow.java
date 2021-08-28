@@ -1,9 +1,12 @@
-package view;
+package view.ingame;
 
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Objects;
 
+/**
+ * @author Philipp Kremling
+ */
 public class GroupPopUpWindow {
     int sum;
 

@@ -1,11 +1,13 @@
-package view;
-
-import view.ingame.InGameViewScaffold;
+package view.ingame;
 
 import javax.swing.*;
 
 import static javax.swing.JOptionPane.*;
 
+/**
+ * @author Philipp Kremling
+ * @author Fabian Heinl
+ */
 public class AgainPopUpWindow {
 
     public AgainPopUpWindow(InGameViewScaffold frame, util.Mode gamemode, int size, String theme, boolean autoStepForward, boolean highlighting, int tipLimit) {

@@ -1,10 +1,9 @@
 package view.ingame;
 
-import model.AbstractPuzzle;
+import model.AbstractPuzzle.Cell;
 import model.Str8ts;
 import util.Mode;
-import util.Themes;
-import view.LabelPanel;
+import view.Themes;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -16,6 +15,13 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
+import static model.Str8ts.Color.BLACK;
+import static model.Str8ts.Color.WHITE;
+
+/**
+ * @author Philipp Kremling
+ * @author Fabian Heinl
+ */
 public class SudokuFieldPanel extends JPanel {
     /**
      * Reference to all {@link LabelPanel fields} of the sudoku game.
@@ -65,7 +71,7 @@ public class SudokuFieldPanel extends JPanel {
     /**
      * List of conflicting cells.
      */
-    private Set<AbstractPuzzle.Cell> conflicts;
+    private Set<Cell> conflicts;
 
     /**
      * The size of the grid.
@@ -85,9 +91,9 @@ public class SudokuFieldPanel extends JPanel {
     /**
      * The inputs set by the user
      */
-    private ArrayList<view.LabelPanel> inputs;
+    private ArrayList<LabelPanel> inputs;
 
-    private final ArrayList<ArrayList<view.LabelPanel>> groups;
+    private final ArrayList<ArrayList<LabelPanel>> groups;
 
     private boolean chooseGroup;
 
@@ -121,9 +127,9 @@ public class SudokuFieldPanel extends JPanel {
 
         colors = new ArrayList<>();
         for (int i = 0; i < size*size; i++) {
-            ArrayList<model.Str8ts.Color> temp = new ArrayList<>();
+            ArrayList<Str8ts.Color> temp = new ArrayList<>();
             for (int j = 0; j < size*size; j++) {
-                temp.add(model.Str8ts.Color.WHITE);
+                temp.add(WHITE);
             }
             colors.add(temp);
         }
@@ -285,7 +291,7 @@ public class SudokuFieldPanel extends JPanel {
                 // Reset the value of an invalid cell
                 if (invalid != null) invalid.setText("");
                 if(! conflicts.isEmpty()) {
-                    for(AbstractPuzzle.Cell c : conflicts) {
+                    for(Cell c : conflicts) {
                         labels.get(c.row()).get(c.column()).getLabel().setForeground(primaryTextColor);
                     }
                 }
@@ -299,7 +305,7 @@ public class SudokuFieldPanel extends JPanel {
                         labels.get(clickedRow).get(k).setBackground(primaryBackgroundColor);
                         if (inputs.contains(labels.get(clickedRow).get(k)))
                             labels.get(clickedRow).get(k).setBackground(predefinedColor);
-                        if (colors.get(clickedRow).get(k) == Str8ts.Color.BLACK) {
+                        if (colors.get(clickedRow).get(k) == BLACK) {
                             labels.get(clickedRow).get(k).setBackground(secondaryBackgroundColor);
                             labels.get(clickedRow).get(k).getLabel().setForeground(secondaryTextColor);
                         }
@@ -308,14 +314,14 @@ public class SudokuFieldPanel extends JPanel {
                         labels.get(k).get(clickedCol).setBackground(primaryBackgroundColor);
                         if (inputs.contains(labels.get(k).get(clickedCol)))
                             labels.get(k).get(clickedCol).setBackground(predefinedColor);
-                        if (colors.get(k).get(clickedCol) == Str8ts.Color.BLACK) {
+                        if (colors.get(k).get(clickedCol) == BLACK) {
                             labels.get(k).get(clickedCol).setBackground(secondaryBackgroundColor);
                             labels.get(k).get(clickedCol).getLabel().setForeground(secondaryTextColor);
                         }
                     }
                 }
                 if (clicked != null) {
-                    if (colors.get(clickedRow).get(clickedCol) == Str8ts.Color.BLACK) {
+                    if (colors.get(clickedRow).get(clickedCol) == BLACK) {
                         clicked.setBackground(secondaryBackgroundColor);
                         clicked.getLabel().setForeground(secondaryTextColor);
                     } else if (inputs.contains(clicked)) {
@@ -333,7 +339,7 @@ public class SudokuFieldPanel extends JPanel {
                         labels.get(clickedRow).get(k).setBackground(markedColor);
                         if (inputs.contains(labels.get(clickedRow).get(k)))
                             labels.get(clickedRow).get(k).setBackground(predefinedMarkedColor);
-                        if (colors.get(clickedRow).get(k) == Str8ts.Color.BLACK) {
+                        if (colors.get(clickedRow).get(k) == BLACK) {
                             labels.get(clickedRow).get(k).setBackground(secondaryBackgroundColor);
                             labels.get(clickedRow).get(k).getLabel().setForeground(secondaryTextColor);
                         }
@@ -342,7 +348,7 @@ public class SudokuFieldPanel extends JPanel {
                         labels.get(k).get(clickedCol).setBackground(markedColor);
                         if (inputs.contains(labels.get(k).get(clickedCol)))
                             labels.get(k).get(clickedCol).setBackground(predefinedMarkedColor);
-                        if (colors.get(k).get(clickedCol) == Str8ts.Color.BLACK) {
+                        if (colors.get(k).get(clickedCol) == BLACK) {
                             labels.get(k).get(clickedCol).setBackground(secondaryBackgroundColor);
                             labels.get(k).get(clickedCol).getLabel().setForeground(secondaryTextColor);
                         }
@@ -353,7 +359,7 @@ public class SudokuFieldPanel extends JPanel {
                 // Reset the value of an invalid cell
                 if (invalid != null) invalid.setText("");
                 if(! conflicts.isEmpty()) {
-                    for(AbstractPuzzle.Cell c : conflicts) {
+                    for(Cell c : conflicts) {
                         labels.get(c.row()).get(c.column()).getLabel().setForeground(primaryTextColor);
                     }
                 }
@@ -442,7 +448,7 @@ public class SudokuFieldPanel extends JPanel {
                 // Reset the value of an invalid cell
                 if (invalid != null) invalid.setText("");
                 if(! conflicts.isEmpty()) {
-                    for(model.AbstractPuzzle.Cell c : conflicts) {
+                    for(Cell c : conflicts) {
                         labels.get(c.row()).get(c.column()).getLabel().setForeground(primaryTextColor);
                     }
                 }
@@ -485,7 +491,7 @@ public class SudokuFieldPanel extends JPanel {
                 if(inputs.contains(labels.get(row).get(col))) labels.get(row).get(col).setBackground(predefinedColor);
             }
             case STRAITS_SOLVE -> {
-                if(colors.get(row).get(col) == model.Str8ts.Color.BLACK) {
+                if(colors.get(row).get(col) == BLACK) {
                     labels.get(row).get(col).setForeground(secondaryTextColor);
                 } else {
                     labels.get(row).get(col).setForeground(primaryTextColor);
@@ -517,7 +523,7 @@ public class SudokuFieldPanel extends JPanel {
                 clicked.setForeground(primaryTextColor);
                 clicked.getLabel().setForeground(primaryTextColor);
                 if(! conflicts.isEmpty()) {
-                    for(model.AbstractPuzzle.Cell c : conflicts) {
+                    for(Cell c : conflicts) {
                         labels.get(c.row()).get(c.column()).getLabel().setForeground(primaryTextColor);
                     }
                 }
@@ -526,7 +532,7 @@ public class SudokuFieldPanel extends JPanel {
                 clicked.setText(input);
             }
             case STRAITS_SOLVE -> {
-                if(colors.get(clicked.getRow()).get(clicked.getCol()) == model.Str8ts.Color.BLACK) {
+                if(colors.get(clicked.getRow()).get(clicked.getCol()) == BLACK) {
                     clicked.setForeground(secondaryTextColor);
                     clicked.getLabel().setForeground(secondaryTextColor);
                 } else {
@@ -540,7 +546,7 @@ public class SudokuFieldPanel extends JPanel {
                 clicked.setForeground(primaryTextColor);
                 clicked.getLabel().setForeground(primaryTextColor);
                 if(! conflicts.isEmpty()) {
-                    for(model.AbstractPuzzle.Cell c : conflicts) {
+                    for(Cell c : conflicts) {
                         labels.get(c.row()).get(c.column()).getLabel().setForeground(primaryTextColor);
                     }
                 }
@@ -551,7 +557,7 @@ public class SudokuFieldPanel extends JPanel {
                 clicked.setForeground(primaryTextColor);
                 clicked.getLabel().setForeground(primaryTextColor);
                 if(! conflicts.isEmpty()) {
-                    for(model.AbstractPuzzle.Cell c : conflicts) {
+                    for(Cell c : conflicts) {
                         labels.get(c.row()).get(c.column()).getLabel().setForeground(primaryTextColor);
                     }
                 }
@@ -595,7 +601,7 @@ public class SudokuFieldPanel extends JPanel {
      *
      * @param c the invalid cell
      */
-    public void highlightConflicts(model.AbstractPuzzle.Cell c) {
+    public void highlightConflicts(Cell c) {
         labels.get(c.row()).get(c.column()).getLabel().setForeground(Color.red);
         conflicts.add(c);
     }
@@ -629,37 +635,39 @@ public class SudokuFieldPanel extends JPanel {
     /**
      * Change the color of the actual clicked cell
      */
-    public model.Str8ts.Color changeColor() {
+    public Str8ts.Color changeColor() {
         int row = clicked.getRow();
         int col = clicked.getCol();
-        model.Str8ts.Color color = colors.get(row).get(col);
-        switch(color) {
+        Str8ts.Color color = colors.get(row).get(col);
+        if (color == null) {
+            return WHITE;
+        }
+        return switch(color) {
             case WHITE -> {
                 labels.get(row).get(col).setBackground(secondaryBackgroundColor);
                 labels.get(row).get(col).getLabel().setForeground(secondaryTextColor);
-                colors.get(row).set(col, model.Str8ts.Color.BLACK);
-                return model.Str8ts.Color.BLACK;
+                colors.get(row).set(col, BLACK);
+                yield BLACK;
             }
             case BLACK -> {
                 labels.get(row).get(col).setBackground(primaryBackgroundColor);
                 labels.get(row).get(col).getLabel().setForeground(primaryTextColor);
-                colors.get(row).set(col, model.Str8ts.Color.WHITE);
-                return model.Str8ts.Color.WHITE;
+                colors.get(row).set(col, WHITE);
+                yield WHITE;
             }
-        }
-        return model.Str8ts.Color.WHITE;
+        };
     }
 
     /**
      * Adds a group of cells to a group
      *
-     * @param labels an arraylist of the {@link view.LabelPanel cells}
+     * @param labels an arraylist of the {@link LabelPanel cells}
      * @param sum the sum of the group
      */
-    public void addGroup(ArrayList<view.LabelPanel> labels, int sum) {
+    public void addGroup(ArrayList<LabelPanel> labels, int sum) {
         boolean condition = true;
         groups.add(labels);
-        for(view.LabelPanel l : labels) {
+        for(LabelPanel l : labels) {
             ArrayList<Boolean> neighbors = checkForNeighbors(l, labels);
             int top=0,left=0,bottom=0,right=0;
             for (int i = 0; i < neighbors.size(); i++) {
@@ -685,17 +693,17 @@ public class SudokuFieldPanel extends JPanel {
      *
      * @param cell the group of this cell will be deleted
      */
-    public ArrayList<LabelPanel> removeGroup(view.LabelPanel cell) {
+    public ArrayList<LabelPanel> removeGroup(LabelPanel cell) {
         int groupIndex = -1;
         for (int i = 0; i < groups.size(); i++) {
-            ArrayList<view.LabelPanel> list = groups.get(i);
+            ArrayList<LabelPanel> list = groups.get(i);
             if(list.contains(cell))  {
                 groupIndex = i;
                 break;
             }
         }
         if(groupIndex != -1) {
-            for(view.LabelPanel l : groups.get(groupIndex)) {
+            for(LabelPanel l : groups.get(groupIndex)) {
                 l.setBorder(null);
                 l.removeAll();
                 l.setText(l.getLabelValue());
@@ -712,7 +720,7 @@ public class SudokuFieldPanel extends JPanel {
      * @param labels the list of the cells with whom should be checked
      * @return an array list that specifies whether the cell has a neighbor or not (0 = up, 1 = right, 2 = down, 3 = left)
      */
-    private ArrayList<Boolean> checkForNeighbors(view.LabelPanel label, ArrayList<view.LabelPanel> labels) {
+    private ArrayList<Boolean> checkForNeighbors(LabelPanel label, ArrayList<LabelPanel> labels) {
         int row = label.getRow();
         int col = label.getCol();
         ArrayList<Boolean> result = new ArrayList<>();
@@ -784,7 +792,7 @@ public class SudokuFieldPanel extends JPanel {
 
     private void addCellToGroup(LabelPanel cell) {
         boolean isExisting = false;
-        for(ArrayList<view.LabelPanel> l : groups) {
+        for(ArrayList<LabelPanel> l : groups) {
             if (l.contains(cell)) {
                 isExisting = true;
                 break;

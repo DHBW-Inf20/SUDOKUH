@@ -1,10 +1,14 @@
 package view.ingame;
 
-import util.Themes;
+import view.Themes;
 
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * @author Philipp Kremling
+ * @author Fabian Heinl
+ */
 public class TopInfoPanel extends JPanel {
     /**
      * Various {@link Color colors} for the game menu.

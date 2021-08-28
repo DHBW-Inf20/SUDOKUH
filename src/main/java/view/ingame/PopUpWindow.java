@@ -1,13 +1,14 @@
-package view;
+package view.ingame;
 
-import view.ingame.InGameViewScaffold;
 import view.main_menu.MainMenu;
 
 import javax.swing.*;
 
 import static javax.swing.JOptionPane.*;
 
-
+/**
+ * @author Fabian Heinl
+ */
 public class PopUpWindow {
 
     public PopUpWindow(InGameViewScaffold frame) {

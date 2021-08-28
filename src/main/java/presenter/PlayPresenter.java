@@ -4,12 +4,10 @@ import model.AbstractPuzzle;
 import model.AbstractPuzzle.Cell;
 import model.AbstractPuzzle.SetCellResult;
 import model.Sudoku;
-import model.SudokuAndSolution;
 import model.SudokuGenerator;
-import util.KeyInputListener;
 import util.Mode;
-import view.CustomButton;
-import view.LabelPanel;
+import view.ingame.CustomButton;
+import view.ingame.LabelPanel;
 import view.ingame.InGameViewScaffold;
 
 import javax.swing.*;
@@ -19,6 +17,9 @@ import java.time.ZonedDateTime;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * @author Philipp Kremling
+ */
 public class PlayPresenter implements Presenter {
 
     protected final AbstractPuzzle sudoku;
@@ -45,7 +46,7 @@ public class PlayPresenter implements Presenter {
     public PlayPresenter(int size, String theme, boolean autoStepForward, boolean highlighting, int tipLimit) {
         noteMode = false;
 
-        SudokuAndSolution sudokuAndSolution = SudokuGenerator.generateSudokuAndSolution(size);
+        SudokuGenerator.SudokuAndSolution sudokuAndSolution = SudokuGenerator.generateSudokuAndSolution(size);
         sudoku = sudokuAndSolution.sudoku();
         solution = sudokuAndSolution.solution();
 

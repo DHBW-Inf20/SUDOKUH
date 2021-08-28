@@ -1,9 +1,12 @@
-package view;
+package view.ingame;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
+/**
+ * @author Philipp Kremling
+ */
 public class LabelPanel extends JPanel {
     private final JLabel label;
     private State state;

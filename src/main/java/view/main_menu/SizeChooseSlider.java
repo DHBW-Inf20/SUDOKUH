@@ -3,6 +3,9 @@ package view.main_menu;
 import javax.swing.*;
 import java.util.Hashtable;
 
+/**
+ * @author Fabian Heinl
+ */
 public class SizeChooseSlider extends JSlider{
 
     public SizeChooseSlider() {

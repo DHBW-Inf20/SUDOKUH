@@ -1,4 +1,4 @@
-package view;
+package view.ingame;
 
 import util.Type;
 
@@ -6,6 +6,10 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * @author Philipp Kremling
+ * @author Fabian Heinl
+ */
 public class CustomButton extends JButton {
 
     private final int value;

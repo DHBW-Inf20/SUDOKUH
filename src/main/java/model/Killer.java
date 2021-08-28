@@ -125,11 +125,11 @@ public final class Killer extends AbstractSudoku {
 
 
     private GroupsUpdateResult newGroupsUpdateFailure(final FailureReason failureReason) {
-        return new GroupsUpdateResult(false, failureReason, copyOf(groups));
+        return new GroupsUpdateResult(false, failureReason, getGroups());
     }
 
     private GroupsUpdateResult newGroupsUpdateSuccess() {
-        return new GroupsUpdateResult(true, null, copyOf(groups));
+        return new GroupsUpdateResult(true, null, getGroups());
     }
 
     private FailureReason reasonWhyGroupIsInvalid(final Group group) {
