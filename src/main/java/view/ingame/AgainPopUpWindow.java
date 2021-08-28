@@ -10,6 +10,7 @@ import view.Theme;
 import javax.swing.*;
 
 import static javax.swing.JOptionPane.*;
+import static util.Strings.*;
 
 /**
  * @author Philipp Kremling
@@ -18,7 +19,7 @@ import static javax.swing.JOptionPane.*;
 public final class AgainPopUpWindow {
 
     public AgainPopUpWindow(InGameViewScaffold frame, GameMode gamemode, int size, Theme theme, boolean autoStepForward, boolean highlighting, int tipLimit) {
-        int selectedValue = JOptionPane.showOptionDialog(null, "Spielfeld zur\u00fccksetzen? Der Fortschritt geht verloren!", "SUDOKUH", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, new String[]{"JA", "NEIN"}, "NEIN");
+        int selectedValue = JOptionPane.showOptionDialog(null, RESET_ALL_PROGRESS_WILL_BE_LOST, SUDOKUH, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, new String[]{YES, NO}, NO);
 
         //Button Events
         if (selectedValue == YES_OPTION) {

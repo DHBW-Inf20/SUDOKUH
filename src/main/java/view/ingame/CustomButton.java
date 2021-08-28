@@ -1,5 +1,7 @@
 package view.ingame;
 
+import util.Strings;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
@@ -14,7 +16,7 @@ import static java.util.Objects.requireNonNull;
 public final class CustomButton extends JButton {
 
     public enum Type {
-        NUMBER, DELETE, SOLVE, TIP, VERIFY, PEN, CHANGE_COLOR, CHOOSE_GROUP, REMOVE_GROUP, EDIT_GROUP
+        NUMBER, DELETE, SOLVE, TIP, VERIFY, NOTE, CHANGE_COLOR, CHOOSE_GROUP, REMOVE_GROUP, EDIT_GROUP
     }
 
     private final int value;
@@ -44,40 +46,40 @@ public final class CustomButton extends JButton {
         switch (type) {
             case NUMBER -> {
                 setText(Integer.toString(value));
-                setToolTipText(value + " setzen");
+                setToolTipText(Strings.isGerman ? value + " setzen" : "set " + value);
             }
             case DELETE -> {
                 setIcon(new ImageIcon(delete));
-                setToolTipText("L\u00f6schen");
+                setToolTipText(Strings.DELETE);
             }
             case SOLVE -> {
                 setIcon(new ImageIcon(solve));
-                setToolTipText("L\u00f6sung suchen");
+                setToolTipText(Strings.SEARCH_SOLUTION);
             }
             case TIP -> {
                 setIcon(new ImageIcon(tip));
-                setToolTipText("Tipp anzeigen");
+                setToolTipText(Strings.SHOW_TIP);
             }
             case VERIFY -> {
                 setIcon(new ImageIcon(verify));
-                setToolTipText("L\u00f6sung \u00fcberpr\u00fcfen");
+                setToolTipText(Strings.VERIFY_SOLUTION);
             }
-            case PEN, EDIT_GROUP -> {
+            case NOTE, EDIT_GROUP -> {
                 setIcon(new ImageIcon(pen));
-                if (type == Type.PEN) setToolTipText("Stift-Funktion");
-                if (type == Type.EDIT_GROUP) setToolTipText("Gruppe bearbeiten");
+                if (type == Type.NOTE) setToolTipText(Strings.NOTE_MODE);
+                if (type == Type.EDIT_GROUP) setToolTipText(Strings.EDIT_GROUP);
             }
             case CHANGE_COLOR -> {
                 setIcon(new ImageIcon(color));
-                setToolTipText("Farbe wechseln");
+                setToolTipText(Strings.CHANGE_COLOR);
             }
             case CHOOSE_GROUP -> {
                 setIcon(new ImageIcon(chooseGroup));
-                setToolTipText("Gruppe ausw\u00e4hlen");
+                setToolTipText(Strings.CHOOSE_GROUP);
             }
             case REMOVE_GROUP -> {
                 setIcon(new ImageIcon(removeGroup));
-                setToolTipText("Gruppe l\u00f6schen");
+                setToolTipText(Strings.DELETE_GROUP);
             }
         }
         setFocusable(false);

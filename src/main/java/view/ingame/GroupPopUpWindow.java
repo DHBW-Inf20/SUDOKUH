@@ -4,6 +4,8 @@ import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Objects;
 
+import static util.Strings.WHICH_SUM_DOES_THIS_GROUP_HAVE;
+
 /**
  * @author Philipp Kremling
  */
@@ -12,14 +14,16 @@ public final class GroupPopUpWindow {
 
     public GroupPopUpWindow(ArrayList<LabelPanel> group) {
         sum = -1;
-        String selectedValue = JOptionPane.showInputDialog("Welche Summe hat diese Gruppe?");
+        String selectedValue = JOptionPane.showInputDialog(WHICH_SUM_DOES_THIS_GROUP_HAVE);
         int minSum = 0;
-        for(LabelPanel l : group) {
-            if(!Objects.equals(l.getLabelValue(), "") && l.getLabelValue() != null) minSum += Integer.parseInt(l.getLabelValue());
+        for (LabelPanel l : group) {
+            if (!Objects.equals(l.getLabelValue(), "") && l.getLabelValue() != null) {
+                minSum += Integer.parseInt(l.getLabelValue());
+            }
         }
         try {
             sum = Integer.parseInt(selectedValue);
-            if(sum < minSum || sum == 0) sum = -2;
+            if (sum < minSum || sum == 0) sum = -2;
         } catch (Exception e) {
             e.printStackTrace();
         }

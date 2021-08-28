@@ -17,6 +17,7 @@ import java.io.IOException;
 import static java.awt.BorderLayout.CENTER;
 import static java.util.Objects.requireNonNull;
 import static util.GameMode.*;
+import static util.Strings.*;
 import static view.Theme.DARK;
 import static view.Theme.LIGHT;
 
@@ -32,7 +33,7 @@ public final class MainMenu extends JFrame {
     final JPanel mainMenuPanel = new JPanel();
     final JPanel settingsPanel = new JPanel();
     final JPanel gameSettingsPanel = new JPanel();
-    final JLabel tipText = new JLabel("Tipp-Limit:");
+    final JLabel tipText = new JLabel(TIP_LIMIT);
     final TipChooseSlider tipSlider = new TipChooseSlider();
     final SizeChooseSlider sizeSlider = new SizeChooseSlider();
 
@@ -44,7 +45,7 @@ public final class MainMenu extends JFrame {
     int tipLimit = 3;
 
     public MainMenu() {
-        super("SUDOKUH Hauptmen\u00fc");
+        super(SUDOKUH + " " + MAIN_MENU);
 
         setSize(new Dimension(350, 660));
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -71,26 +72,26 @@ public final class MainMenu extends JFrame {
         } catch (NullPointerException | IOException e) {
             e.printStackTrace();
         }
-        createButtonAndAddToPanel(mainMenuPanel, "Sudoku Spiel", 75, 250, 200, () -> {
+        createButtonAndAddToPanel(mainMenuPanel, SUDOKU_GAME, 75, 250, 200, () -> {
             gameMode = SUDOKU_PLAY;
-            setTitle("Neues Sudoku Spiel");
+            setTitle(NEW_SUDOKU_GAME);
             cardLayout.show(cardsPanel, "gameSettingsPanel");
         });
-        createButtonAndAddToPanel(mainMenuPanel, "Sudoku L\u00f6ser", 75, 325, 200, () -> {
+        createButtonAndAddToPanel(mainMenuPanel, SUDOKU_SOLVER, 75, 325, 200, () -> {
             gameMode = SUDOKU_SOLVE;
-            setTitle("Neuer Sudoku L\u00f6ser");
+            setTitle(NEW_SUDOKU_SOLVER);
             cardLayout.show(cardsPanel, "gameSettingsPanel");
         });
-        createButtonAndAddToPanel(mainMenuPanel, "Killer L\u00f6ser", 75, 400, 200, () -> {
+        createButtonAndAddToPanel(mainMenuPanel, KILLER_SOLVER, 75, 400, 200, () -> {
             gameMode = KILLER_SOLVE;
             startGame(3);
         });
-        createButtonAndAddToPanel(mainMenuPanel, "Str8ts L\u00f6ser", 75, 475, 200, () -> {
+        createButtonAndAddToPanel(mainMenuPanel, STR8TS_SOLVER, 75, 475, 200, () -> {
             gameMode = STR8TS_SOLVE;
             startGame(3);
         });
-        createButtonAndAddToPanel(mainMenuPanel, "Einstellungen", 75, 550, 200, () -> {
-            setTitle("Einstellungen");
+        createButtonAndAddToPanel(mainMenuPanel, SETTINGS, 75, 550, 200, () -> {
+            setTitle(SETTINGS);
             cardLayout.show(cardsPanel, "settingsPanel");
         });
 
@@ -98,14 +99,14 @@ public final class MainMenu extends JFrame {
         // Game Settings Panel
         gameSettingsPanel.setLayout(null);
         gameSettingsPanel.setBackground(theme.normalCellColor);
-        createButtonAndAddToPanel(gameSettingsPanel, "Zur\u00fcck", 100, 25, 150, () -> {
-            setTitle("SUDOKUH Hauptmen\u00fc");
+        createButtonAndAddToPanel(gameSettingsPanel, BACK, 100, 25, 150, () -> {
+            setTitle(SUDOKUH + " " + MAIN_MENU);
             cardLayout.first(cardsPanel);
         });
         sizeSlider.setBackground(theme.normalCellColor);
         sizeSlider.setLabelColors(theme.primaryTextColor);
         gameSettingsPanel.add(sizeSlider);
-        createButtonAndAddToPanel(gameSettingsPanel, "Start", 100, 450, 150,
+        createButtonAndAddToPanel(gameSettingsPanel, START, 100, 450, 150,
                 () -> startGame(sizeSlider.getValue())
         );
 
@@ -113,8 +114,8 @@ public final class MainMenu extends JFrame {
         // Settings Panel
         settingsPanel.setLayout(null);
         settingsPanel.setBackground(theme.normalCellColor);
-        createButtonAndAddToPanel(settingsPanel, "Zur\u00fcck", 100, 25, 150, () -> {
-            setTitle("SUDOKUH Hauptmen\u00fc");
+        createButtonAndAddToPanel(settingsPanel, BACK, 100, 25, 150, () -> {
+            setTitle(SUDOKUH + " " + MAIN_MENU);
             switch (tipSlider.getValue()) {
                 case 0 -> tipLimit = 0;
                 case 1 -> tipLimit = 3;
@@ -124,15 +125,15 @@ public final class MainMenu extends JFrame {
             }
             cardLayout.first(cardsPanel);
         });
-        createToggleButtonAndAddToSettingsPanel("DarkMode", darkModeEnabled, 200, () -> {
+        createToggleButtonAndAddToSettingsPanel(DARK_MODE, darkModeEnabled, 200, () -> {
             darkModeEnabled = !darkModeEnabled;
             theme = darkModeEnabled ? DARK : LIGHT;
             updateTheme();
         });
-        createToggleButtonAndAddToSettingsPanel("Auto Step", autoStepForwardEnabled, 300,
+        createToggleButtonAndAddToSettingsPanel(AUTO_STEP, autoStepForwardEnabled, 300,
                 () -> autoStepForwardEnabled = !autoStepForwardEnabled
         );
-        createToggleButtonAndAddToSettingsPanel("Hervorhebungen", highlightingEnabled, 400,
+        createToggleButtonAndAddToSettingsPanel(HIGHLIGHTING, highlightingEnabled, 400,
                 () -> highlightingEnabled = !highlightingEnabled
         );
         tipText.setBounds(100, 450, 150, 50);

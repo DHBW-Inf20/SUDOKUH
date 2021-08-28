@@ -40,7 +40,7 @@ public final class KeyInputListener implements KeyListener {
         switch (e.getKeyCode()) {
             case 8, 127 -> presenter.handleButton(new CustomButton(DELETE));
             case 84 -> presenter.handleButton(new CustomButton(TIP));
-            case 78 -> presenter.handleButton(new CustomButton(PEN));
+            case 78 -> presenter.handleButton(new CustomButton(NOTE));
             case 70 -> presenter.handleButton(new CustomButton(CHANGE_COLOR));
             case 69 -> presenter.handleButton(new CustomButton(VERIFY));
             case 10 -> presenter.handleButton(new CustomButton(SOLVE));

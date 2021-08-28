@@ -17,7 +17,7 @@ public final class RightControlsPanel extends JPanel {
 
     private final Theme theme;
 
-    CustomButton buttonPen, buttonChooseGroup, buttonEditGroup;
+    CustomButton buttonNote, buttonChooseGroup, buttonEditGroup;
 
     /**
      * The actual played gamemode.
@@ -55,7 +55,7 @@ public final class RightControlsPanel extends JPanel {
         buttonDelete.setOpaque(true);
         this.add(buttonDelete);
         buttonDelete.addActionListener(buttonListener);
-        buttonPen = new CustomButton(PEN);
+        buttonNote = new CustomButton(NOTE);
         setCustomButtons(buttonListener);
 
         setBackground(theme.menuBackgroundColor);
@@ -89,11 +89,11 @@ public final class RightControlsPanel extends JPanel {
                 buttonTip.setOpaque(true);
                 this.add(buttonTip);
                 buttonTip.addActionListener(buttonListener);
-                buttonPen.setForeground(theme.primaryTextColor);
-                buttonPen.setBackground(theme.normalCellColor);
-                buttonPen.setOpaque(true);
-                this.add(buttonPen);
-                buttonPen.addActionListener(buttonListener);
+                buttonNote.setForeground(theme.primaryTextColor);
+                buttonNote.setBackground(theme.normalCellColor);
+                buttonNote.setOpaque(true);
+                this.add(buttonNote);
+                buttonNote.addActionListener(buttonListener);
                 CustomButton buttonVerify = new CustomButton(VERIFY);
                 buttonVerify.setForeground(theme.primaryTextColor);
                 buttonVerify.setBackground(theme.normalCellColor);
@@ -142,14 +142,14 @@ public final class RightControlsPanel extends JPanel {
      * Sets the color of the note button to green
      */
     public void setNoteMode() {
-        buttonPen.setBackground(Color.decode("#78B53A"));
+        buttonNote.setBackground(Color.decode("#78B53A"));
     }
 
     /**
      * Sets the color of the note button to normal
      */
     public void setNormalMode() {
-        buttonPen.setBackground(theme.normalCellColor);
+        buttonNote.setBackground(theme.normalCellColor);
     }
 
     /**

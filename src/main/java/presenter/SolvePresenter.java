@@ -16,6 +16,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.Set;
 
+import static util.Strings.*;
+
 /**
  * @author Philipp Kremling
  */
@@ -31,15 +33,15 @@ public abstract class SolvePresenter implements Presenter {
         switch (gameMode) {
             case STR8TS_SOLVE -> {
                 sudoku = new Str8ts();
-                inGameViewScaffold = new InGameViewScaffold(size, this::handleButtonListenerEvent, "Str8ts l\u00f6sen", theme, highlighting, autoStepForward, gameMode);
+                inGameViewScaffold = new InGameViewScaffold(size, this::handleButtonListenerEvent, SOLVE_STR8TS, theme, highlighting, autoStepForward, gameMode);
             }
             case KILLER_SOLVE -> {
                 sudoku = new Killer();
-                inGameViewScaffold = new InGameViewScaffold(size, this::handleButtonListenerEvent, "Killer l\u00f6sen", theme, highlighting, autoStepForward, gameMode);
+                inGameViewScaffold = new InGameViewScaffold(size, this::handleButtonListenerEvent, SOLVE_KILLER, theme, highlighting, autoStepForward, gameMode);
             }
             default -> {
                 sudoku = new Sudoku(size);
-                inGameViewScaffold = new InGameViewScaffold(size, this::handleButtonListenerEvent, "Sudoku l\u00f6sen", theme, highlighting, autoStepForward, gameMode);
+                inGameViewScaffold = new InGameViewScaffold(size, this::handleButtonListenerEvent, SOLVE_SUDOKU, theme, highlighting, autoStepForward, gameMode);
             }
         }
         inGameViewScaffold.addKeyListener(new KeyInputListener(this, autoStepForward));
@@ -74,7 +76,7 @@ public abstract class SolvePresenter implements Presenter {
                             inGameViewScaffold.highlightConflicts(c);
                         }
                         inGameViewScaffold.invalidInput(String.valueOf(number));
-                        inGameViewScaffold.setGUIText("Logisch falscher Input!", Color.red);
+                        inGameViewScaffold.setGUIText(LOGICAL_WRONG_INPUT, Color.red);
                     }
                 }
             }
@@ -87,10 +89,10 @@ public abstract class SolvePresenter implements Presenter {
             case SOLVE -> {
                 AbstractPuzzle.SolveResult solveResult = sudoku.solve();
                 switch (solveResult) {
-                    case NO_SOLUTION -> inGameViewScaffold.setGUIText("Dieses Sudoku kann nicht gel\u00f6st werden!", Color.red);
-                    case NOT_IN_VALID_STATE_FOR_SOLVE -> inGameViewScaffold.setGUIText("Dieses Sudoku kann noch nicht gel\u00f6st werden!", Color.red);
+                    case NO_SOLUTION -> inGameViewScaffold.setGUIText(THIS_SUDOKU_CANNOT_BE_SOLVED, Color.red);
+                    case NOT_IN_VALID_STATE_FOR_SOLVE -> inGameViewScaffold.setGUIText(THIS_SUDOKU_CANNOT_BE_SOLVED_YET, Color.red);
                     case ONE_SOLUTION -> {
-                        inGameViewScaffold.setGUIText("Das Sudoku wurde erfolgreich gel\u00f6st!", Color.green);
+                        inGameViewScaffold.setGUIText(THE_SUDOKU_WAS_SOLVED_SUCCESSFULLY, Color.green);
                         for (int row = 0; row < sudoku.getGridSize(); row++) {
                             for (int column = 0; column < sudoku.getGridSize(); column++) {
                                 inGameViewScaffold.setValue(row, column, sudoku.getCell(row, column));
@@ -98,7 +100,7 @@ public abstract class SolvePresenter implements Presenter {
                         }
                     }
                     case MULTIPLE_SOLUTIONS -> {
-                        inGameViewScaffold.setGUIText("<html><body><center>Das Sudoku wurde erfolgreich gel\u00f6st!<br>Es gibt allerdings mehr als eine M\u00f6glichkeit.</center></body></html>", Color.green);
+                        inGameViewScaffold.setGUIText(CENTER(THE_SUDOKU_WAS_SOLVED_SUCCESSFULLY + BR + BUT_THERE_WAS_MORE_THAN_ONE_POSSIBILITY), Color.green);
                         for (int row = 0; row < sudoku.getGridSize(); row++) {
                             for (int column = 0; column < sudoku.getGridSize(); column++) {
                                 inGameViewScaffold.setValue(row, column, sudoku.getCell(row, column));

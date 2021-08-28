@@ -5,6 +5,7 @@ import view.main_menu.MainMenu;
 import javax.swing.*;
 
 import static javax.swing.JOptionPane.*;
+import static util.Strings.*;
 
 /**
  * @author Fabian Heinl
@@ -12,7 +13,7 @@ import static javax.swing.JOptionPane.*;
 public final class PopUpWindow {
 
     public PopUpWindow(InGameViewScaffold frame) {
-        int selectedValue = JOptionPane.showOptionDialog(null, "Zur\u00fcck zum Men\u00fc? Der Fortschritt geht verloren!", "SUDOKUH", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, new String[]{"JA", "NEIN"}, "NEIN");
+        int selectedValue = JOptionPane.showOptionDialog(null, GO_TO_MAIN_MENU_ALL_PROGRESS_WILL_BE_LOST, SUDOKUH, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, new String[]{YES, NO}, NO);
 
         //Button Events
         if (selectedValue == YES_OPTION) {

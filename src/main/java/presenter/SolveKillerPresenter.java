@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Set;
 
 import static java.util.stream.Collectors.toSet;
+import static util.Strings.*;
 
 /**
  * @author Philipp Kremling
@@ -54,7 +55,7 @@ public final class SolveKillerPresenter extends SolvePresenter {
                             inGameViewScaffold.highlightConflicts(c);
                         }
                         inGameViewScaffold.invalidInput(String.valueOf(number));
-                        inGameViewScaffold.setGUIText("Logisch falscher Input!", Color.red);
+                        inGameViewScaffold.setGUIText(LOGICAL_WRONG_INPUT, Color.red);
                     }
                 }
             }
@@ -67,10 +68,10 @@ public final class SolveKillerPresenter extends SolvePresenter {
             case SOLVE -> {
                 AbstractPuzzle.SolveResult solveResult = sudoku.solve();
                 switch (solveResult) {
-                    case NO_SOLUTION -> inGameViewScaffold.setGUIText("Dieses Sudoku kann nicht gel\u00f6st werden!", Color.red);
-                    case NOT_IN_VALID_STATE_FOR_SOLVE -> inGameViewScaffold.setGUIText("Dieses Sudoku kann noch nicht gel\u00f6st werden!", Color.red);
+                    case NO_SOLUTION -> inGameViewScaffold.setGUIText(THIS_PUZZLE_CANNOT_BE_SOLVED, Color.red);
+                    case NOT_IN_VALID_STATE_FOR_SOLVE -> inGameViewScaffold.setGUIText(THIS_PUZZLE_CANNOT_BE_SOLVED_YET, Color.red);
                     case ONE_SOLUTION -> {
-                        inGameViewScaffold.setGUIText("Das Sudoku wurde erfolgreich gel\u00f6st!", Color.green);
+                        inGameViewScaffold.setGUIText(THE_PUZZLE_WAS_SOLVED_SUCCESSFULLY, Color.green);
                         for (int row = 0; row < sudoku.getGridSize(); row++) {
                             for (int column = 0; column < sudoku.getGridSize(); column++) {
                                 inGameViewScaffold.setValue(row, column, sudoku.getCell(row, column));
@@ -78,7 +79,7 @@ public final class SolveKillerPresenter extends SolvePresenter {
                         }
                     }
                     case MULTIPLE_SOLUTIONS -> {
-                        inGameViewScaffold.setGUIText("<html><body><center>Das Sudoku wurde erfolgreich gel\u00f6st!<br>Es gibt allerdings mehr als eine M\u00f6glichkeit.</center></body></html>", Color.green);
+                        inGameViewScaffold.setGUIText(CENTER(THE_PUZZLE_WAS_SOLVED_SUCCESSFULLY + BR + BUT_THERE_WAS_MORE_THAN_ONE_POSSIBILITY), Color.green);
                         for (int row = 0; row < sudoku.getGridSize(); row++) {
                             for (int column = 0; column < sudoku.getGridSize(); column++) {
                                 inGameViewScaffold.setValue(row, column, sudoku.getCell(row, column));
@@ -97,7 +98,7 @@ public final class SolveKillerPresenter extends SolvePresenter {
                         saveGroup(group);
                     }
                 } else {
-                    inGameViewScaffold.setGUIText("<html><body><center>W\u00e4hrend der Bearbeitungsmodus aktiviert ist, kann der<br>Auswahlmodus nicht aktiviert werden.</center></body></html>");
+                    inGameViewScaffold.setGUIText(THE_SELECT_MODE_CANNOT_BE_ACTIVATED_WHILE_THE_EDIT_MODE_IS_ACTIVATED);
                 }
             }
             case REMOVE_GROUP -> {
@@ -132,7 +133,7 @@ public final class SolveKillerPresenter extends SolvePresenter {
                         saveGroup(group);
                     }
                 } else {
-                    inGameViewScaffold.setGUIText("<html><body><center>W\u00e4hrend der Auswahlmodus aktiviert ist, kann der<br>Bearbeitungsmodus nicht aktiviert werden.</center></body></html>");
+                    inGameViewScaffold.setGUIText(THE_EDIT_MODE_CANNOT_BE_ACTIVATED_WHILE_THE_SELECT_MODE_IS_ACTIVATED);
                 }
             }
         }
@@ -153,10 +154,10 @@ public final class SolveKillerPresenter extends SolvePresenter {
             int sum = userInput.getSum();
             // False input
             if (sum == -1) {
-                inGameViewScaffold.setGUIText("Fehlerhafte Summe!", Color.red);
+                inGameViewScaffold.setGUIText(FAULTY_SUM, Color.red);
                 // Logical incorrect input
             } else if (sum == -2) {
-                inGameViewScaffold.setGUIText("Logisch inkorrekte Summe!", Color.red);
+                inGameViewScaffold.setGUIText(LOGICAL_INCORRECT_SUM, Color.red);
             } else {
                 final Set<Cell> cells = group.stream().map(it -> new Cell(it.getRow(), it.getCol())).collect(toSet());
                 final GroupsUpdateResult result = ((Killer) sudoku).putCellsIntoNewGroup(cells, sum);
@@ -165,11 +166,11 @@ public final class SolveKillerPresenter extends SolvePresenter {
                     inGameViewScaffold.addGroup(group, sum);
                 } else {
                     inGameViewScaffold.setGUIText(switch (result.failureReason()) {
-                        case GROUP_VALUES_NOT_UNIQUE -> "Dies w\u00fcrde zu Gruppen mit doppelt vorkommenden Werten f\u00fchren!";
-                        case GROUP_SUM_NOT_VALID -> "Die Summe ist ung\u00fcltig!";
-                        case GROUP_IS_EMPTY -> "Es k\u00f6nnen keine leeren Gruppen hinzugef\u00fcgt werden!";
-                        case GROUP_HAS_TOO_MANY_CELLS -> "Gruppen k\u00f6nnen maximal " + Killer.Group.MAX_CELLS + " Feldern haben!";
-                        case GROUP_CELLS_ARE_NOT_CONNECTED -> "Dies w\u00fcrde zu Gruppen mit nicht zusammenh\u00e4ngenden Feldern f\u00fchren!";
+                        case GROUP_VALUES_NOT_UNIQUE -> GROUPS_WITH_DUPLICATE_VALUES_ARE_NOT_ALLOWED;
+                        case GROUP_SUM_NOT_VALID -> THE_SUM_IS_INVALID;
+                        case GROUP_IS_EMPTY -> EMPTY_GROUPS_ARE_NOT_ALLOWED;
+                        case GROUP_HAS_TOO_MANY_CELLS -> GROUPS_CAN_AT_MOST_HAVE_N_CELLS(Killer.Group.MAX_CELLS);
+                        case GROUP_CELLS_ARE_NOT_CONNECTED -> THIS_WOULD_LEAD_TO_GROUPS_WITH_UNCONNECTED_CELLS;
                         case GROUP_NOT_PART_OF_KILLER -> throw new IllegalStateException("Unexpected result for Killer#putCellsIntNewGroup()");
                     }, Color.red);
                 }

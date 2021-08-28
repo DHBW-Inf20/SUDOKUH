@@ -94,10 +94,10 @@ Tastaturäquivalent: ENTER)
 ### Str8ts lösen
 
 Str8ts ist eine spezielle Variante von Sudoku: Hier gibt es keine Unterraster und nur ein großes Feld: Einzige Bedingung
-ist also, dass nicht dieselbe Zahl in derselben Zeile oder Spalte stehen darf. Außerdem können gesperrte Felder
+ist also, dass nicht dieselbe Zahl in derselben Zeile oder Spalte stehen darf. Außerdem können gesperrte Zellen
 (normalerweise schwarz dargestellt) existieren, die keine Nummern enthalten dürfen oder die darin enthaltenen
 vordefinierten Nummern können nicht geändert werden. Auch darf es in horizontal oder vertikal zusammenhängenden weißen
-Feldern nur nahtlose Ziffernfolgen, also Straßen, geben. Für die Trennung zwischen schwarzen und weißen Feldern gibt es
+Zellen nur nahtlose Ziffernfolgen, also Straßen, geben. Für die Trennung zwischen schwarzen und weißen Zellen gibt es
 einen Farbwechsel-Button: Ein Klick darauf ändert die Farbe der aktuell ausgewählten Zelle. Durch erneutes Anklicken
 wird sie wieder geändert. (Tastaturäquivalent: F)
 

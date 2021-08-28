@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import static java.util.Objects.requireNonNull;
+import static util.Strings.*;
 
 /**
  * @author Philipp Kremling
@@ -40,7 +41,7 @@ public class InGameViewScaffold extends JFrame implements ActionListener {
 
     public InGameViewScaffold(int gridSize, ActionListener buttonListener, String title, Theme theme, boolean highlighting, boolean autoStepForward, GameMode gamemode) {
         //General Window Options
-        super("SUDOKUH - " + title);
+        super(SUDOKUH + "-" + title);
         this.setResizable(false);
         this.setSize(1195, 980);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -77,7 +78,7 @@ public class InGameViewScaffold extends JFrame implements ActionListener {
         againButton.setFocusable(false);
         againButton.setBorder(null);
         againButton.addActionListener(this);
-        againButton.setToolTipText("Spielfeld zur\u00fccksetzen");
+        againButton.setToolTipText(RESET);
         mainContainer.add(againButton);
 
         homeButton.setBackground(theme.menuBackgroundColor);
@@ -93,7 +94,7 @@ public class InGameViewScaffold extends JFrame implements ActionListener {
         homeButton.setFocusable(false);
         homeButton.setBorder(null);
         homeButton.addActionListener(this);
-        homeButton.setToolTipText("Zum Hauptmen\u00fc");
+        homeButton.setToolTipText(GO_TO_MAIN_MENU);
         mainContainer.add(homeButton);
 
         this.setVisible(true);
