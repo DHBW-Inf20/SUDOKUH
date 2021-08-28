@@ -25,7 +25,7 @@ import static view.Theme.LIGHT;
  * @author Fabian Heinl
  * @author Luca Kellermann
  */
-public class MainMenu extends JFrame {
+public final class MainMenu extends JFrame {
 
     final CardLayout cardLayout = new CardLayout();
     final JPanel cardsPanel = new JPanel(cardLayout);

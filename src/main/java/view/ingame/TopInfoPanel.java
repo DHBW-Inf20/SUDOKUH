@@ -9,7 +9,7 @@ import java.awt.*;
  * @author Philipp Kremling
  * @author Fabian Heinl
  */
-public class TopInfoPanel extends JPanel {
+public final class TopInfoPanel extends JPanel {
 
     private final Theme theme;
 

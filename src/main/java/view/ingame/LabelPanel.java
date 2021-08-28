@@ -7,7 +7,7 @@ import java.util.ArrayList;
 /**
  * @author Philipp Kremling
  */
-public class LabelPanel extends JPanel {
+public final class LabelPanel extends JPanel {
     private final JLabel label;
     private State state;
     public enum State {

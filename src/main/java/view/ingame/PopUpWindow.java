@@ -9,7 +9,7 @@ import static javax.swing.JOptionPane.*;
 /**
  * @author Fabian Heinl
  */
-public class PopUpWindow {
+public final class PopUpWindow {
 
     public PopUpWindow(InGameViewScaffold frame) {
         int selectedValue = JOptionPane.showOptionDialog(null, "Zur\u00fcck zum Men\u00fc? Der Fortschritt geht verloren!", "SUDOKUH", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, new String[]{"JA", "NEIN"}, "NEIN");

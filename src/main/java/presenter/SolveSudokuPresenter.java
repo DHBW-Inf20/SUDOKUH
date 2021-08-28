@@ -7,7 +7,7 @@ import view.ingame.InGameViewScaffold;
 /**
  * @author Philipp Kremling
  */
-public class SolveSudokuPresenter extends SolvePresenter {
+public final class SolveSudokuPresenter extends SolvePresenter {
     public SolveSudokuPresenter(int size, Theme theme, boolean autoStepForward, boolean highlighting) {
         super(size, GameMode.SUDOKU_SOLVE, theme, autoStepForward, highlighting);
     }

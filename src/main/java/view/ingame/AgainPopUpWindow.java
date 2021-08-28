@@ -15,7 +15,7 @@ import static javax.swing.JOptionPane.*;
  * @author Philipp Kremling
  * @author Fabian Heinl
  */
-public class AgainPopUpWindow {
+public final class AgainPopUpWindow {
 
     public AgainPopUpWindow(InGameViewScaffold frame, GameMode gamemode, int size, Theme theme, boolean autoStepForward, boolean highlighting, int tipLimit) {
         int selectedValue = JOptionPane.showOptionDialog(null, "Spielfeld zur\u00fccksetzen? Der Fortschritt geht verloren!", "SUDOKUH", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, new String[]{"JA", "NEIN"}, "NEIN");

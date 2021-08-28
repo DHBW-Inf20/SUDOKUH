@@ -21,23 +21,21 @@ import java.util.concurrent.TimeUnit;
 /**
  * @author Philipp Kremling
  */
-public class PlayPresenter implements Presenter {
+public final class PlayPresenter implements Presenter {
 
-    protected final AbstractPuzzle sudoku;
-    protected final AbstractPuzzle solution;
-    protected final view.ingame.InGameViewScaffold inGameViewScaffold;
+    private final AbstractPuzzle sudoku;
+    private final AbstractPuzzle solution;
+    private final view.ingame.InGameViewScaffold inGameViewScaffold;
 
-    protected int tipLimit;
-    protected int tipsUsed;
+    private final int tipLimit;
+    private int tipsUsed;
 
-    protected boolean autoStepForward;
+    private final Timer timer;
+    private long startTime;
+    private long lastUpdateTime;
+    private long pausedTime = 0;
 
-    protected Timer timer;
-    protected long startTime;
-    protected long lastUpdateTime;
-    protected long pausedTime = 0;
-
-    protected boolean solved;
+    private boolean solved;
 
     /**
      * Specifies whether the node mode is active or not
@@ -59,7 +57,6 @@ public class PlayPresenter implements Presenter {
 
         this.tipLimit = tipLimit;
         this.tipsUsed = 0;
-        this.autoStepForward = autoStepForward;
         inGameViewScaffold.setRemainingTips(tipLimit - tipsUsed);
         if (tipLimit - tipsUsed == 0) inGameViewScaffold.reachedMaxTips();
 
@@ -196,7 +193,7 @@ public class PlayPresenter implements Presenter {
     /**
      * Sets the playing time timer to the actual value
      */
-    protected void setTimer() {
+    private void setTimer() {
         long actualTime = ZonedDateTime.now().toInstant().toEpochMilli();
         // Only set the time if there is a difference of one second
         if (actualTime >= lastUpdateTime + 1000) {

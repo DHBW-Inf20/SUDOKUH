@@ -21,7 +21,7 @@ import static java.util.stream.Collectors.toSet;
 /**
  * @author Philipp Kremling
  */
-public class SolveKillerPresenter extends SolvePresenter {
+public final class SolveKillerPresenter extends SolvePresenter {
 
     private boolean chooseGroup;
     private boolean editGroup;

@@ -23,7 +23,7 @@ import static util.GameMode.STR8TS_SOLVE;
  * @author Philipp Kremling
  * @author Fabian Heinl
  */
-public class SudokuFieldPanel extends JPanel {
+public final class SudokuFieldPanel extends JPanel {
 
     private final Theme theme;
 
@@ -182,7 +182,7 @@ public class SudokuFieldPanel extends JPanel {
      *
      * @param labelPanel Panel of cells
      */
-    protected void handleClickEvent(LabelPanel labelPanel) {
+    private void handleClickEvent(LabelPanel labelPanel) {
         switch (gamemode) {
             case SUDOKU_SOLVE, KILLER_SOLVE -> {
                 // Unmarking of possible conflicting cells

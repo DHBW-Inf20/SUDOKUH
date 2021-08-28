@@ -7,7 +7,7 @@ import java.util.Objects;
 /**
  * @author Philipp Kremling
  */
-public class GroupPopUpWindow {
+public final class GroupPopUpWindow {
     int sum;
 
     public GroupPopUpWindow(ArrayList<LabelPanel> group) {

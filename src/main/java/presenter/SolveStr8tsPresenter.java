@@ -16,7 +16,7 @@ import java.util.Set;
 /**
  * @author Philipp Kremling
  */
-public class SolveStr8tsPresenter extends SolvePresenter {
+public final class SolveStr8tsPresenter extends SolvePresenter {
     public SolveStr8tsPresenter(int size, Theme theme, boolean autoStepForward, boolean highlighting) {
         super(size, GameMode.STR8TS_SOLVE, theme, highlighting, autoStepForward);
     }

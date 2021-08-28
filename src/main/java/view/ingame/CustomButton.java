@@ -5,12 +5,15 @@ import util.Type;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * @author Philipp Kremling
  * @author Fabian Heinl
  */
-public class CustomButton extends JButton {
+public final class CustomButton extends JButton {
 
     private final int value;
     private final Type type;
@@ -23,16 +26,16 @@ public class CustomButton extends JButton {
     public CustomButton(int value, Type type) {
         try {
             //Icons from https://www.freepik.com
-            delete = ImageIO.read(getClass().getResource("/delete.png"));
-            solve = ImageIO.read(getClass().getResource("/solve.png"));
-            tip = ImageIO.read(getClass().getResource("/tip.png"));
-            verify = ImageIO.read(getClass().getResource("/verify.png"));
-            pen = ImageIO.read(getClass().getResource("/pen.png"));
-            color = ImageIO.read(getClass().getResource("/color.png"));
-            choosegroup = ImageIO.read(getClass().getResource("/choosegroup.png"));
-            removegroup = ImageIO.read(getClass().getResource("/removegroup.png"));
-        } catch (Exception ex) {
-            ex.printStackTrace();
+            delete = ImageIO.read(requireNonNull(getClass().getResource("/delete.png")));
+            solve = ImageIO.read(requireNonNull(getClass().getResource("/solve.png")));
+            tip = ImageIO.read(requireNonNull(getClass().getResource("/tip.png")));
+            verify = ImageIO.read(requireNonNull(getClass().getResource("/verify.png")));
+            pen = ImageIO.read(requireNonNull(getClass().getResource("/pen.png")));
+            color = ImageIO.read(requireNonNull(getClass().getResource("/color.png")));
+            choosegroup = ImageIO.read(requireNonNull(getClass().getResource("/choosegroup.png")));
+            removegroup = ImageIO.read(requireNonNull(getClass().getResource("/removegroup.png")));
+        } catch (NullPointerException | IOException e) {
+            e.printStackTrace();
         }
         this.value = value;
         this.type = type;

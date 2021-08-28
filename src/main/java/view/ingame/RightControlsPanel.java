@@ -13,7 +13,7 @@ import static util.Type.*;
  * @author Philipp Kremling
  * @author Fabian Heinl
  */
-public class RightControlsPanel extends JPanel {
+public final class RightControlsPanel extends JPanel {
 
     private final Theme theme;
 
@@ -22,16 +22,16 @@ public class RightControlsPanel extends JPanel {
     /**
      * The actual played gamemode.
      */
-    protected static GameMode gamemode;
+    private final GameMode gamemode;
 
-    protected CustomButton buttonTip;
+    private CustomButton buttonTip;
 
     public RightControlsPanel(int gridSize, ActionListener buttonListener, Theme theme, GameMode gamemode){
         this.setBounds(840, 120,320,600);
 
         this.theme = theme;
 
-        RightControlsPanel.gamemode = gamemode;
+        this.gamemode = gamemode;
 
         //Layout for buttons
         GridLayout layout = new GridLayout(gridSize + 1, gridSize);

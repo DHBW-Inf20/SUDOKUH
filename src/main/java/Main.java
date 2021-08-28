@@ -2,7 +2,7 @@ import view.main_menu.MainMenu;
 
 import javax.swing.*;
 
-public class Main {
+public final class Main {
 
     public static void main(String[] args) {
         try {

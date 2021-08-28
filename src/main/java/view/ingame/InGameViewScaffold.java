@@ -71,8 +71,8 @@ public class InGameViewScaffold extends JFrame implements ActionListener {
         try {
             Image img = ImageIO.read(requireNonNull(getClass().getResourceAsStream("/again.png")));
             againButton.setIcon(new ImageIcon(img));
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        } catch (NullPointerException | IOException e) {
+            e.printStackTrace();
         }
         againButton.setFocusable(false);
         againButton.setBorder(null);
