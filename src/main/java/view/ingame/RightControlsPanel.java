@@ -7,7 +7,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 
-import static util.Type.*;
+import static view.ingame.CustomButton.Type.*;
 
 /**
  * @author Philipp Kremling
@@ -42,7 +42,7 @@ public final class RightControlsPanel extends JPanel {
         setBackground(theme.normalCellColor);
         setForeground(theme.primaryTextColor);
         for (int i = 1; i <= gridSize * gridSize; i++) {
-            CustomButton button = new CustomButton(i, NUMBER);
+            CustomButton button = new CustomButton(NUMBER, i);
             button.setForeground(theme.primaryTextColor);
             button.setBackground(theme.normalCellColor);
             button.setOpaque(true);
@@ -75,7 +75,7 @@ public final class RightControlsPanel extends JPanel {
                 buttonSolve.setOpaque(true);
                 this.add(buttonSolve);
                 buttonSolve.addActionListener(buttonListener);
-                CustomButton buttonChangeColor = new CustomButton(CHANGECOLOR);
+                CustomButton buttonChangeColor = new CustomButton(CHANGE_COLOR);
                 buttonChangeColor.setForeground(theme.primaryTextColor);
                 buttonChangeColor.setBackground(theme.normalCellColor);
                 buttonChangeColor.setOpaque(true);
@@ -102,19 +102,19 @@ public final class RightControlsPanel extends JPanel {
                 buttonVerify.addActionListener(buttonListener);
             }
             case KILLER_SOLVE -> {
-                buttonChooseGroup = new CustomButton(CHOOSEGROUP);
+                buttonChooseGroup = new CustomButton(CHOOSE_GROUP);
                 buttonChooseGroup.setForeground(theme.primaryTextColor);
                 buttonChooseGroup.setBackground(theme.normalCellColor);
                 buttonChooseGroup.setOpaque(true);
                 this.add(buttonChooseGroup);
                 buttonChooseGroup.addActionListener(buttonListener);
-                CustomButton buttonDeleteGroup = new CustomButton(REMOVEGROUP);
+                CustomButton buttonDeleteGroup = new CustomButton(REMOVE_GROUP);
                 buttonDeleteGroup.setForeground(theme.primaryTextColor);
                 buttonDeleteGroup.setBackground(theme.normalCellColor);
                 buttonDeleteGroup.setOpaque(true);
                 this.add(buttonDeleteGroup);
                 buttonDeleteGroup.addActionListener(buttonListener);
-                buttonEditGroup = new CustomButton(EDITGROUP);
+                buttonEditGroup = new CustomButton(EDIT_GROUP);
                 buttonEditGroup.setForeground(theme.primaryTextColor);
                 buttonEditGroup.setBackground(theme.normalCellColor);
                 buttonEditGroup.setOpaque(true);

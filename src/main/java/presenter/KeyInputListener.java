@@ -1,11 +1,12 @@
 package presenter;
 
-import util.Type;
 import view.ingame.CustomButton;
 import view.ingame.LabelPanel;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+
+import static view.ingame.CustomButton.Type.*;
 
 /**
  * @author Fabian Heinl
@@ -26,26 +27,26 @@ public final class KeyInputListener implements KeyListener {
     public void keyPressed(KeyEvent e) {
         //NUMBERS ROW
         if(e.getKeyCode()>=49 && e.getKeyCode()<=57){
-            presenter.handleButton(new CustomButton(e.getKeyCode()-48, Type.NUMBER));
+            presenter.handleButton(new CustomButton(NUMBER, e.getKeyCode()-48));
             if(autoStep)autoStepForward();
             return;
         }
         //NUMBERS PAD
         if(e.getKeyCode()>=97 && e.getKeyCode()<=104){
-            presenter.handleButton(new CustomButton(e.getKeyCode()-96, Type.NUMBER));
+            presenter.handleButton(new CustomButton(NUMBER, e.getKeyCode()-96));
             if(autoStep)autoStepForward();
             return;
         }
         switch (e.getKeyCode()) {
-            case 8, 127 -> presenter.handleButton(new CustomButton(Type.DELETE));
-            case 84 -> presenter.handleButton(new CustomButton(Type.TIP));
-            case 78 -> presenter.handleButton(new CustomButton(Type.PEN));
-            case 70 -> presenter.handleButton(new CustomButton(Type.CHANGECOLOR));
-            case 69 -> presenter.handleButton(new CustomButton(Type.VERIFY));
-            case 10 -> presenter.handleButton(new CustomButton(Type.SOLVE));
-            case 71 -> presenter.handleButton(new CustomButton(Type.CHOOSEGROUP));
-            case 76 -> presenter.handleButton(new CustomButton(Type.REMOVEGROUP));
-            case 66 -> presenter.handleButton(new CustomButton(Type.EDITGROUP));
+            case 8, 127 -> presenter.handleButton(new CustomButton(DELETE));
+            case 84 -> presenter.handleButton(new CustomButton(TIP));
+            case 78 -> presenter.handleButton(new CustomButton(PEN));
+            case 70 -> presenter.handleButton(new CustomButton(CHANGE_COLOR));
+            case 69 -> presenter.handleButton(new CustomButton(VERIFY));
+            case 10 -> presenter.handleButton(new CustomButton(SOLVE));
+            case 71 -> presenter.handleButton(new CustomButton(CHOOSE_GROUP));
+            case 76 -> presenter.handleButton(new CustomButton(REMOVE_GROUP));
+            case 66 -> presenter.handleButton(new CustomButton(EDIT_GROUP));
         }
 
         if(e.getKeyCode()>=37 && e.getKeyCode()<=40){
@@ -91,10 +92,8 @@ public final class KeyInputListener implements KeyListener {
         if(!presenter.getNoteMode()){
             LabelPanel lastClicked = presenter.getInGameViewScaffold().getClicked();
             if(lastClicked.getCol()+1 != presenter.getInGameViewScaffold().getGridSize()*presenter.getInGameViewScaffold().getGridSize()){
-                System.out.println("a");
                 presenter.getInGameViewScaffold().setClicked(lastClicked.getRow(),lastClicked.getCol()+1);
             }else if(lastClicked.getRow()+1 < presenter.getInGameViewScaffold().getGridSize()*presenter.getInGameViewScaffold().getGridSize()){
-                System.out.println("b");
                 presenter.getInGameViewScaffold().setClicked(lastClicked.getRow()+1,0);
             }
         }

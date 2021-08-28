@@ -87,7 +87,7 @@ public final class SolveKillerPresenter extends SolvePresenter {
                     }
                 }
             }
-            case CHOOSEGROUP -> {
+            case CHOOSE_GROUP -> {
                 if (!editGroup) {
                     chooseGroup = !chooseGroup;
                     if (chooseGroup) {
@@ -100,7 +100,7 @@ public final class SolveKillerPresenter extends SolvePresenter {
                     inGameViewScaffold.setGUIText("<html><body><center>W\u00e4hrend der Bearbeitungsmodus aktiviert ist, kann der<br>Auswahlmodus nicht aktiviert werden.</center></body></html>");
                 }
             }
-            case REMOVEGROUP -> {
+            case REMOVE_GROUP -> {
                 if (chooseGroup) {
                     chooseGroup = false;
                     inGameViewScaffold.setNoChooseMode();
@@ -115,7 +115,7 @@ public final class SolveKillerPresenter extends SolvePresenter {
                     }
                 }
             }
-            case EDITGROUP -> {
+            case EDIT_GROUP -> {
                 if (!chooseGroup) {
                     editGroup = !editGroup;
                     if (editGroup) {

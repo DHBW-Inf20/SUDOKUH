@@ -21,7 +21,6 @@ public final class GroupPopUpWindow {
             sum = Integer.parseInt(selectedValue);
             if(sum < minSum || sum == 0) sum = -2;
         } catch (Exception e) {
-            System.out.println("Tried to set the sum to "+selectedValue);
             e.printStackTrace();
         }
     }
