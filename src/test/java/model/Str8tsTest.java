@@ -7,19 +7,19 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 import static java.util.Arrays.deepEquals;
 import static java.util.Arrays.fill;
+import static model.Util.allCellRowsAndColumnsForGridWithSize;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Luca Kellermann
  */
 @DisplayName("Str8ts")
-public class Str8tsTest {
+class Str8tsTest {
     private static final Str8ts.Color B = Str8ts.Color.BLACK;
     private static final Str8ts.Color W = Str8ts.Color.WHITE;
 
@@ -123,14 +123,7 @@ public class Str8tsTest {
 
 
     static List<Arguments> allCellRowsAndColumnsForGrid() {
-        final int size = gentleGrid.length;
-        List<Arguments> list = new ArrayList<>();
-        for (int row = 0; row < size; row++) {
-            for (int column = 0; column < size; column++) {
-                list.add(Arguments.of(row, column));
-            }
-        }
-        return list;
+        return allCellRowsAndColumnsForGridWithSize(gentleGrid.length);
     }
 
 
@@ -193,7 +186,7 @@ public class Str8tsTest {
         assertEquals(9, gentleStr8ts.getCell(0, 2));
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "should set cell ({0},{1}) with Str8ts.EMPTY_CELL")
     @MethodSource("allCellRowsAndColumnsForGrid")
     @DisplayName("should set any cell with Str8ts.EMPTY_CELL")
     void shouldSetAnyCellWithStr8tsEmptyCell(final int row, final int column) {
@@ -236,10 +229,10 @@ public class Str8tsTest {
         assertSame(Str8ts.Color.WHITE, gentleStr8ts.getColor(3, 3));
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "should set color of cell ({0},{1}) to Str8ts.Color.BLACK")
     @MethodSource("allCellRowsAndColumnsForGrid")
-    @DisplayName("should always set color to Str8ts.Color.BLACK")
-    void shouldAlwaysSetColorToStr8tsColorBlack(final int row, final int column) {
+    @DisplayName("should set color of any cell to Str8ts.Color.BLACK")
+    void shouldSetColorOfAnyCellToStr8TsColorBlack(final int row, final int column) {
         assertTrue(gentleStr8ts.setColor(row, column, Str8ts.Color.BLACK));
         assertSame(Str8ts.Color.BLACK, gentleStr8ts.getColor(row, column));
 
@@ -285,10 +278,10 @@ public class Str8tsTest {
         assertEquals(veryHardSolution, veryHardStr8ts);
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "cell ({0},{1}) should keep prefilled value after solve")
     @MethodSource("allCellRowsAndColumnsForGrid")
-    @DisplayName("should keep prefilled values after solve")
-    void shouldKeepPrefilledValuesAfterSolve(final int row, final int column) {
+    @DisplayName("any cell should keep prefilled value after solve")
+    void anyCellShouldKeepPrefilledValueAfterSolve(final int row, final int column) {
         gentleStr8ts.solveInNormalOrder();
         if (gentleGrid[row][column] != Str8ts.EMPTY_CELL) {
             assertEquals(gentleGrid[row][column], gentleStr8ts.getCell(row, column));

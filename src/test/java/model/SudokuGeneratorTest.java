@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
  * @author Luca Kellermann
  */
 @DisplayName("SudokuGenerator")
-public class SudokuGeneratorTest {
+class SudokuGeneratorTest {
 
     @Test
     @DisplayName("should generate a Sudoku which has only one Solution")

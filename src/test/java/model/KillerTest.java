@@ -8,12 +8,12 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
 import static java.util.Arrays.deepEquals;
+import static model.Util.allCellRowsAndColumnsForGridWithSize;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
  * @author Luca Kellermann
  */
 @DisplayName("Killer")
-public class KillerTest {
+class KillerTest {
 
     private Killer killer;
     private Killer solution;
@@ -44,6 +44,7 @@ public class KillerTest {
             {4, 3, 7,/**/ 1, 6, 5,/**/ 2, 8, 9},
     };
 
+    // https://de.wikipedia.org/wiki/Datei:Killerq.png
     private static final Set<Killer.Group> groups = Set.of(
             new Killer.Group(Set.of(new Cell(0, 0), new Cell(0, 1)), 3),
             new Killer.Group(Set.of(new Cell(0, 2), new Cell(0, 3), new Cell(0, 4)), 15),
@@ -78,14 +79,7 @@ public class KillerTest {
 
 
     static List<Arguments> allCellRowsAndColumnsForGrid() {
-        final int size = grid.length;
-        List<Arguments> list = new ArrayList<>();
-        for (int row = 0; row < size; row++) {
-            for (int column = 0; column < size; column++) {
-                list.add(Arguments.of(row, column));
-            }
-        }
-        return list;
+        return allCellRowsAndColumnsForGridWithSize(grid.length);
     }
 
 
@@ -132,7 +126,7 @@ public class KillerTest {
         assertEquals(2, killer.getCell(0, 0));
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "should set cell ({0},{1}) with Killer.EMPTY_CELL")
     @MethodSource("allCellRowsAndColumnsForGrid")
     @DisplayName("should set any cell with Killer.EMPTY_CELL")
     void shouldSetAnyCellWithKillerEmptyCell(final int row, final int column) {
@@ -161,10 +155,10 @@ public class KillerTest {
         assertEquals(solution, killer);
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "cell ({0},{1}) should have value between 1 and Killer.GRID_SIZE after successful solve")
     @MethodSource("allCellRowsAndColumnsForGrid")
-    @DisplayName("should only have values between 1 and Killer.GRID_SIZE after successful solve")
-    void shouldOnlyHaveValuesBetween1AndKillerGridSizeAfterSuccessfulSolve(final int row, final int column) {
+    @DisplayName("any cell should have value between 1 and Killer.GRID_SIZE after successful solve")
+    void anyCellShouldHaveValueBetween1AndKillerGridSizeAfterSuccessfulSolve(final int row, final int column) {
         assumeTrue(killer.solveInNormalOrder());
 
         final int cell = killer.getCell(row, column);

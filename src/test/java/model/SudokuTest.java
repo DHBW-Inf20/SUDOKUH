@@ -7,11 +7,11 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 import static java.util.Arrays.deepEquals;
+import static model.Util.allCellRowsAndColumnsForGridWithSize;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
@@ -56,14 +56,7 @@ class SudokuTest {
 
 
     static List<Arguments> allCellRowsAndColumnsForGrid() {
-        final int size = grid.length;
-        List<Arguments> list = new ArrayList<>();
-        for (int row = 0; row < size; row++) {
-            for (int column = 0; column < size; column++) {
-                list.add(Arguments.of(row, column));
-            }
-        }
-        return list;
+        return allCellRowsAndColumnsForGridWithSize(grid.length);
     }
 
 
@@ -111,7 +104,7 @@ class SudokuTest {
         assertEquals(3, sudoku.getCell(0, 0));
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "should set cell ({0},{1}) with Sudoku.EMPTY_CELL")
     @MethodSource("allCellRowsAndColumnsForGrid")
     @DisplayName("should set any cell with Sudoku.EMPTY_CELL")
     void shouldSetAnyCellWithSudokuEmptyCell(final int row, final int column) {
@@ -143,10 +136,10 @@ class SudokuTest {
         assertEquals(solution, sudoku);
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "cell ({0},{1}) should keep prefilled value after solve")
     @MethodSource("allCellRowsAndColumnsForGrid")
-    @DisplayName("should keep prefilled values after solve")
-    void shouldKeepPrefilledValuesAfterSolve(final int row, final int column) {
+    @DisplayName("any cell should keep prefilled value after solve")
+    void anyCellShouldKeepPrefilledValueAfterSolve(final int row, final int column) {
         sudoku.solveInNormalOrder();
 
         if (grid[row][column] != Sudoku.EMPTY_CELL) {
@@ -154,10 +147,10 @@ class SudokuTest {
         }
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "cell ({0},{1}) should have value between 1 and getGridSize() after successful solve")
     @MethodSource("allCellRowsAndColumnsForGrid")
-    @DisplayName("should only have values between 1 and Sudoku.GRID_SIZE after successful solve")
-    void shouldOnlyHaveValuesBetween1AndSudokuGridSizeAfterSuccessfulSolve(final int row, final int column) {
+    @DisplayName("any cell should have value between 1 and getGridSize() after successful solve")
+    void anyCellShouldHaveValueBetween1AndGetGridSizeAfterSuccessfulSolve(final int row, final int column) {
         assumeTrue(sudoku.solveInNormalOrder());
 
         final int cell = sudoku.getCell(row, column);
