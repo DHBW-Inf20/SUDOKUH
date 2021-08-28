@@ -5,11 +5,12 @@ import model.AbstractPuzzle.Cell;
 import model.AbstractPuzzle.SetCellResult;
 import model.Killer;
 import model.Killer.GroupsUpdateResult;
+import util.GameMode;
 import view.Theme;
 import view.ingame.CustomButton;
 import view.ingame.GroupPopUpWindow;
-import view.ingame.LabelPanel;
 import view.ingame.InGameViewScaffold;
+import view.ingame.LabelPanel;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -26,7 +27,7 @@ public class SolveKillerPresenter extends SolvePresenter {
     private boolean editGroup;
 
     public SolveKillerPresenter(int size, Theme theme, boolean autoStepForward, boolean highlighting) {
-        super(size, util.Mode.KILLER_SOLVE, theme, highlighting, autoStepForward);
+        super(size, GameMode.KILLER_SOLVE, theme, highlighting, autoStepForward);
         chooseGroup = false;
         editGroup = false;
     }
@@ -107,7 +108,7 @@ public class SolveKillerPresenter extends SolvePresenter {
                     ArrayList<LabelPanel> group = inGameViewScaffold.removeGroup(clickedCell);
                     if (group != null) {
                         if (!group.isEmpty())
-                            ((model.Killer) sudoku).removeGroup(((model.Killer) sudoku).getGroupForCell(group.get(0).getRow(), group.get(0).getCol()));
+                            ((Killer) sudoku).removeGroup(((Killer) sudoku).getGroupForCell(group.get(0).getRow(), group.get(0).getCol()));
                         for (LabelPanel l : group) {
                             sudoku.resetCell(l.getRow(), l.getCol());
                         }
@@ -121,7 +122,7 @@ public class SolveKillerPresenter extends SolvePresenter {
                         ArrayList<LabelPanel> group = inGameViewScaffold.removeGroup(clickedCell);
                         if (group != null) {
                             if (!group.isEmpty())
-                                ((model.Killer) sudoku).removeGroup(((model.Killer) sudoku).getGroupForCell(group.get(0).getRow(), group.get(0).getCol()));
+                                ((Killer) sudoku).removeGroup(((Killer) sudoku).getGroupForCell(group.get(0).getRow(), group.get(0).getCol()));
                             inGameViewScaffold.setEditMode(group);
                         } else {
                             editGroup = false;

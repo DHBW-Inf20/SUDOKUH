@@ -1,7 +1,8 @@
 package view.ingame;
 
+import model.AbstractPuzzle;
 import presenter.PlayPresenter;
-import util.Mode;
+import util.GameMode;
 import view.Theme;
 
 import javax.imageio.ImageIO;
@@ -9,8 +10,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Objects;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * @author Philipp Kremling
@@ -20,7 +23,7 @@ public class InGameViewScaffold extends JFrame implements ActionListener {
 
     private final Theme theme;
 
-    Mode gamemode;
+    GameMode gamemode;
     int size;
     boolean autoStepForward;
     boolean highlighting;
@@ -35,7 +38,7 @@ public class InGameViewScaffold extends JFrame implements ActionListener {
 
     private PlayPresenter playPresenter;
 
-    public InGameViewScaffold(int gridSize, ActionListener buttonListener, String title, Theme theme, boolean highlighting, boolean autoStepForward, util.Mode gamemode) {
+    public InGameViewScaffold(int gridSize, ActionListener buttonListener, String title, Theme theme, boolean highlighting, boolean autoStepForward, GameMode gamemode) {
         //General Window Options
         super("SUDOKUH - " + title);
         this.setResizable(false);
@@ -66,7 +69,7 @@ public class InGameViewScaffold extends JFrame implements ActionListener {
         againButton.setBackground(theme.menuBackgroundColor);
         againButton.setBounds(980, 20, 80, 80);
         try {
-            Image img = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/again.png")));
+            Image img = ImageIO.read(requireNonNull(getClass().getResourceAsStream("/again.png")));
             againButton.setIcon(new ImageIcon(img));
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -80,12 +83,12 @@ public class InGameViewScaffold extends JFrame implements ActionListener {
         homeButton.setBackground(theme.menuBackgroundColor);
         homeButton.setBounds(1080, 20, 80, 80);
         try {
-            Image img = ImageIO.read(getClass().getResourceAsStream("/logo_80.png"));
+            Image img = ImageIO.read(requireNonNull(getClass().getResourceAsStream("/logo_80.png")));
             homeButton.setIcon(new ImageIcon(img));
             //Sets Icon of Frame
             this.setIconImage(img);
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        } catch (NullPointerException | IOException e) {
+            e.printStackTrace();
         }
         homeButton.setFocusable(false);
         homeButton.setBorder(null);
@@ -101,7 +104,7 @@ public class InGameViewScaffold extends JFrame implements ActionListener {
         this.highlighting = highlighting;
     }
 
-    public InGameViewScaffold(int gridSize, ActionListener buttonListener, String title, Theme theme, boolean highlighting, boolean autoStepForward, int tipLimit, util.Mode gamemode, PlayPresenter playPresenter) {
+    public InGameViewScaffold(int gridSize, ActionListener buttonListener, String title, Theme theme, boolean highlighting, boolean autoStepForward, int tipLimit, GameMode gamemode, PlayPresenter playPresenter) {
         this(gridSize, buttonListener, title, theme, highlighting, autoStepForward, gamemode);
         this.playPresenter = playPresenter;
         this.tipLimit = tipLimit;
@@ -200,7 +203,7 @@ public class InGameViewScaffold extends JFrame implements ActionListener {
      *
      * @param c the invalid cell
      */
-    public void highlightConflicts(model.AbstractPuzzle.Cell c) {
+    public void highlightConflicts(AbstractPuzzle.Cell c) {
         sudokuFieldPanel.highlightConflicts(c);
     }
 

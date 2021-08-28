@@ -4,6 +4,7 @@ import presenter.PlayPresenter;
 import presenter.SolveKillerPresenter;
 import presenter.SolveStr8tsPresenter;
 import presenter.SolveSudokuPresenter;
+import util.GameMode;
 import view.Theme;
 
 import javax.swing.*;
@@ -16,7 +17,7 @@ import static javax.swing.JOptionPane.*;
  */
 public class AgainPopUpWindow {
 
-    public AgainPopUpWindow(InGameViewScaffold frame, util.Mode gamemode, int size, Theme theme, boolean autoStepForward, boolean highlighting, int tipLimit) {
+    public AgainPopUpWindow(InGameViewScaffold frame, GameMode gamemode, int size, Theme theme, boolean autoStepForward, boolean highlighting, int tipLimit) {
         int selectedValue = JOptionPane.showOptionDialog(null, "Spielfeld zur\u00fccksetzen? Der Fortschritt geht verloren!", "SUDOKUH", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, new String[]{"JA", "NEIN"}, "NEIN");
 
         //Button Events

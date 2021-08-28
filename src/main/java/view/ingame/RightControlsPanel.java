@@ -1,5 +1,6 @@
 package view.ingame;
 
+import util.GameMode;
 import view.Theme;
 
 import javax.swing.*;
@@ -21,11 +22,11 @@ public class RightControlsPanel extends JPanel {
     /**
      * The actual played gamemode.
      */
-    protected static util.Mode gamemode;
+    protected static GameMode gamemode;
 
     protected CustomButton buttonTip;
 
-    public RightControlsPanel(int gridSize, ActionListener buttonListener, Theme theme, util.Mode gamemode){
+    public RightControlsPanel(int gridSize, ActionListener buttonListener, Theme theme, GameMode gamemode){
         this.setBounds(840, 120,320,600);
 
         this.theme = theme;

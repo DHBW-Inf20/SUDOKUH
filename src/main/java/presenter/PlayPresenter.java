@@ -5,11 +5,11 @@ import model.AbstractPuzzle.Cell;
 import model.AbstractPuzzle.SetCellResult;
 import model.Sudoku;
 import model.SudokuGenerator;
-import util.Mode;
+import util.GameMode;
 import view.Theme;
 import view.ingame.CustomButton;
-import view.ingame.LabelPanel;
 import view.ingame.InGameViewScaffold;
+import view.ingame.LabelPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -51,7 +51,7 @@ public class PlayPresenter implements Presenter {
         sudoku = sudokuAndSolution.sudoku();
         solution = sudokuAndSolution.solution();
 
-        inGameViewScaffold = new InGameViewScaffold(size, this::handleButtonListenerEvent, "Spielen", theme, highlighting, autoStepForward, tipLimit, Mode.SUDOKU_PLAY, this);
+        inGameViewScaffold = new InGameViewScaffold(size, this::handleButtonListenerEvent, "Spielen", theme, highlighting, autoStepForward, tipLimit, GameMode.SUDOKU_PLAY, this);
 
         inGameViewScaffold.addKeyListener(new KeyInputListener(this, autoStepForward));
 

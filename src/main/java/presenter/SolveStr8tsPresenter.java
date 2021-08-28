@@ -2,7 +2,8 @@ package presenter;
 
 import model.AbstractPuzzle;
 import model.AbstractPuzzle.SetCellResult;
-import util.Mode;
+import model.Str8ts;
+import util.GameMode;
 import view.Theme;
 import view.ingame.CustomButton;
 import view.ingame.InGameViewScaffold;
@@ -17,7 +18,7 @@ import java.util.Set;
  */
 public class SolveStr8tsPresenter extends SolvePresenter {
     public SolveStr8tsPresenter(int size, Theme theme, boolean autoStepForward, boolean highlighting) {
-        super(size, Mode.STR8TS_SOLVE, theme, highlighting, autoStepForward);
+        super(size, GameMode.STR8TS_SOLVE, theme, highlighting, autoStepForward);
     }
 
     /**
@@ -85,8 +86,8 @@ public class SolveStr8tsPresenter extends SolvePresenter {
                 }
             }
             case CHANGECOLOR -> {
-                model.Str8ts.Color color = inGameViewScaffold.changeColor();
-                ((model.Str8ts) sudoku).setColor(clickedCell.getRow(), clickedCell.getCol(), color);
+                Str8ts.Color color = inGameViewScaffold.changeColor();
+                ((Str8ts) sudoku).setColor(clickedCell.getRow(), clickedCell.getCol(), color);
             }
         }
     }

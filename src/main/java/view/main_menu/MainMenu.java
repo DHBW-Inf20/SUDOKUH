@@ -4,7 +4,7 @@ import presenter.PlayPresenter;
 import presenter.SolveKillerPresenter;
 import presenter.SolveStr8tsPresenter;
 import presenter.SolveSudokuPresenter;
-import util.Mode;
+import util.GameMode;
 import view.Theme;
 
 import javax.imageio.ImageIO;
@@ -16,7 +16,7 @@ import java.io.IOException;
 
 import static java.awt.BorderLayout.CENTER;
 import static java.util.Objects.requireNonNull;
-import static util.Mode.*;
+import static util.GameMode.*;
 import static view.Theme.DARK;
 import static view.Theme.LIGHT;
 
@@ -37,7 +37,7 @@ public class MainMenu extends JFrame {
     final SizeChooseSlider sizeSlider = new SizeChooseSlider();
 
     Theme theme = LIGHT;
-    Mode mode = SUDOKU_SOLVE;
+    GameMode gameMode = SUDOKU_SOLVE;
     boolean darkModeEnabled = false;
     boolean autoStepForwardEnabled = true;
     boolean highlightingEnabled = true;
@@ -72,21 +72,21 @@ public class MainMenu extends JFrame {
             e.printStackTrace();
         }
         createButtonAndAddToPanel(mainMenuPanel, "Sudoku Spiel", 75, 250, 200, () -> {
-            mode = Mode.SUDOKU_PLAY;
+            gameMode = SUDOKU_PLAY;
             setTitle("Neues Sudoku Spiel");
             cardLayout.show(cardsPanel, "gameSettingsPanel");
         });
         createButtonAndAddToPanel(mainMenuPanel, "Sudoku L\u00f6ser", 75, 325, 200, () -> {
-            mode = SUDOKU_SOLVE;
+            gameMode = SUDOKU_SOLVE;
             setTitle("Neuer Sudoku L\u00f6ser");
             cardLayout.show(cardsPanel, "gameSettingsPanel");
         });
         createButtonAndAddToPanel(mainMenuPanel, "Killer L\u00f6ser", 75, 400, 200, () -> {
-            mode = KILLER_SOLVE;
+            gameMode = KILLER_SOLVE;
             startGame(3);
         });
         createButtonAndAddToPanel(mainMenuPanel, "Str8ts L\u00f6ser", 75, 475, 200, () -> {
-            mode = STR8TS_SOLVE;
+            gameMode = STR8TS_SOLVE;
             startGame(3);
         });
         createButtonAndAddToPanel(mainMenuPanel, "Einstellungen", 75, 550, 200, () -> {
@@ -156,7 +156,7 @@ public class MainMenu extends JFrame {
         } catch (UnsupportedLookAndFeelException e) {
             e.printStackTrace();
         }
-        switch (mode) {
+        switch (gameMode) {
             case SUDOKU_SOLVE -> new SolveSudokuPresenter(size, theme, autoStepForwardEnabled, highlightingEnabled);
             case SUDOKU_PLAY -> new PlayPresenter(size, theme, autoStepForwardEnabled, highlightingEnabled, tipLimit);
             case KILLER_SOLVE -> new SolveKillerPresenter(size, theme, autoStepForwardEnabled, false);

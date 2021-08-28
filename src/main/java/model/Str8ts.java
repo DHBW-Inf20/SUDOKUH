@@ -28,7 +28,7 @@ import static util.Arrays.twoLevelCopyOf;
 public final class Str8ts extends AbstractPuzzle {
 
     /**
-     * The color of a {@link model.AbstractPuzzle.Cell cell} in a Str8ts.
+     * The color of a {@link AbstractPuzzle.Cell cell} in a Str8ts.
      * <p>Can only be {@link #BLACK black} or {@link #WHITE white}.</p>
      */
     public enum Color {

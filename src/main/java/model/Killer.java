@@ -241,7 +241,7 @@ public final class Killer extends AbstractSudoku {
     }
 
     /**
-     * Trys to put the specified {@link Set} of {@link model.AbstractPuzzle.Cell cells} into a new {@link Group group}
+     * Trys to put the specified {@link Set} of {@link AbstractPuzzle.Cell cells} into a new {@link Group group}
      * and removes them from the groups they were previously part of (if any).
      *
      * @param sum the {@link Group#sum sum} that the newly created {@link Group group} is supposed to have

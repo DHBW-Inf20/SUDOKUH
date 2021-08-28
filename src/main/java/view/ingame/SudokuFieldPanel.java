@@ -2,7 +2,7 @@ package view.ingame;
 
 import model.AbstractPuzzle.Cell;
 import model.Str8ts;
-import util.Mode;
+import util.GameMode;
 import view.Theme;
 
 import javax.swing.*;
@@ -17,7 +17,7 @@ import java.util.Set;
 
 import static model.Str8ts.Color.BLACK;
 import static model.Str8ts.Color.WHITE;
-import static util.Mode.STR8TS_SOLVE;
+import static util.GameMode.STR8TS_SOLVE;
 
 /**
  * @author Philipp Kremling
@@ -35,7 +35,7 @@ public class SudokuFieldPanel extends JPanel {
     /**
      * List of colors of each cell
      */
-    private final ArrayList<ArrayList<model.Str8ts.Color>> colors;
+    private final ArrayList<ArrayList<Str8ts.Color>> colors;
 
     /**
      * Reference to the actual clicked {@link LabelPanel field} of the sudoku game.
@@ -60,7 +60,7 @@ public class SudokuFieldPanel extends JPanel {
     /**
      * The actual played gamemode.
      */
-    private final Mode gamemode;
+    private final GameMode gamemode;
 
     /**
      * Defines wether highlighting of possible conflicting cell should be active or not.
@@ -80,7 +80,7 @@ public class SudokuFieldPanel extends JPanel {
 
     private ArrayList<LabelPanel> group;
 
-    public SudokuFieldPanel(int gridSize, Theme theme, boolean highlighting, util.Mode gamemode) {
+    public SudokuFieldPanel(int gridSize, Theme theme, boolean highlighting, GameMode gamemode) {
         this.theme = theme;
 
         this.gamemode = gamemode;
@@ -125,7 +125,7 @@ public class SudokuFieldPanel extends JPanel {
                 labelPanel.setForeground(theme.primaryTextColor);
                 field.setBackground(theme.normalCellColor);
                 field.setForeground(theme.primaryTextColor);
-                if (gamemode != Mode.KILLER_SOLVE) labelPanel.setBorder(new LineBorder(theme.cellBorderColor, 1));
+                if (gamemode != GameMode.KILLER_SOLVE) labelPanel.setBorder(new LineBorder(theme.cellBorderColor, 1));
                 field.setHorizontalAlignment(SwingConstants.CENTER);
                 field.setVerticalAlignment(SwingConstants.CENTER);
                 labelPanel.addMouseListener(new MouseAdapter() {
@@ -450,7 +450,7 @@ public class SudokuFieldPanel extends JPanel {
      * @param value the value to be set
      */
     public void setValue(int row, int col, int value) {
-        if (gamemode == Mode.KILLER_SOLVE) {
+        if (gamemode == GameMode.KILLER_SOLVE) {
             labels.get(row).get(col).setKillerText(Integer.toString(value));
         } else {
             labels.get(row).get(col).setText(Integer.toString(value));
@@ -478,7 +478,7 @@ public class SudokuFieldPanel extends JPanel {
      * Deletes the value of the actual clicked cell
      */
     public void resetCell() {
-        if (gamemode == Mode.SUDOKU_SOLVE) {
+        if (gamemode == GameMode.SUDOKU_SOLVE) {
             inputs.remove(clicked);
         }
         clicked.setText("");
@@ -546,7 +546,7 @@ public class SudokuFieldPanel extends JPanel {
      * @param input the input value from type String
      */
     public void invalidInput(String input) {
-        if (gamemode == Mode.KILLER_SOLVE) {
+        if (gamemode == GameMode.KILLER_SOLVE) {
             clicked.setKillerText(input);
         } else {
             clicked.setText(input);
