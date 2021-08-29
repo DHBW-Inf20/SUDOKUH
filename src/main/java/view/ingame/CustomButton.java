@@ -84,7 +84,7 @@ public final class CustomButton extends JButton {
         }
         setFocusable(false);
         this.setMargin(new Insets(0, 0, 0, 0));
-        this.setFont(new Font(getFont().getName(), Font.BOLD, 40));
+        this.setFont(new Font(getFont().getName(), Font.BOLD, 25));
     }
 
     public int getValue() {
