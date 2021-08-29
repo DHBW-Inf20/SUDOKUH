@@ -42,10 +42,10 @@ public final class PlayPresenter implements Presenter {
     /**
      * Specifies whether the node mode is active or not
      */
-    private boolean noteMode;
+    private boolean noteModeActivated;
 
     public PlayPresenter(int size, Theme theme, boolean autoStepForward, boolean highlighting, int tipLimit) {
-        noteMode = false;
+        noteModeActivated = false;
 
         SudokuGenerator.SudokuAndSolution sudokuAndSolution = SudokuGenerator.generateSudokuAndSolution(size);
         sudoku = sudokuAndSolution.sudoku();
@@ -59,8 +59,7 @@ public final class PlayPresenter implements Presenter {
 
         this.tipLimit = tipLimit;
         this.tipsUsed = 0;
-        inGameViewScaffold.setRemainingTips(tipLimit - tipsUsed);
-        if (tipLimit - tipsUsed == 0) inGameViewScaffold.reachedMaxTips();
+        inGameViewScaffold.setRemainingTips(tipLimit);
 
         startTime = ZonedDateTime.now().toInstant().toEpochMilli();
         lastUpdateTime = 0;
@@ -121,7 +120,7 @@ public final class PlayPresenter implements Presenter {
             case NUMBER -> {
                 int number = button.getValue();
                 if (!clickedCell.isPredefined()) {
-                    if (noteMode) {
+                    if (noteModeActivated) {
                         if (clickedCell.getLabelValue() != null) {
                             sudoku.resetCell(clickedCell.getRow(), clickedCell.getCol());
                             clickedCell.setText("");
@@ -152,26 +151,20 @@ public final class PlayPresenter implements Presenter {
                 }
             }
             case TIP -> {
-                if (!clickedCell.isPredefined()) {
-                    tipsUsed++;
-                    if (tipLimit >= tipsUsed) {
-                        inGameViewScaffold.validInput(String.valueOf(solution.getCell(clickedCell.getRow(), clickedCell.getCol())), (tipLimit - tipsUsed));
-                        inGameViewScaffold.setPredefined(clickedCell.getRow(), clickedCell.getCol(), solution.getCell(clickedCell.getRow(), clickedCell.getCol()));
-                        final SetCellResult result = sudoku.setCell(clickedCell.getRow(), clickedCell.getCol(), solution.getCell(clickedCell.getRow(), clickedCell.getCol()));
-                        if (!result.isSuccess()) {
-                            final Set<Cell> conflicts = result.conflictingCells();
-                            if (!conflicts.isEmpty()) {
-                                // can be any conflict (no order guaranteed)
-                                for (Cell c : conflicts) {
-                                    inGameViewScaffold.invalidInput(c.row(), c.column());
-                                }
+                if (!clickedCell.isPredefined() && tipLimit >= ++tipsUsed) {
+                    inGameViewScaffold.validInput(String.valueOf(solution.getCell(clickedCell.getRow(), clickedCell.getCol())), (tipLimit - tipsUsed));
+                    inGameViewScaffold.setPredefined(clickedCell.getRow(), clickedCell.getCol(), solution.getCell(clickedCell.getRow(), clickedCell.getCol()));
+                    final SetCellResult result = sudoku.setCell(clickedCell.getRow(), clickedCell.getCol(), solution.getCell(clickedCell.getRow(), clickedCell.getCol()));
+                    if (!result.isSuccess()) {
+                        final Set<Cell> conflicts = result.conflictingCells();
+                        if (!conflicts.isEmpty()) {
+                            // can be any conflict (no order guaranteed)
+                            for (Cell c : conflicts) {
+                                inGameViewScaffold.invalidInput(c.row(), c.column());
                             }
                         }
-                        this.verifySolution();
-                        if (tipsUsed == tipLimit) inGameViewScaffold.reachedMaxTips();
-                    } else {
-                        inGameViewScaffold.reachedMaxTips();
                     }
+                    this.verifySolution();
                 }
             }
             case VERIFY -> {
@@ -182,12 +175,8 @@ public final class PlayPresenter implements Presenter {
                 }
             }
             case NOTE -> {
-                noteMode = !noteMode;
-                if (noteMode) {
-                    inGameViewScaffold.setNoteMode();
-                } else {
-                    inGameViewScaffold.setNormalMode();
-                }
+                noteModeActivated = !noteModeActivated;
+                inGameViewScaffold.setNoteMode(noteModeActivated);
             }
         }
     }
@@ -245,7 +234,7 @@ public final class PlayPresenter implements Presenter {
     }
 
     @Override
-    public boolean getNoteMode() {
-        return noteMode;
+    public boolean isNoteModeActivated() {
+        return noteModeActivated;
     }
 }

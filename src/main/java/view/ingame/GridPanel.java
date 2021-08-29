@@ -74,7 +74,7 @@ public final class GridPanel extends JPanel {
 
     private final ArrayList<ArrayList<CellPanel>> groups;
 
-    private boolean chooseGroup;
+    private boolean chooseGroupModeActivated;
 
     private boolean editGroup;
 
@@ -103,7 +103,7 @@ public final class GridPanel extends JPanel {
         }
 
         groups = new ArrayList<>();
-        chooseGroup = false;
+        chooseGroupModeActivated = false;
         editGroup = false;
 
         setLayout(new GridLayout(gridSize, gridSize));
@@ -650,7 +650,7 @@ public final class GridPanel extends JPanel {
                     case 3 -> left = neighbors.get(i) ? 0 : 3;
                 }
             }
-            cellPanel.setBorder(new MatteBorder(top, left, bottom, right, Color.decode("#5ba122")));
+            cellPanel.setBorder(new MatteBorder(top, left, bottom, right, theme.clickedCellColor));
             if (condition) {
                 JLabel sumLabel = new JLabel(String.valueOf(sum));
                 sumLabel.setForeground(theme.primaryTextColor);
@@ -713,8 +713,8 @@ public final class GridPanel extends JPanel {
     /**
      * Sets choose mode to true
      */
-    public void setChooseMode() {
-        chooseGroup = true;
+    public void startChooseGroupMode() {
+        chooseGroupModeActivated = true;
         group = new ArrayList<>();
         addCellToGroup(clicked);
     }
@@ -724,8 +724,8 @@ public final class GridPanel extends JPanel {
      *
      * @return the actual chosen group
      */
-    public ArrayList<CellPanel> setNoChooseMode() {
-        chooseGroup = false;
+    public ArrayList<CellPanel> endChooseGroupModeAndGetGroup() {
+        chooseGroupModeActivated = false;
         inputs = new ArrayList<>();
         for (CellPanel cellPanel : group) {
             cellPanel.setBackground(theme.normalCellColor);
@@ -737,7 +737,7 @@ public final class GridPanel extends JPanel {
     /**
      * Sets edit mode to true
      */
-    public void setEditMode(ArrayList<CellPanel> group) {
+    public void startEditGroupMode(ArrayList<CellPanel> group) {
         editGroup = true;
         for (CellPanel cellPanel : group) {
             cellPanel.setBackground(theme.predefinedCellColor);
@@ -752,7 +752,7 @@ public final class GridPanel extends JPanel {
      *
      * @return the actual chosen group
      */
-    public ArrayList<CellPanel> setNoEditMode() {
+    public ArrayList<CellPanel> endEditGroupModeAndGetGroup() {
         editGroup = false;
         inputs = new ArrayList<>();
         for (CellPanel cellPanel : group) {
@@ -770,7 +770,7 @@ public final class GridPanel extends JPanel {
                 break;
             }
         }
-        if ((chooseGroup || editGroup) & !isExisting) {
+        if ((chooseGroupModeActivated || editGroup) & !isExisting) {
             if (group.isEmpty()) {
                 group.add(cell);
                 inputs.add(cell);

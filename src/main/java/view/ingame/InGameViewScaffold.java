@@ -243,15 +243,8 @@ public class InGameViewScaffold extends JFrame implements ActionListener {
     /**
      * Changes the node mode
      */
-    public void setNoteMode() {
-        rightControlsPanel.setNoteMode();
-    }
-
-    /**
-     * Changes the node mode
-     */
-    public void setNormalMode() {
-        rightControlsPanel.setNormalMode();
+    public void setNoteMode(boolean activated) {
+        rightControlsPanel.setNoteMode(activated);
     }
 
     /**
@@ -262,7 +255,7 @@ public class InGameViewScaffold extends JFrame implements ActionListener {
      */
     public void validInput(String input, int tipsRemaining) {
         gridPanel.validInput(input);
-        rightControlsPanel.setTipButtonText(Integer.toString(tipsRemaining));
+        setRemainingTips(tipsRemaining);
     }
 
     /**
@@ -279,13 +272,6 @@ public class InGameViewScaffold extends JFrame implements ActionListener {
      */
     public void setRemainingTips(int tipsRemaining) {
         rightControlsPanel.setRemainingTips(tipsRemaining);
-    }
-
-    /**
-     * Changing the color of the tip-button when there are no more remaining tips
-     */
-    public void reachedMaxTips() {
-        rightControlsPanel.reachedMaxTips();
     }
 
     /**
@@ -324,9 +310,9 @@ public class InGameViewScaffold extends JFrame implements ActionListener {
     /**
      * Sets choose mode to true
      */
-    public void setChooseMode() {
-        rightControlsPanel.setChooseMode();
-        gridPanel.setChooseMode();
+    public void startChooseGroupMode() {
+        rightControlsPanel.setChooseGroupMode(true);
+        gridPanel.startChooseGroupMode();
     }
 
     /**
@@ -334,17 +320,17 @@ public class InGameViewScaffold extends JFrame implements ActionListener {
      *
      * @return the actual chosen group
      */
-    public ArrayList<CellPanel> setNoChooseMode() {
-        rightControlsPanel.setNoChooseMode();
-        return gridPanel.setNoChooseMode();
+    public ArrayList<CellPanel> endChooseGroupModeAndGetGroup() {
+        rightControlsPanel.setChooseGroupMode(false);
+        return gridPanel.endChooseGroupModeAndGetGroup();
     }
 
     /**
      * Sets edit mode to true
      */
-    public void setEditMode(ArrayList<CellPanel> group) {
-        rightControlsPanel.setEditMode();
-        gridPanel.setEditMode(group);
+    public void startEditGroupMode(ArrayList<CellPanel> group) {
+        rightControlsPanel.setEditGroupMode(true);
+        gridPanel.startEditGroupMode(group);
     }
 
     /**
@@ -352,9 +338,9 @@ public class InGameViewScaffold extends JFrame implements ActionListener {
      *
      * @return the actual chosen group
      */
-    public ArrayList<CellPanel> setNoEditMode() {
-        rightControlsPanel.setNoEditMode();
-        return gridPanel.setNoEditMode();
+    public ArrayList<CellPanel> endEditGroupModeAndGetGroup() {
+        rightControlsPanel.setEditGroupMode(false);
+        return gridPanel.endEditGroupModeAndGetGroup();
     }
 
     /**

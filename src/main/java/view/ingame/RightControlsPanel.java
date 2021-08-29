@@ -7,6 +7,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 
+import static util.GameMode.KILLER_SOLVE;
+import static util.GameMode.STR8TS_SOLVE;
 import static view.ingame.CustomButton.Type.*;
 
 /**
@@ -17,176 +19,101 @@ public final class RightControlsPanel extends JPanel {
 
     private final Theme theme;
 
-    CustomButton buttonNote, buttonChooseGroup, buttonEditGroup;
+    private final CustomButton tipButton;
+    private final CustomButton noteButton;
+    private final CustomButton chooseGroupButton;
+    private final CustomButton editGroupButton;
 
-    /**
-     * The actual played gamemode.
-     */
-    private final GameMode gamemode;
-
-    private CustomButton buttonTip;
-
-    public RightControlsPanel(int gridSize, ActionListener buttonListener, Theme theme, GameMode gamemode){
-        this.setBounds(840, 120,320,600);
-
+    public RightControlsPanel(int gridSize, ActionListener buttonListener, Theme theme, GameMode gamemode) {
         this.theme = theme;
 
-        this.gamemode = gamemode;
+        setBounds(840, 120, 320, 600);
+        setBackground(theme.menuBackgroundColor);
 
-        //Layout for buttons
+        // Layout for buttons
         GridLayout layout = new GridLayout(gridSize + 1, gridSize);
         layout.setHgap(12);
         layout.setVgap(12);
-        this.setLayout(layout);
+        setLayout(layout);
+
         // Buttons for input
-        setBackground(theme.normalCellColor);
-        setForeground(theme.primaryTextColor);
         for (int i = 1; i <= gridSize * gridSize; i++) {
-            CustomButton button = new CustomButton(NUMBER, i);
-            button.setForeground(theme.primaryTextColor);
-            button.setBackground(theme.normalCellColor);
-            button.setOpaque(true);
-            this.add(button);
-            button.addActionListener(buttonListener);
+            createAndAddNumberButton(i, theme, buttonListener);
         }
-        CustomButton buttonDelete = new CustomButton(DELETE);
-        buttonDelete.setForeground(theme.primaryTextColor);
-        buttonDelete.setBackground(theme.normalCellColor);
-        buttonDelete.setOpaque(true);
-        this.add(buttonDelete);
-        buttonDelete.addActionListener(buttonListener);
-        buttonNote = new CustomButton(NOTE);
-        setCustomButtons(buttonListener);
 
-        setBackground(theme.menuBackgroundColor);
-    }
+        createAndAddCustomButton(DELETE, theme, buttonListener);
 
-    /**
-     * Add buttons other than the standard ones to the menu
-     *
-     * @param buttonListener The listener the buttons should be attached to
-     */
-    public void setCustomButtons(ActionListener buttonListener) {
-        switch(gamemode) {
-            case STR8TS_SOLVE -> {
-                CustomButton buttonSolve = new CustomButton(SOLVE);
-                buttonSolve.setForeground(theme.primaryTextColor);
-                buttonSolve.setBackground(theme.normalCellColor);
-                buttonSolve.setOpaque(true);
-                this.add(buttonSolve);
-                buttonSolve.addActionListener(buttonListener);
-                CustomButton buttonChangeColor = new CustomButton(CHANGE_COLOR);
-                buttonChangeColor.setForeground(theme.primaryTextColor);
-                buttonChangeColor.setBackground(theme.normalCellColor);
-                buttonChangeColor.setOpaque(true);
-                this.add(buttonChangeColor);
-                buttonChangeColor.addActionListener(buttonListener);
-            }
+        if (gamemode == KILLER_SOLVE) {
+            chooseGroupButton = createAndAddCustomButton(CHOOSE_GROUP, theme, buttonListener);
+            createAndAddCustomButton(REMOVE_GROUP, theme, buttonListener);
+            editGroupButton = createAndAddCustomButton(EDIT_GROUP, theme, buttonListener);
+        } else {
+            chooseGroupButton = editGroupButton = null;
+        }
+
+        if (gamemode == STR8TS_SOLVE) {
+            createAndAddCustomButton(CHANGE_COLOR, theme, buttonListener);
+        }
+
+        switch (gamemode) {
             case SUDOKU_PLAY -> {
-                buttonTip = new CustomButton(TIP);
-                buttonTip.setForeground(theme.primaryTextColor);
-                buttonTip.setBackground(theme.normalCellColor);
-                buttonTip.setOpaque(true);
-                this.add(buttonTip);
-                buttonTip.addActionListener(buttonListener);
-                buttonNote.setForeground(theme.primaryTextColor);
-                buttonNote.setBackground(theme.normalCellColor);
-                buttonNote.setOpaque(true);
-                this.add(buttonNote);
-                buttonNote.addActionListener(buttonListener);
-                CustomButton buttonVerify = new CustomButton(VERIFY);
-                buttonVerify.setForeground(theme.primaryTextColor);
-                buttonVerify.setBackground(theme.normalCellColor);
-                buttonVerify.setOpaque(true);
-                this.add(buttonVerify);
-                buttonVerify.addActionListener(buttonListener);
+                tipButton = createAndAddCustomButton(TIP, theme, buttonListener);
+                noteButton = createAndAddCustomButton(NOTE, theme, buttonListener);
+                createAndAddCustomButton(VERIFY, theme, buttonListener);
             }
-            case KILLER_SOLVE -> {
-                buttonChooseGroup = new CustomButton(CHOOSE_GROUP);
-                buttonChooseGroup.setForeground(theme.primaryTextColor);
-                buttonChooseGroup.setBackground(theme.normalCellColor);
-                buttonChooseGroup.setOpaque(true);
-                this.add(buttonChooseGroup);
-                buttonChooseGroup.addActionListener(buttonListener);
-                CustomButton buttonDeleteGroup = new CustomButton(REMOVE_GROUP);
-                buttonDeleteGroup.setForeground(theme.primaryTextColor);
-                buttonDeleteGroup.setBackground(theme.normalCellColor);
-                buttonDeleteGroup.setOpaque(true);
-                this.add(buttonDeleteGroup);
-                buttonDeleteGroup.addActionListener(buttonListener);
-                buttonEditGroup = new CustomButton(EDIT_GROUP);
-                buttonEditGroup.setForeground(theme.primaryTextColor);
-                buttonEditGroup.setBackground(theme.normalCellColor);
-                buttonEditGroup.setOpaque(true);
-                this.add(buttonEditGroup);
-                buttonEditGroup.addActionListener(buttonListener);
-                CustomButton buttonSolve = new CustomButton(SOLVE);
-                buttonSolve.setForeground(theme.primaryTextColor);
-                buttonSolve.setBackground(theme.normalCellColor);
-                buttonSolve.setOpaque(true);
-                this.add(buttonSolve);
-                buttonSolve.addActionListener(buttonListener);
+            case SUDOKU_SOLVE, STR8TS_SOLVE, KILLER_SOLVE -> {
+                tipButton = noteButton = null;
+                createAndAddCustomButton(SOLVE, theme, buttonListener);
             }
-            default -> {
-                CustomButton buttonSolve = new CustomButton(SOLVE);
-                buttonSolve.setForeground(theme.primaryTextColor);
-                buttonSolve.setBackground(theme.normalCellColor);
-                buttonSolve.setOpaque(true);
-                this.add(buttonSolve);
-                buttonSolve.addActionListener(buttonListener);
-            }
+            default -> throw new IllegalStateException("Unknown enum constant GameMode." + gamemode.name());
         }
     }
 
+    private void createAndAddNumberButton(int value, Theme theme, ActionListener buttonListener) {
+        createAndAddCustomButton(NUMBER, value, theme, buttonListener);
+    }
+
+    private CustomButton createAndAddCustomButton(CustomButton.Type type, Theme theme, ActionListener buttonListener) {
+        return createAndAddCustomButton(type, -1, theme, buttonListener);
+    }
+
+    private CustomButton createAndAddCustomButton(CustomButton.Type type, int value, Theme theme,
+                                                  ActionListener buttonListener) {
+        CustomButton button = new CustomButton(type, value);
+        button.setForeground(theme.primaryTextColor);
+        button.setBackground(theme.normalCellColor);
+        button.setOpaque(true);
+        button.addActionListener(buttonListener);
+        add(button);
+        return button;
+    }
+
+
     /**
-     * Sets the color of the note button to green
+     * Sets the color of the note button depending on {@code activated}.
      */
-    public void setNoteMode() {
-        buttonNote.setBackground(Color.decode("#78B53A"));
+    public void setNoteMode(boolean activated) {
+        setNullableButtonActivated(noteButton, activated);
     }
 
     /**
-     * Sets the color of the note button to normal
+     * Sets the color of the choose group button depending on {@code activated}.
      */
-    public void setNormalMode() {
-        buttonNote.setBackground(theme.normalCellColor);
+    public void setChooseGroupMode(boolean activated) {
+        setNullableButtonActivated(chooseGroupButton, activated);
     }
 
     /**
-     * Sets the color of the choose group button to green
+     * Sets the color of the edit group button depending on {@code activated}.
      */
-    public void setChooseMode() {
-        buttonChooseGroup.setBackground(Color.decode("#78B53A"));
+    public void setEditGroupMode(boolean activated) {
+        setNullableButtonActivated(editGroupButton, activated);
     }
 
-    /**
-     * Sets the color of the choose group button to normal
-     */
-    public void setNoChooseMode() {
-        buttonChooseGroup.setBackground(theme.normalCellColor);
-    }
-
-    /**
-     * Sets the color of the edit group button to green
-     */
-    public void setEditMode() {
-        buttonEditGroup.setBackground(Color.decode("#78B53A"));
-    }
-
-    /**
-     * Sets the color of the edit group button to normal
-     */
-    public void setNoEditMode() {
-        buttonEditGroup.setBackground(theme.normalCellColor);
-    }
-
-    /**
-     * Changes the text of the tip button
-     *
-     * @param text the text to be set
-     */
-    public void setTipButtonText(String text) {
-        buttonTip.setText(text);
+    private void setNullableButtonActivated(CustomButton button, boolean activated) {
+        if (button != null) {
+            button.setBackground(activated ? theme.markedCellColor : theme.normalCellColor);
+        }
     }
 
     /**
@@ -195,13 +122,9 @@ public final class RightControlsPanel extends JPanel {
      * @param tipsRemaining the number how many tips are remaining
      */
     public void setRemainingTips(int tipsRemaining) {
-        buttonTip.setText(Integer.valueOf(tipsRemaining).toString());
-    }
-
-    /**
-     * Changing the color of the tip-button when there are no more remaining tips
-     */
-    public void reachedMaxTips() {
-        buttonTip.setBackground(Color.RED);
+        if (tipButton != null) {
+            tipButton.setText(Integer.toString(Math.max(tipsRemaining, 0)));
+            if (tipsRemaining <= 0) tipButton.setBackground(theme.errorTextColor);
+        }
     }
 }

@@ -11,8 +11,10 @@ import java.awt.event.ActionEvent;
 public interface Presenter {
 
     void handleButtonListenerEvent(ActionEvent e);
-    void handleButton(CustomButton button);
-    InGameViewScaffold getInGameViewScaffold();
-    boolean getNoteMode();
 
+    void handleButton(CustomButton button);
+
+    InGameViewScaffold getInGameViewScaffold();
+
+    boolean isNoteModeActivated();
 }

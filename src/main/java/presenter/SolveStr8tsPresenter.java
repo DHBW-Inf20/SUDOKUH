@@ -99,7 +99,7 @@ public final class SolveStr8tsPresenter extends SolvePresenter {
     }
 
     @Override
-    public boolean getNoteMode() {
+    public boolean isNoteModeActivated() {
         return false;
     }
 }

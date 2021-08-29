@@ -95,7 +95,7 @@ public final class KeyInputListener implements KeyListener {
 
     //Handle auto step if active
     private void autoStepForward() {
-        if(!presenter.getNoteMode()){
+        if(!presenter.isNoteModeActivated()){
             CellPanel lastClicked = presenter.getInGameViewScaffold().getClicked();
             if(lastClicked.getCol()+1 != presenter.getInGameViewScaffold().getGridSize()*presenter.getInGameViewScaffold().getGridSize()){
                 presenter.getInGameViewScaffold().setClicked(lastClicked.getRow(),lastClicked.getCol()+1);

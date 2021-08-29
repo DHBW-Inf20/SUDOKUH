@@ -17,7 +17,7 @@ public final class SolveSudokuPresenter extends SolvePresenter {
     }
 
     @Override
-    public boolean getNoteMode() {
+    public boolean isNoteModeActivated() {
         return false;
     }
 }

@@ -92,9 +92,9 @@ public final class SolveKillerPresenter extends SolvePresenter {
                 if (!editGroup) {
                     chooseGroup = !chooseGroup;
                     if (chooseGroup) {
-                        inGameViewScaffold.setChooseMode();
+                        inGameViewScaffold.startChooseGroupMode();
                     } else {
-                        ArrayList<CellPanel> group = inGameViewScaffold.setNoChooseMode();
+                        ArrayList<CellPanel> group = inGameViewScaffold.endChooseGroupModeAndGetGroup();
                         saveGroup(group);
                     }
                 } else {
@@ -104,7 +104,7 @@ public final class SolveKillerPresenter extends SolvePresenter {
             case REMOVE_GROUP -> {
                 if (chooseGroup) {
                     chooseGroup = false;
-                    inGameViewScaffold.setNoChooseMode();
+                    inGameViewScaffold.endChooseGroupModeAndGetGroup();
                 } else {
                     ArrayList<CellPanel> group = inGameViewScaffold.removeGroup(clickedCell);
                     if (group != null) {
@@ -124,12 +124,12 @@ public final class SolveKillerPresenter extends SolvePresenter {
                         if (group != null) {
                             if (!group.isEmpty())
                                 ((Killer) sudoku).removeGroup(((Killer) sudoku).getGroupForCell(group.get(0).getRow(), group.get(0).getCol()));
-                            inGameViewScaffold.setEditMode(group);
+                            inGameViewScaffold.startEditGroupMode(group);
                         } else {
                             editGroup = false;
                         }
                     } else {
-                        ArrayList<CellPanel> group = inGameViewScaffold.setNoEditMode();
+                        ArrayList<CellPanel> group = inGameViewScaffold.endEditGroupModeAndGetGroup();
                         saveGroup(group);
                     }
                 } else {
@@ -144,7 +144,7 @@ public final class SolveKillerPresenter extends SolvePresenter {
     }
 
     @Override
-    public boolean getNoteMode() {
+    public boolean isNoteModeActivated() {
         return false;
     }
 
