@@ -16,76 +16,57 @@ import static java.util.Objects.requireNonNull;
 public final class CustomButton extends JButton {
 
     public enum Type {
-        NUMBER, DELETE, SOLVE, TIP, VERIFY, NOTE, CHANGE_COLOR, CHOOSE_GROUP, REMOVE_GROUP, EDIT_GROUP
+        // Icons from https://www.freepik.com
+        NUMBER(null, null),
+        DELETE("/delete.png", Strings.DELETE),
+        SOLVE("/solve.png", Strings.SEARCH_SOLUTION),
+        TIP("/tip.png", Strings.SHOW_TIP),
+        VERIFY("/verify.png", Strings.VERIFY_SOLUTION),
+        NOTE("/pen.png", Strings.NOTE_MODE),
+        CHANGE_COLOR("/color.png", Strings.CHANGE_COLOR),
+        CHOOSE_GROUP("/choosegroup.png", Strings.CHOOSE_GROUP),
+        REMOVE_GROUP("/removegroup.png", Strings.DELETE_GROUP),
+        EDIT_GROUP("/pen.png", Strings.EDIT_GROUP);
+
+        private final String icon;
+        private final String toolTip;
+
+        Type(String icon, String toolTip) {
+            this.icon = icon;
+            this.toolTip = toolTip;
+        }
     }
+
 
     private final int value;
     private final Type type;
-    private Image delete, solve, tip, verify, pen, color, chooseGroup, removeGroup;
+
 
     public CustomButton(Type type) {
         this(type, -1);
     }
 
     public CustomButton(Type type, int value) {
-        try {
-            // Icons from https://www.freepik.com
-            delete = ImageIO.read(requireNonNull(getClass().getResource("/delete.png")));
-            solve = ImageIO.read(requireNonNull(getClass().getResource("/solve.png")));
-            tip = ImageIO.read(requireNonNull(getClass().getResource("/tip.png")));
-            verify = ImageIO.read(requireNonNull(getClass().getResource("/verify.png")));
-            pen = ImageIO.read(requireNonNull(getClass().getResource("/pen.png")));
-            color = ImageIO.read(requireNonNull(getClass().getResource("/color.png")));
-            chooseGroup = ImageIO.read(requireNonNull(getClass().getResource("/choosegroup.png")));
-            removeGroup = ImageIO.read(requireNonNull(getClass().getResource("/removegroup.png")));
-        } catch (NullPointerException | IOException e) {
-            e.printStackTrace();
-        }
         this.value = value;
         this.type = type;
-        switch (type) {
-            case NUMBER -> {
-                setText(Integer.toString(value));
-                setToolTipText(Strings.isGerman ? value + " setzen" : "set " + value);
+
+        if (type == Type.NUMBER) {
+            setText(Integer.toString(value));
+            setToolTipText(Strings.isGerman ? value + " setzen" : "set " + value);
+        } else {
+            try {
+                Image icon = ImageIO.read(requireNonNull(getClass().getResource(type.icon)));
+                setIcon(new ImageIcon(icon));
+            } catch (NullPointerException | IOException e) {
+                e.printStackTrace();
             }
-            case DELETE -> {
-                setIcon(new ImageIcon(delete));
-                setToolTipText(Strings.DELETE);
-            }
-            case SOLVE -> {
-                setIcon(new ImageIcon(solve));
-                setToolTipText(Strings.SEARCH_SOLUTION);
-            }
-            case TIP -> {
-                setIcon(new ImageIcon(tip));
-                setToolTipText(Strings.SHOW_TIP);
-            }
-            case VERIFY -> {
-                setIcon(new ImageIcon(verify));
-                setToolTipText(Strings.VERIFY_SOLUTION);
-            }
-            case NOTE, EDIT_GROUP -> {
-                setIcon(new ImageIcon(pen));
-                if (type == Type.NOTE) setToolTipText(Strings.NOTE_MODE);
-                if (type == Type.EDIT_GROUP) setToolTipText(Strings.EDIT_GROUP);
-            }
-            case CHANGE_COLOR -> {
-                setIcon(new ImageIcon(color));
-                setToolTipText(Strings.CHANGE_COLOR);
-            }
-            case CHOOSE_GROUP -> {
-                setIcon(new ImageIcon(chooseGroup));
-                setToolTipText(Strings.CHOOSE_GROUP);
-            }
-            case REMOVE_GROUP -> {
-                setIcon(new ImageIcon(removeGroup));
-                setToolTipText(Strings.DELETE_GROUP);
-            }
+            setToolTipText(type.toolTip);
         }
         setFocusable(false);
-        this.setMargin(new Insets(0, 0, 0, 0));
-        this.setFont(new Font(getFont().getName(), Font.BOLD, 25));
+        setMargin(new Insets(0, 0, 0, 0));
+        setFont(new Font(getFont().getName(), Font.BOLD, 25));
     }
+
 
     public int getValue() {
         return value;
