@@ -59,8 +59,8 @@ public final class KeyInputListener implements KeyListener {
             switch (e.getKeyCode()){
                 //LEFT ARROW BUTTON
                 case 37 ->{
-                    if(lastClicked.getCol()-1!=-1){
-                        presenter.getInGameViewScaffold().setClicked(lastClicked.getRow(),lastClicked.getCol()-1);
+                    if(lastClicked.getColumn()-1!=-1){
+                        presenter.getInGameViewScaffold().setClicked(lastClicked.getRow(),lastClicked.getColumn()-1);
                     }else{
                         presenter.getInGameViewScaffold().setClicked(lastClicked.getRow(),presenter.getInGameViewScaffold().getGridSize()*presenter.getInGameViewScaffold().getGridSize()-1);
                     }
@@ -68,15 +68,15 @@ public final class KeyInputListener implements KeyListener {
                 //UP ARROW BUTTON
                 case 38 ->{
                     if(lastClicked.getRow()-1!=-1){
-                        presenter.getInGameViewScaffold().setClicked(lastClicked.getRow()-1,lastClicked.getCol());
+                        presenter.getInGameViewScaffold().setClicked(lastClicked.getRow()-1,lastClicked.getColumn());
                     }else{
-                        presenter.getInGameViewScaffold().setClicked(presenter.getInGameViewScaffold().getGridSize()*presenter.getInGameViewScaffold().getGridSize()-1, lastClicked.getCol());
+                        presenter.getInGameViewScaffold().setClicked(presenter.getInGameViewScaffold().getGridSize()*presenter.getInGameViewScaffold().getGridSize()-1, lastClicked.getColumn());
                     }
                 }
                 //RIGHT ARROW BUTTON
                 case 39 ->{
-                    if(lastClicked.getCol()+1!=presenter.getInGameViewScaffold().getGridSize()*presenter.getInGameViewScaffold().getGridSize()){
-                        presenter.getInGameViewScaffold().setClicked(lastClicked.getRow(),lastClicked.getCol()+1);
+                    if(lastClicked.getColumn()+1!=presenter.getInGameViewScaffold().getGridSize()*presenter.getInGameViewScaffold().getGridSize()){
+                        presenter.getInGameViewScaffold().setClicked(lastClicked.getRow(),lastClicked.getColumn()+1);
                     }else{
                         presenter.getInGameViewScaffold().setClicked(lastClicked.getRow(),0);
                     }
@@ -84,9 +84,9 @@ public final class KeyInputListener implements KeyListener {
                 //DOWN ARROW BUTTON
                 case 40 ->{
                     if(lastClicked.getRow()+1!=presenter.getInGameViewScaffold().getGridSize()*presenter.getInGameViewScaffold().getGridSize()){
-                        presenter.getInGameViewScaffold().setClicked(lastClicked.getRow()+1,lastClicked.getCol());
+                        presenter.getInGameViewScaffold().setClicked(lastClicked.getRow()+1,lastClicked.getColumn());
                     }else{
-                        presenter.getInGameViewScaffold().setClicked(0,lastClicked.getCol());
+                        presenter.getInGameViewScaffold().setClicked(0,lastClicked.getColumn());
                     }
                 }
             }
@@ -97,8 +97,8 @@ public final class KeyInputListener implements KeyListener {
     private void autoStepForward() {
         if(!presenter.isNoteModeActivated()){
             CellPanel lastClicked = presenter.getInGameViewScaffold().getClicked();
-            if(lastClicked.getCol()+1 != presenter.getInGameViewScaffold().getGridSize()*presenter.getInGameViewScaffold().getGridSize()){
-                presenter.getInGameViewScaffold().setClicked(lastClicked.getRow(),lastClicked.getCol()+1);
+            if(lastClicked.getColumn()+1 != presenter.getInGameViewScaffold().getGridSize()*presenter.getInGameViewScaffold().getGridSize()){
+                presenter.getInGameViewScaffold().setClicked(lastClicked.getRow(),lastClicked.getColumn()+1);
             }else if(lastClicked.getRow()+1 < presenter.getInGameViewScaffold().getGridSize()*presenter.getInGameViewScaffold().getGridSize()){
                 presenter.getInGameViewScaffold().setClicked(lastClicked.getRow()+1,0);
             }

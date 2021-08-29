@@ -44,14 +44,14 @@ public final class PlayPresenter implements Presenter {
      */
     private boolean noteModeActivated;
 
-    public PlayPresenter(int gridSize, Theme theme, boolean autoStepForward, boolean highlighting, int tipLimit) {
+    public PlayPresenter(int subGridSize, Theme theme, boolean autoStepForward, boolean highlighting, int tipLimit) {
         noteModeActivated = false;
 
-        SudokuGenerator.SudokuAndSolution sudokuAndSolution = SudokuGenerator.generateSudokuAndSolution(gridSize);
+        SudokuGenerator.SudokuAndSolution sudokuAndSolution = SudokuGenerator.generateSudokuAndSolution(subGridSize);
         sudoku = sudokuAndSolution.sudoku();
         solution = sudokuAndSolution.solution();
 
-        inGameViewScaffold = new InGameViewScaffold(gridSize, this::handleButtonListenerEvent, PLAY, theme, highlighting, autoStepForward, GameMode.SUDOKU_PLAY, tipLimit, this);
+        inGameViewScaffold = new InGameViewScaffold(subGridSize, this::handleButtonListenerEvent, PLAY, theme, highlighting, autoStepForward, GameMode.SUDOKU_PLAY, tipLimit, this);
 
         inGameViewScaffold.addKeyListener(new KeyInputListener(this, autoStepForward));
 
@@ -121,13 +121,13 @@ public final class PlayPresenter implements Presenter {
                 int number = button.getValue();
                 if (!clickedCell.isPredefined()) {
                     if (noteModeActivated) {
-                        if (clickedCell.getLabelValue() != null) {
-                            sudoku.resetCell(clickedCell.getRow(), clickedCell.getCol());
-                            clickedCell.setText("");
+                        if (clickedCell.getCellText() != null) {
+                            sudoku.resetCell(clickedCell.getRow(), clickedCell.getColumn());
+                            clickedCell.setCellText("");
                         }
-                        inGameViewScaffold.setNote(number);
+                        inGameViewScaffold.addOrRemoveNote(number);
                     } else {
-                        final SetCellResult result = sudoku.setCell(clickedCell.getRow(), clickedCell.getCol(), number);
+                        final SetCellResult result = sudoku.setCell(clickedCell.getRow(), clickedCell.getColumn(), number);
                         if (result == SetCellResult.SUCCESS) {
                             inGameViewScaffold.validInput(String.valueOf(number));
                             this.verifySolution();
@@ -146,15 +146,15 @@ public final class PlayPresenter implements Presenter {
             }
             case DELETE -> {
                 if (!clickedCell.isPredefined()) {
-                    sudoku.resetCell(clickedCell.getRow(), clickedCell.getCol());
-                    clickedCell.setText("");
+                    sudoku.resetCell(clickedCell.getRow(), clickedCell.getColumn());
+                    clickedCell.setCellText("");
                 }
             }
             case TIP -> {
                 if (!clickedCell.isPredefined() && tipLimit >= ++tipsUsed) {
-                    inGameViewScaffold.validInput(String.valueOf(solution.getCell(clickedCell.getRow(), clickedCell.getCol())), (tipLimit - tipsUsed));
-                    inGameViewScaffold.setPredefined(clickedCell.getRow(), clickedCell.getCol(), solution.getCell(clickedCell.getRow(), clickedCell.getCol()));
-                    final SetCellResult result = sudoku.setCell(clickedCell.getRow(), clickedCell.getCol(), solution.getCell(clickedCell.getRow(), clickedCell.getCol()));
+                    inGameViewScaffold.validInput(String.valueOf(solution.getCell(clickedCell.getRow(), clickedCell.getColumn())), (tipLimit - tipsUsed));
+                    inGameViewScaffold.setPredefined(clickedCell.getRow(), clickedCell.getColumn(), solution.getCell(clickedCell.getRow(), clickedCell.getColumn()));
+                    final SetCellResult result = sudoku.setCell(clickedCell.getRow(), clickedCell.getColumn(), solution.getCell(clickedCell.getRow(), clickedCell.getColumn()));
                     if (!result.isSuccess()) {
                         final Set<Cell> conflicts = result.conflictingCells();
                         if (!conflicts.isEmpty()) {

@@ -41,12 +41,12 @@ public final class InGameViewScaffold extends JFrame {
     private final PlayPresenter playPresenter;
 
 
-    public InGameViewScaffold(int gridSize, ActionListener buttonListener, String title, Theme theme,
+    public InGameViewScaffold(int subGridSize, ActionListener buttonListener, String title, Theme theme,
                               boolean highlighting, boolean autoStepForward, GameMode gamemode) {
-        this(gridSize, buttonListener, title, theme, highlighting, autoStepForward, gamemode, 0, null);
+        this(subGridSize, buttonListener, title, theme, highlighting, autoStepForward, gamemode, 0, null);
     }
 
-    public InGameViewScaffold(int gridSize, ActionListener buttonListener, String title, Theme theme,
+    public InGameViewScaffold(int subGridSize, ActionListener buttonListener, String title, Theme theme,
                               boolean highlighting, boolean autoStepForward, GameMode gamemode, int tipLimit,
                               PlayPresenter playPresenter) {
         super(SUDOKUH + "-" + title);
@@ -71,11 +71,11 @@ public final class InGameViewScaffold extends JFrame {
         mainContainer.add(topInfoPanel);
 
         // Sudoku grid panel
-        gridPanel = new GridPanel(gridSize, theme, highlighting, gamemode);
+        gridPanel = new GridPanel(subGridSize, theme, highlighting, gamemode);
         mainContainer.add(gridPanel);
 
         // Right controls panel
-        rightControlsPanel = new RightControlsPanel(gridSize, buttonListener, theme, gamemode);
+        rightControlsPanel = new RightControlsPanel(subGridSize, buttonListener, theme, gamemode);
         mainContainer.add(rightControlsPanel);
 
         // Control Buttons
@@ -94,7 +94,7 @@ public final class InGameViewScaffold extends JFrame {
             if (playPresenter != null) {
                 playPresenter.pauseTimer();
             }
-            new AgainPopUpWindow(this, gamemode, gridSize, theme, autoStepForward, highlighting, tipLimit);
+            new AgainPopUpWindow(this, gamemode, subGridSize, theme, autoStepForward, highlighting, tipLimit);
         });
         againButton.setToolTipText(RESET);
         mainContainer.add(againButton);
@@ -256,10 +256,10 @@ public final class InGameViewScaffold extends JFrame {
     }
 
     /**
-     * Sets a note to the clicked cell
+     * Adds or removes a note to/from the clicked cell.
      */
-    public void setNote(int value) {
-        gridPanel.setNote(value);
+    public void addOrRemoveNote(int value) {
+        gridPanel.addOrRemoveNote(value);
     }
 
     /**

@@ -17,6 +17,7 @@ import java.util.Set;
 
 import static model.Str8ts.Color.BLACK;
 import static model.Str8ts.Color.WHITE;
+import static util.GameMode.KILLER_SOLVE;
 import static util.GameMode.STR8TS_SOLVE;
 
 /**
@@ -30,7 +31,7 @@ public final class GridPanel extends JPanel {
     /**
      * Reference to all {@link CellPanel cells} of the sudoku game.
      */
-    private final ArrayList<ArrayList<CellPanel>> labels;
+    private final ArrayList<ArrayList<CellPanel>> cells;
 
     /**
      * List of colors of each cell
@@ -45,7 +46,7 @@ public final class GridPanel extends JPanel {
     /**
      * Reference to an invalid {@link JLabel cell} if there is one.
      */
-    private JLabel invalid;
+    private CellPanel invalid;
 
     /**
      * List of conflicting cells.
@@ -55,7 +56,7 @@ public final class GridPanel extends JPanel {
     /**
      * The size of the grid.
      */
-    private final int size;
+    private final int subGridSize;
 
     /**
      * The currently played gamemode.
@@ -80,7 +81,7 @@ public final class GridPanel extends JPanel {
 
     private ArrayList<CellPanel> group;
 
-    public GridPanel(int gridSize, Theme theme, boolean highlighting, GameMode gamemode) {
+    public GridPanel(int subGridSize, Theme theme, boolean highlighting, GameMode gamemode) {
         this.theme = theme;
 
         this.gamemode = gamemode;
@@ -91,12 +92,12 @@ public final class GridPanel extends JPanel {
 
         this.highlighting = highlighting;
 
-        size = gridSize;
+        this.subGridSize = subGridSize;
 
         colors = new ArrayList<>();
-        for (int i = 0; i < size * size; i++) {
+        for (int i = 0; i < subGridSize * subGridSize; i++) {
             ArrayList<Str8ts.Color> temp = new ArrayList<>();
-            for (int j = 0; j < size * size; j++) {
+            for (int j = 0; j < subGridSize * subGridSize; j++) {
                 temp.add(WHITE);
             }
             colors.add(temp);
@@ -106,28 +107,18 @@ public final class GridPanel extends JPanel {
         chooseGroupModeActivated = false;
         editGroup = false;
 
-        setLayout(new GridLayout(gridSize, gridSize));
+        setLayout(new GridLayout(subGridSize, subGridSize));
         setSize(400, 400);
         setPreferredSize(new Dimension(400, 400));
         setBackground(theme.normalCellColor);
         setForeground(theme.primaryTextColor);
 
         // Creating matrix of Label-Elements ('labels') -> Creation in advance in order to get the right coordinates
-        labels = new ArrayList<>();
-        for (int i = 0; i < gridSize * gridSize; i++) {
+        cells = new ArrayList<>();
+        for (int i = 0; i < subGridSize * subGridSize; i++) {
             ArrayList<CellPanel> temp = new ArrayList<>();
-            for (int j = 0; j < gridSize * gridSize; j++) {
-                JLabel cell = new JLabel(" ");
-                cell.setFont(new Font(getFont().getName(), Font.BOLD, 25));
-                CellPanel cellPanel = new CellPanel(cell, i, j, gridSize, theme.primaryTextColor);
-                cellPanel.setOpaque(true);
-                cellPanel.setBackground(theme.normalCellColor);
-                cellPanel.setForeground(theme.primaryTextColor);
-                cell.setBackground(theme.normalCellColor);
-                cell.setForeground(theme.primaryTextColor);
-                if (gamemode != GameMode.KILLER_SOLVE) cellPanel.setBorder(new LineBorder(theme.cellBorderColor, 1));
-                cell.setHorizontalAlignment(SwingConstants.CENTER);
-                cell.setVerticalAlignment(SwingConstants.CENTER);
+            for (int j = 0; j < subGridSize * subGridSize; j++) {
+                CellPanel cellPanel = new CellPanel(i, j, subGridSize, theme, gamemode != KILLER_SOLVE);
                 cellPanel.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mousePressed(MouseEvent e) {
@@ -136,18 +127,18 @@ public final class GridPanel extends JPanel {
                 });
                 temp.add(cellPanel);
             }
-            labels.add(temp);
+            cells.add(temp);
         }
 
         // Initializing matrix of panels ('panels') -> Creation in advance in order to get the right coordinates
         ArrayList<ArrayList<JPanel>> panels = new ArrayList<>();
-        for (int i = 0; i < gridSize; i++) {
+        for (int i = 0; i < subGridSize; i++) {
             ArrayList<JPanel> temp = new ArrayList<>();
-            for (int j = 0; j < gridSize; j++) {
+            for (int j = 0; j < subGridSize; j++) {
                 JPanel panel = new JPanel();
                 panel.setBackground(theme.normalCellColor);
                 panel.setForeground(theme.primaryTextColor);
-                panel.setLayout(new GridLayout(gridSize, gridSize));
+                panel.setLayout(new GridLayout(subGridSize, subGridSize));
                 if (gamemode != STR8TS_SOLVE) panel.setBorder(new LineBorder(theme.cellBorderColor, 2));
                 temp.add(panel);
             }
@@ -155,10 +146,10 @@ public final class GridPanel extends JPanel {
         }
 
         // Filling the panels-matrix with values from the labels-matrix
-        for (int row = 0; row < gridSize * gridSize; row++) {
-            for (int col = 0; col < gridSize * gridSize; col++) {
-                CellPanel cell = labels.get(row).get(col);
-                panels.get(row / gridSize).get(col / gridSize).add(cell);
+        for (int row = 0; row < subGridSize * subGridSize; row++) {
+            for (int col = 0; col < subGridSize * subGridSize; col++) {
+                CellPanel cell = cells.get(row).get(col);
+                panels.get(row / subGridSize).get(col / subGridSize).add(cell);
             }
         }
 
@@ -170,7 +161,7 @@ public final class GridPanel extends JPanel {
         }
 
         // Changing clicked-Value to 0|0 to exclude errors
-        clicked = labels.get(0).get(0);
+        clicked = cells.get(0).get(0);
         clicked.setBackground(theme.clickedCellColor);
 
         setBounds(20, 120, 800, 800);
@@ -187,30 +178,30 @@ public final class GridPanel extends JPanel {
             case SUDOKU_SOLVE, KILLER_SOLVE -> {
                 // Unmarking of possible conflicting cells
                 int clickedRow = clicked.getRow();
-                int clickedCol = clicked.getCol();
-                int rowLowerBound = clicked.getRow() - (clicked.getRow() % size);
-                int rowUpperBound = rowLowerBound + size - 1;
-                int columnLowerBound = clicked.getCol() - (clicked.getCol() % size);
-                int columnUpperBound = columnLowerBound + size - 1;
+                int clickedCol = clicked.getColumn();
+                int rowLowerBound = clicked.getRow() - (clicked.getRow() % subGridSize);
+                int rowUpperBound = rowLowerBound + subGridSize - 1;
+                int columnLowerBound = clicked.getColumn() - (clicked.getColumn() % subGridSize);
+                int columnUpperBound = columnLowerBound + subGridSize - 1;
                 if (highlighting) {
-                    for (int k = 0; k < labels.get(clickedRow).size(); k++) {
-                        labels.get(clickedRow).get(k).setBackground(theme.normalCellColor);
-                        if (inputs.contains(labels.get(clickedRow).get(k)))
-                            labels.get(clickedRow).get(k).setBackground(theme.predefinedCellColor);
-                        labels.get(clickedRow).get(k).setForeground(theme.primaryTextColor);
+                    for (int k = 0; k < cells.get(clickedRow).size(); k++) {
+                        cells.get(clickedRow).get(k).setBackground(theme.normalCellColor);
+                        if (inputs.contains(cells.get(clickedRow).get(k)))
+                            cells.get(clickedRow).get(k).setBackground(theme.predefinedCellColor);
+                        cells.get(clickedRow).get(k).setForeground(theme.primaryTextColor);
                     }
-                    for (int k = 0; k < labels.get(clickedRow).size(); k++) {
-                        labels.get(k).get(clickedCol).setBackground(theme.normalCellColor);
-                        if (inputs.contains(labels.get(k).get(clickedCol)))
-                            labels.get(k).get(clickedCol).setBackground(theme.predefinedCellColor);
-                        labels.get(k).get(clickedCol).setForeground(theme.primaryTextColor);
+                    for (int k = 0; k < cells.get(clickedRow).size(); k++) {
+                        cells.get(k).get(clickedCol).setBackground(theme.normalCellColor);
+                        if (inputs.contains(cells.get(k).get(clickedCol)))
+                            cells.get(k).get(clickedCol).setBackground(theme.predefinedCellColor);
+                        cells.get(k).get(clickedCol).setForeground(theme.primaryTextColor);
                     }
                     for (int k = rowLowerBound; k <= rowUpperBound; k++) {
                         for (int l = columnLowerBound; l <= columnUpperBound; l++) {
-                            labels.get(k).get(l).setBackground(theme.normalCellColor);
-                            if (inputs.contains(labels.get(k).get(l)))
-                                labels.get(k).get(l).setBackground(theme.predefinedCellColor);
-                            labels.get(k).get(l).setForeground(theme.primaryTextColor);
+                            cells.get(k).get(l).setBackground(theme.normalCellColor);
+                            if (inputs.contains(cells.get(k).get(l)))
+                                cells.get(k).get(l).setBackground(theme.predefinedCellColor);
+                            cells.get(k).get(l).setForeground(theme.primaryTextColor);
                         }
                     }
                 }
@@ -226,29 +217,29 @@ public final class GridPanel extends JPanel {
                 // Marking of possible conflicting cells
                 if (highlighting) {
                     clickedRow = clicked.getRow();
-                    clickedCol = clicked.getCol();
-                    for (int k = 0; k < labels.get(clickedRow).size(); k++) {
-                        labels.get(clickedRow).get(k).setBackground(theme.markedCellColor);
-                        if (inputs.contains(labels.get(clickedRow).get(k)))
-                            labels.get(clickedRow).get(k).setBackground(theme.predefinedCellMarkedColor);
-                        labels.get(clickedRow).get(k).setForeground(theme.primaryTextColor);
+                    clickedCol = clicked.getColumn();
+                    for (int k = 0; k < cells.get(clickedRow).size(); k++) {
+                        cells.get(clickedRow).get(k).setBackground(theme.markedCellColor);
+                        if (inputs.contains(cells.get(clickedRow).get(k)))
+                            cells.get(clickedRow).get(k).setBackground(theme.predefinedCellMarkedColor);
+                        cells.get(clickedRow).get(k).setForeground(theme.primaryTextColor);
                     }
-                    for (int k = 0; k < labels.get(clickedRow).size(); k++) {
-                        labels.get(k).get(clickedCol).setBackground(theme.markedCellColor);
-                        if (inputs.contains(labels.get(k).get(clickedCol)))
-                            labels.get(k).get(clickedCol).setBackground(theme.predefinedCellMarkedColor);
-                        labels.get(k).get(clickedCol).setForeground(theme.primaryTextColor);
+                    for (int k = 0; k < cells.get(clickedRow).size(); k++) {
+                        cells.get(k).get(clickedCol).setBackground(theme.markedCellColor);
+                        if (inputs.contains(cells.get(k).get(clickedCol)))
+                            cells.get(k).get(clickedCol).setBackground(theme.predefinedCellMarkedColor);
+                        cells.get(k).get(clickedCol).setForeground(theme.primaryTextColor);
                     }
-                    rowLowerBound = clicked.getRow() - (clicked.getRow() % size);
-                    rowUpperBound = rowLowerBound + size - 1;
-                    columnLowerBound = clicked.getCol() - (clicked.getCol() % size);
-                    columnUpperBound = columnLowerBound + size - 1;
+                    rowLowerBound = clicked.getRow() - (clicked.getRow() % subGridSize);
+                    rowUpperBound = rowLowerBound + subGridSize - 1;
+                    columnLowerBound = clicked.getColumn() - (clicked.getColumn() % subGridSize);
+                    columnUpperBound = columnLowerBound + subGridSize - 1;
                     for (int k = rowLowerBound; k <= rowUpperBound; k++) {
                         for (int l = columnLowerBound; l <= columnUpperBound; l++) {
-                            labels.get(k).get(l).setBackground(theme.markedCellColor);
-                            if (inputs.contains(labels.get(k).get(l)))
-                                labels.get(k).get(l).setBackground(theme.predefinedCellMarkedColor);
-                            labels.get(k).get(l).setForeground(theme.primaryTextColor);
+                            cells.get(k).get(l).setBackground(theme.markedCellColor);
+                            if (inputs.contains(cells.get(k).get(l)))
+                                cells.get(k).get(l).setBackground(theme.predefinedCellMarkedColor);
+                            cells.get(k).get(l).setForeground(theme.primaryTextColor);
                         }
                     }
                 }
@@ -257,41 +248,41 @@ public final class GridPanel extends JPanel {
                 addCellToGroup(clicked);
 
                 // Reset the value of an invalid cell
-                if (invalid != null) invalid.setText("");
+                if (invalid != null) invalid.setCellText("");
                 if (!conflicts.isEmpty()) {
                     for (Cell c : conflicts) {
-                        labels.get(c.row()).get(c.column()).getLabel().setForeground(theme.primaryTextColor);
+                        cells.get(c.row()).get(c.column()).setCellTextColor(theme.primaryTextColor);
                     }
                 }
             }
             case STR8TS_SOLVE -> {
                 // Unmarking of possible conflicting cells
                 int clickedRow = clicked.getRow();
-                int clickedCol = clicked.getCol();
+                int clickedCol = clicked.getColumn();
                 if (highlighting) {
-                    for (int k = 0; k < labels.get(clickedRow).size(); k++) {
-                        labels.get(clickedRow).get(k).setBackground(theme.normalCellColor);
-                        if (inputs.contains(labels.get(clickedRow).get(k)))
-                            labels.get(clickedRow).get(k).setBackground(theme.predefinedCellColor);
+                    for (int k = 0; k < cells.get(clickedRow).size(); k++) {
+                        cells.get(clickedRow).get(k).setBackground(theme.normalCellColor);
+                        if (inputs.contains(cells.get(clickedRow).get(k)))
+                            cells.get(clickedRow).get(k).setBackground(theme.predefinedCellColor);
                         if (colors.get(clickedRow).get(k) == BLACK) {
-                            labels.get(clickedRow).get(k).setBackground(theme.otherCellColor);
-                            labels.get(clickedRow).get(k).getLabel().setForeground(theme.secondaryTextColor);
+                            cells.get(clickedRow).get(k).setBackground(theme.otherCellColor);
+                            cells.get(clickedRow).get(k).setCellTextColor(theme.secondaryTextColor);
                         }
                     }
-                    for (int k = 0; k < labels.get(clickedRow).size(); k++) {
-                        labels.get(k).get(clickedCol).setBackground(theme.normalCellColor);
-                        if (inputs.contains(labels.get(k).get(clickedCol)))
-                            labels.get(k).get(clickedCol).setBackground(theme.predefinedCellColor);
+                    for (int k = 0; k < cells.get(clickedRow).size(); k++) {
+                        cells.get(k).get(clickedCol).setBackground(theme.normalCellColor);
+                        if (inputs.contains(cells.get(k).get(clickedCol)))
+                            cells.get(k).get(clickedCol).setBackground(theme.predefinedCellColor);
                         if (colors.get(k).get(clickedCol) == BLACK) {
-                            labels.get(k).get(clickedCol).setBackground(theme.otherCellColor);
-                            labels.get(k).get(clickedCol).getLabel().setForeground(theme.secondaryTextColor);
+                            cells.get(k).get(clickedCol).setBackground(theme.otherCellColor);
+                            cells.get(k).get(clickedCol).setCellTextColor(theme.secondaryTextColor);
                         }
                     }
                 }
                 if (clicked != null) {
                     if (colors.get(clickedRow).get(clickedCol) == BLACK) {
                         clicked.setBackground(theme.otherCellColor);
-                        clicked.getLabel().setForeground(theme.secondaryTextColor);
+                        clicked.setCellTextColor(theme.secondaryTextColor);
                     } else if (inputs.contains(clicked)) {
                         clicked.setBackground(theme.predefinedCellColor);
                     } else {
@@ -302,33 +293,33 @@ public final class GridPanel extends JPanel {
                 // Marking of possible conflicting cells
                 if (highlighting) {
                     clickedRow = clicked.getRow();
-                    clickedCol = clicked.getCol();
-                    for (int k = 0; k < labels.get(clickedRow).size(); k++) {
-                        labels.get(clickedRow).get(k).setBackground(theme.markedCellColor);
-                        if (inputs.contains(labels.get(clickedRow).get(k)))
-                            labels.get(clickedRow).get(k).setBackground(theme.predefinedCellMarkedColor);
+                    clickedCol = clicked.getColumn();
+                    for (int k = 0; k < cells.get(clickedRow).size(); k++) {
+                        cells.get(clickedRow).get(k).setBackground(theme.markedCellColor);
+                        if (inputs.contains(cells.get(clickedRow).get(k)))
+                            cells.get(clickedRow).get(k).setBackground(theme.predefinedCellMarkedColor);
                         if (colors.get(clickedRow).get(k) == BLACK) {
-                            labels.get(clickedRow).get(k).setBackground(theme.otherCellColor);
-                            labels.get(clickedRow).get(k).getLabel().setForeground(theme.secondaryTextColor);
+                            cells.get(clickedRow).get(k).setBackground(theme.otherCellColor);
+                            cells.get(clickedRow).get(k).setCellTextColor(theme.secondaryTextColor);
                         }
                     }
-                    for (int k = 0; k < labels.get(clickedRow).size(); k++) {
-                        labels.get(k).get(clickedCol).setBackground(theme.markedCellColor);
-                        if (inputs.contains(labels.get(k).get(clickedCol)))
-                            labels.get(k).get(clickedCol).setBackground(theme.predefinedCellMarkedColor);
+                    for (int k = 0; k < cells.get(clickedRow).size(); k++) {
+                        cells.get(k).get(clickedCol).setBackground(theme.markedCellColor);
+                        if (inputs.contains(cells.get(k).get(clickedCol)))
+                            cells.get(k).get(clickedCol).setBackground(theme.predefinedCellMarkedColor);
                         if (colors.get(k).get(clickedCol) == BLACK) {
-                            labels.get(k).get(clickedCol).setBackground(theme.otherCellColor);
-                            labels.get(k).get(clickedCol).getLabel().setForeground(theme.secondaryTextColor);
+                            cells.get(k).get(clickedCol).setBackground(theme.otherCellColor);
+                            cells.get(k).get(clickedCol).setCellTextColor(theme.secondaryTextColor);
                         }
                     }
                 }
                 clicked.setBackground(theme.clickedCellColor);
 
                 // Reset the value of an invalid cell
-                if (invalid != null) invalid.setText("");
+                if (invalid != null) invalid.setCellText("");
                 if (!conflicts.isEmpty()) {
                     for (Cell c : conflicts) {
-                        labels.get(c.row()).get(c.column()).getLabel().setForeground(theme.primaryTextColor);
+                        cells.get(c.row()).get(c.column()).setCellTextColor(theme.primaryTextColor);
                     }
                 }
             }
@@ -337,33 +328,33 @@ public final class GridPanel extends JPanel {
                  *  Unmarking of previous highlighted cells
                  */
                 int clickedRow = clicked.getRow();
-                int clickedCol = clicked.getCol();
-                int rowLowerBound = clicked.getRow() - (clicked.getRow() % size);
-                int rowUpperBound = rowLowerBound + size - 1;
-                int columnLowerBound = clicked.getCol() - (clicked.getCol() % size);
-                int columnUpperBound = columnLowerBound + size - 1;
+                int clickedCol = clicked.getColumn();
+                int rowLowerBound = clicked.getRow() - (clicked.getRow() % subGridSize);
+                int rowUpperBound = rowLowerBound + subGridSize - 1;
+                int columnLowerBound = clicked.getColumn() - (clicked.getColumn() % subGridSize);
+                int columnUpperBound = columnLowerBound + subGridSize - 1;
                 if (highlighting) {
                     // Unmarking the cells in the same row
-                    for (int k = 0; k < labels.get(clickedRow).size(); k++) {
-                        labels.get(clickedRow).get(k).setBackground(theme.normalCellColor);
-                        labels.get(clickedRow).get(k).setForeground(theme.primaryTextColor);
-                        if (labels.get(clickedRow).get(k).isPredefined())
-                            labels.get(clickedRow).get(k).setBackground(theme.predefinedCellColor);
+                    for (int k = 0; k < cells.get(clickedRow).size(); k++) {
+                        cells.get(clickedRow).get(k).setBackground(theme.normalCellColor);
+                        cells.get(clickedRow).get(k).setForeground(theme.primaryTextColor);
+                        if (cells.get(clickedRow).get(k).isPredefined())
+                            cells.get(clickedRow).get(k).setBackground(theme.predefinedCellColor);
                     }
                     // Unmarking the cells in the same column
-                    for (int k = 0; k < labels.get(clickedRow).size(); k++) {
-                        labels.get(k).get(clickedCol).setBackground(theme.normalCellColor);
-                        labels.get(k).get(clickedCol).setForeground(theme.primaryTextColor);
-                        if (labels.get(k).get(clickedCol).isPredefined())
-                            labels.get(k).get(clickedCol).setBackground(theme.predefinedCellColor);
+                    for (int k = 0; k < cells.get(clickedRow).size(); k++) {
+                        cells.get(k).get(clickedCol).setBackground(theme.normalCellColor);
+                        cells.get(k).get(clickedCol).setForeground(theme.primaryTextColor);
+                        if (cells.get(k).get(clickedCol).isPredefined())
+                            cells.get(k).get(clickedCol).setBackground(theme.predefinedCellColor);
                     }
                     // Unmarking the cells in the same subgrid
                     for (int k = rowLowerBound; k <= rowUpperBound; k++) {
                         for (int l = columnLowerBound; l <= columnUpperBound; l++) {
-                            labels.get(k).get(l).setBackground(theme.normalCellColor);
-                            labels.get(k).get(l).setForeground(theme.primaryTextColor);
-                            if (labels.get(k).get(l).isPredefined())
-                                labels.get(k).get(l).setBackground(theme.predefinedCellColor);
+                            cells.get(k).get(l).setBackground(theme.normalCellColor);
+                            cells.get(k).get(l).setForeground(theme.primaryTextColor);
+                            if (cells.get(k).get(l).isPredefined())
+                                cells.get(k).get(l).setBackground(theme.predefinedCellColor);
                         }
                     }
                 }
@@ -379,33 +370,33 @@ public final class GridPanel extends JPanel {
                 clicked = cellPanel;
                 // Marking of possible conflicting cells
                 clickedRow = clicked.getRow();
-                clickedCol = clicked.getCol();
+                clickedCol = clicked.getColumn();
                 // Highlighting the cells in the same row
                 if (highlighting) {
-                    for (int k = 0; k < labels.get(clickedRow).size(); k++) {
-                        labels.get(clickedRow).get(k).setBackground(theme.markedCellColor);
-                        if (labels.get(clickedRow).get(k).isPredefined())
-                            labels.get(clickedRow).get(k).setBackground(theme.predefinedCellMarkedColor);
-                        labels.get(clickedRow).get(k).setForeground(theme.primaryTextColor);
+                    for (int k = 0; k < cells.get(clickedRow).size(); k++) {
+                        cells.get(clickedRow).get(k).setBackground(theme.markedCellColor);
+                        if (cells.get(clickedRow).get(k).isPredefined())
+                            cells.get(clickedRow).get(k).setBackground(theme.predefinedCellMarkedColor);
+                        cells.get(clickedRow).get(k).setForeground(theme.primaryTextColor);
                     }
                     // Highlighting the cells in the same column
-                    for (int k = 0; k < labels.get(clickedRow).size(); k++) {
-                        labels.get(k).get(clickedCol).setBackground(theme.markedCellColor);
-                        if (labels.get(k).get(clickedCol).isPredefined())
-                            labels.get(k).get(clickedCol).setBackground(theme.predefinedCellMarkedColor);
-                        labels.get(k).get(clickedCol).setForeground(theme.primaryTextColor);
+                    for (int k = 0; k < cells.get(clickedRow).size(); k++) {
+                        cells.get(k).get(clickedCol).setBackground(theme.markedCellColor);
+                        if (cells.get(k).get(clickedCol).isPredefined())
+                            cells.get(k).get(clickedCol).setBackground(theme.predefinedCellMarkedColor);
+                        cells.get(k).get(clickedCol).setForeground(theme.primaryTextColor);
                     }
                     // Highlighting the cells in the same subgrid
-                    rowLowerBound = clicked.getRow() - (clicked.getRow() % size);
-                    rowUpperBound = rowLowerBound + size - 1;
-                    columnLowerBound = clicked.getCol() - (clicked.getCol() % size);
-                    columnUpperBound = columnLowerBound + size - 1;
+                    rowLowerBound = clicked.getRow() - (clicked.getRow() % subGridSize);
+                    rowUpperBound = rowLowerBound + subGridSize - 1;
+                    columnLowerBound = clicked.getColumn() - (clicked.getColumn() % subGridSize);
+                    columnUpperBound = columnLowerBound + subGridSize - 1;
                     for (int k = rowLowerBound; k <= rowUpperBound; k++) {
                         for (int l = columnLowerBound; l <= columnUpperBound; l++) {
-                            labels.get(k).get(l).setBackground(theme.markedCellColor);
-                            if (labels.get(k).get(l).isPredefined())
-                                labels.get(k).get(l).setBackground(theme.predefinedCellMarkedColor);
-                            labels.get(k).get(l).setForeground(theme.primaryTextColor);
+                            cells.get(k).get(l).setBackground(theme.markedCellColor);
+                            if (cells.get(k).get(l).isPredefined())
+                                cells.get(k).get(l).setBackground(theme.predefinedCellMarkedColor);
+                            cells.get(k).get(l).setForeground(theme.primaryTextColor);
                         }
                     }
                 }
@@ -414,10 +405,10 @@ public final class GridPanel extends JPanel {
                 clicked.setForeground(theme.primaryTextColor);
 
                 // Reset the value of an invalid cell
-                if (invalid != null) invalid.setText("");
+                if (invalid != null) invalid.setCellText("");
                 if (!conflicts.isEmpty()) {
                     for (Cell c : conflicts) {
-                        labels.get(c.row()).get(c.column()).getLabel().setForeground(theme.primaryTextColor);
+                        cells.get(c.row()).get(c.column()).setCellTextColor(theme.primaryTextColor);
                     }
                 }
             }
@@ -438,7 +429,7 @@ public final class GridPanel extends JPanel {
      * @param column the cell-column
      */
     public void setClicked(int row, int column) {
-        CellPanel newClicked = labels.get(row).get(column);
+        CellPanel newClicked = cells.get(row).get(column);
         handleClickEvent(newClicked);
     }
 
@@ -451,26 +442,26 @@ public final class GridPanel extends JPanel {
      */
     public void setValue(int row, int col, int value) {
         if (gamemode == GameMode.KILLER_SOLVE) {
-            labels.get(row).get(col).setKillerText(Integer.toString(value));
+            cells.get(row).get(col).setCellText(Integer.toString(value));
         } else {
-            labels.get(row).get(col).setText(Integer.toString(value));
+            cells.get(row).get(col).setCellText(Integer.toString(value));
         }
         switch (gamemode) {
             case SUDOKU_SOLVE, KILLER_SOLVE -> {
-                labels.get(row).get(col).setForeground(theme.primaryTextColor);
-                if (inputs.contains(labels.get(row).get(col)))
-                    labels.get(row).get(col).setBackground(theme.predefinedCellColor);
+                cells.get(row).get(col).setForeground(theme.primaryTextColor);
+                if (inputs.contains(cells.get(row).get(col)))
+                    cells.get(row).get(col).setBackground(theme.predefinedCellColor);
             }
             case STR8TS_SOLVE -> {
                 if (colors.get(row).get(col) == BLACK) {
-                    labels.get(row).get(col).setForeground(theme.secondaryTextColor);
+                    cells.get(row).get(col).setForeground(theme.secondaryTextColor);
                 } else {
-                    labels.get(row).get(col).setForeground(theme.primaryTextColor);
-                    if (inputs.contains(labels.get(row).get(col)))
-                        labels.get(row).get(col).setBackground(theme.predefinedCellColor);
+                    cells.get(row).get(col).setForeground(theme.primaryTextColor);
+                    if (inputs.contains(cells.get(row).get(col)))
+                        cells.get(row).get(col).setBackground(theme.predefinedCellColor);
                 }
             }
-            default -> labels.get(row).get(col).setForeground(theme.primaryTextColor);
+            default -> cells.get(row).get(col).setForeground(theme.primaryTextColor);
         }
     }
 
@@ -481,7 +472,7 @@ public final class GridPanel extends JPanel {
         if (gamemode == GameMode.SUDOKU_SOLVE) {
             inputs.remove(clicked);
         }
-        clicked.setText("");
+        clicked.setCellText("");
     }
 
     /**
@@ -493,48 +484,37 @@ public final class GridPanel extends JPanel {
         switch (gamemode) {
             case SUDOKU_SOLVE -> {
                 clicked.setForeground(theme.primaryTextColor);
-                clicked.getLabel().setForeground(theme.primaryTextColor);
+                clicked.setCellTextColor(theme.primaryTextColor);
                 if (!conflicts.isEmpty()) {
                     for (Cell c : conflicts) {
-                        labels.get(c.row()).get(c.column()).getLabel().setForeground(theme.primaryTextColor);
+                        cells.get(c.row()).get(c.column()).setCellTextColor(theme.primaryTextColor);
                     }
                 }
                 conflicts = new HashSet<>();
                 inputs.add(clicked);
-                clicked.setText(input);
+                clicked.setCellText(input);
             }
             case STR8TS_SOLVE -> {
-                if (colors.get(clicked.getRow()).get(clicked.getCol()) == BLACK) {
+                if (colors.get(clicked.getRow()).get(clicked.getColumn()) == BLACK) {
                     clicked.setForeground(theme.secondaryTextColor);
-                    clicked.getLabel().setForeground(theme.secondaryTextColor);
+                    clicked.setCellTextColor(theme.secondaryTextColor);
                 } else {
                     clicked.setForeground(theme.primaryTextColor);
-                    clicked.getLabel().setForeground(theme.primaryTextColor);
+                    clicked.setCellTextColor(theme.primaryTextColor);
                 }
                 inputs.add(clicked);
-                clicked.setText(input);
-            }
-            case KILLER_SOLVE -> {
-                clicked.setForeground(theme.primaryTextColor);
-                clicked.getLabel().setForeground(theme.primaryTextColor);
-                if (!conflicts.isEmpty()) {
-                    for (Cell c : conflicts) {
-                        labels.get(c.row()).get(c.column()).getLabel().setForeground(theme.primaryTextColor);
-                    }
-                }
-                conflicts = new HashSet<>();
-                clicked.setKillerText(input);
+                clicked.setCellText(input);
             }
             default -> {
                 clicked.setForeground(theme.primaryTextColor);
-                clicked.getLabel().setForeground(theme.primaryTextColor);
+                clicked.setCellTextColor(theme.primaryTextColor);
                 if (!conflicts.isEmpty()) {
                     for (Cell c : conflicts) {
-                        labels.get(c.row()).get(c.column()).getLabel().setForeground(theme.primaryTextColor);
+                        cells.get(c.row()).get(c.column()).setCellTextColor(theme.primaryTextColor);
                     }
                 }
                 conflicts = new HashSet<>();
-                clicked.setText(input);
+                clicked.setCellText(input);
             }
         }
         invalid = null;
@@ -546,14 +526,10 @@ public final class GridPanel extends JPanel {
      * @param input the input value from type String
      */
     public void invalidInput(String input) {
-        if (gamemode == GameMode.KILLER_SOLVE) {
-            clicked.setKillerText(input);
-        } else {
-            clicked.setText(input);
-        }
+        clicked.setCellText(input);
         clicked.setForeground(theme.errorTextColor);
-        clicked.getLabel().setForeground(theme.errorTextColor);
-        invalid = clicked.getLabel();
+        clicked.setCellTextColor(theme.errorTextColor);
+        invalid = clicked;
     }
 
     /**
@@ -563,9 +539,9 @@ public final class GridPanel extends JPanel {
      * @param col the cell-column
      */
     public void invalidInput(int row, int col) {
-        labels.get(row).get(col).setForeground(theme.errorTextColor);
-        labels.get(row).get(col).getLabel().setForeground(theme.errorTextColor);
-        invalid = labels.get(row).get(col).getLabel();
+        cells.get(row).get(col).setForeground(theme.errorTextColor);
+        cells.get(row).get(col).setCellTextColor(theme.errorTextColor);
+        invalid = cells.get(row).get(col);
     }
 
     /**
@@ -574,7 +550,7 @@ public final class GridPanel extends JPanel {
      * @param c the invalid cell
      */
     public void highlightConflicts(Cell c) {
-        labels.get(c.row()).get(c.column()).getLabel().setForeground(Color.red);
+        cells.get(c.row()).get(c.column()).setCellTextColor(theme.errorTextColor);
         conflicts.add(c);
     }
 
@@ -582,26 +558,21 @@ public final class GridPanel extends JPanel {
      * @return the grid size
      */
     public int getGridSize() {
-        return size;
+        return subGridSize;
     }
 
     /**
      * Marks a specific cell as predifined in order to cannot be changed and has another color
      */
     public void setPredefined(int row, int col, int value) {
-        labels.get(row).get(col).setText(Integer.toString(value));
-        labels.get(row).get(col).setPredefined(true);
-        labels.get(row).get(col).setBackground(theme.predefinedCellColor);
-        labels.get(row).get(col).setForeground(theme.primaryTextColor);
+        cells.get(row).get(col).setPredefined(value);
     }
 
     /**
-     * Sets a note to the clicked cell
+     * Adds or removes a note to/from the clicked cell.
      */
-    public void setNote(int value) {
-        clicked.setNote(value);
-        repaint();
-        revalidate();
+    public void addOrRemoveNote(int value) {
+        clicked.addOrRemoveNote(value);
     }
 
     /**
@@ -609,21 +580,21 @@ public final class GridPanel extends JPanel {
      */
     public Str8ts.Color changeAndGetColor() {
         int row = clicked.getRow();
-        int col = clicked.getCol();
+        int col = clicked.getColumn();
         Str8ts.Color color = colors.get(row).get(col);
         if (color == null) {
             return WHITE;
         }
         return switch (color) {
             case WHITE -> {
-                labels.get(row).get(col).setBackground(theme.otherCellColor);
-                labels.get(row).get(col).getLabel().setForeground(theme.secondaryTextColor);
+                cells.get(row).get(col).setBackground(theme.otherCellColor);
+                cells.get(row).get(col).setCellTextColor(theme.secondaryTextColor);
                 colors.get(row).set(col, BLACK);
                 yield BLACK;
             }
             case BLACK -> {
-                labels.get(row).get(col).setBackground(theme.normalCellColor);
-                labels.get(row).get(col).getLabel().setForeground(theme.primaryTextColor);
+                cells.get(row).get(col).setBackground(theme.normalCellColor);
+                cells.get(row).get(col).setCellTextColor(theme.primaryTextColor);
                 colors.get(row).set(col, WHITE);
                 yield WHITE;
             }
@@ -637,7 +608,6 @@ public final class GridPanel extends JPanel {
      * @param sum    the sum of the group
      */
     public void addGroup(ArrayList<CellPanel> labels, int sum) {
-        boolean condition = true;
         groups.add(labels);
         for (CellPanel cellPanel : labels) {
             ArrayList<Boolean> neighbors = checkForNeighbors(cellPanel, labels);
@@ -651,13 +621,8 @@ public final class GridPanel extends JPanel {
                 }
             }
             cellPanel.setBorder(new MatteBorder(top, left, bottom, right, theme.clickedCellColor));
-            if (condition) {
-                JLabel sumLabel = new JLabel(String.valueOf(sum));
-                sumLabel.setForeground(theme.primaryTextColor);
-                cellPanel.add(sumLabel, BorderLayout.NORTH);
-                condition = false;
-            }
         }
+        if (labels.size() > 0) labels.get(0).addKillerSumLabel(sum);
     }
 
     /**
@@ -677,8 +642,7 @@ public final class GridPanel extends JPanel {
         if (groupIndex != -1) {
             for (CellPanel cellPanel : groups.get(groupIndex)) {
                 cellPanel.setBorder(null);
-                cellPanel.removeAll();
-                cellPanel.setText(cellPanel.getLabelValue());
+                cellPanel.removeKillerSumLabel();
             }
             return groups.remove(groupIndex);
         }
@@ -694,18 +658,18 @@ public final class GridPanel extends JPanel {
      */
     private ArrayList<Boolean> checkForNeighbors(CellPanel label, ArrayList<CellPanel> labels) {
         int row = label.getRow();
-        int col = label.getCol();
+        int col = label.getColumn();
         ArrayList<Boolean> result = new ArrayList<>();
         for (int i = 0; i < 4; i++) {
             result.add(false);
         }
         for (CellPanel cellPanel : labels) {
             int rowdif = row - cellPanel.getRow();
-            int coldif = col - cellPanel.getCol();
+            int coldif = col - cellPanel.getColumn();
             if (row == cellPanel.getRow() && coldif == 1) result.set(3, true);
             if (row == cellPanel.getRow() && coldif == -1) result.set(1, true);
-            if (col == cellPanel.getCol() && rowdif == 1) result.set(0, true);
-            if (col == cellPanel.getCol() && rowdif == -1) result.set(2, true);
+            if (col == cellPanel.getColumn() && rowdif == 1) result.set(0, true);
+            if (col == cellPanel.getColumn() && rowdif == -1) result.set(2, true);
         }
         return result;
     }

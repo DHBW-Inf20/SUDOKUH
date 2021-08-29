@@ -44,7 +44,7 @@ public final class SolveKillerPresenter extends SolvePresenter {
             case NUMBER -> {
                 if (!clickedCell.isPredefined()) {
                     int number = button.getValue();
-                    final SetCellResult result = sudoku.setCell(clickedCell.getRow(), clickedCell.getCol(), number);
+                    final SetCellResult result = sudoku.setCell(clickedCell.getRow(), clickedCell.getColumn(), number);
                     if (result == SetCellResult.INVALID_VALUE) {
                         throw new IllegalStateException("Tried to set a cell to a number that was out of the valid range: " + number);
                     } else if (result.isSuccess()) {
@@ -61,7 +61,7 @@ public final class SolveKillerPresenter extends SolvePresenter {
             }
             case DELETE -> {
                 if (!clickedCell.isPredefined()) {
-                    sudoku.resetCell(clickedCell.getRow(), clickedCell.getCol());
+                    sudoku.resetCell(clickedCell.getRow(), clickedCell.getColumn());
                     inGameViewScaffold.resetCell();
                 }
             }
@@ -109,9 +109,9 @@ public final class SolveKillerPresenter extends SolvePresenter {
                     ArrayList<CellPanel> group = inGameViewScaffold.removeGroup(clickedCell);
                     if (group != null) {
                         if (!group.isEmpty())
-                            ((Killer) sudoku).removeGroup(((Killer) sudoku).getGroupForCell(group.get(0).getRow(), group.get(0).getCol()));
+                            ((Killer) sudoku).removeGroup(((Killer) sudoku).getGroupForCell(group.get(0).getRow(), group.get(0).getColumn()));
                         for (CellPanel cellPanel : group) {
-                            sudoku.resetCell(cellPanel.getRow(), cellPanel.getCol());
+                            sudoku.resetCell(cellPanel.getRow(), cellPanel.getColumn());
                         }
                     }
                 }
@@ -123,7 +123,7 @@ public final class SolveKillerPresenter extends SolvePresenter {
                         ArrayList<CellPanel> group = inGameViewScaffold.removeGroup(clickedCell);
                         if (group != null) {
                             if (!group.isEmpty())
-                                ((Killer) sudoku).removeGroup(((Killer) sudoku).getGroupForCell(group.get(0).getRow(), group.get(0).getCol()));
+                                ((Killer) sudoku).removeGroup(((Killer) sudoku).getGroupForCell(group.get(0).getRow(), group.get(0).getColumn()));
                             inGameViewScaffold.startEditGroupMode(group);
                         } else {
                             editGroup = false;
@@ -155,7 +155,7 @@ public final class SolveKillerPresenter extends SolvePresenter {
             if (sum == -1) {
                 inGameViewScaffold.setInfoText(FAULTY_SUM, Color.red);
             } else {
-                final Set<Cell> cells = group.stream().map(it -> new Cell(it.getRow(), it.getCol())).collect(toSet());
+                final Set<Cell> cells = group.stream().map(it -> new Cell(it.getRow(), it.getColumn())).collect(toSet());
                 final GroupsUpdateResult result = ((Killer) sudoku).putCellsIntoNewGroup(cells, sum);
 
                 if (result.isSuccess()) {

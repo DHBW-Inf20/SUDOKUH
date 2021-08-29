@@ -192,19 +192,19 @@ public final class MainMenu extends JFrame {
     /**
      * Opens new Game
      *
-     * @param gridSize of the new game or solver
+     * @param subGridSize of the new game or solver
      */
-    private void startGame(int gridSize) {
+    private void startGame(int subGridSize) {
         try {
             UIManager.setLookAndFeel(new MetalLookAndFeel());
         } catch (UnsupportedLookAndFeelException e) {
             e.printStackTrace();
         }
         switch (gameMode) {
-            case SUDOKU_SOLVE -> new SolveSudokuPresenter(gridSize, theme, autoStepForwardEnabled, highlightingEnabled);
-            case SUDOKU_PLAY -> new PlayPresenter(gridSize, theme, autoStepForwardEnabled, highlightingEnabled, tipLimit);
-            case KILLER_SOLVE -> new SolveKillerPresenter(gridSize, theme, autoStepForwardEnabled, false);
-            case STR8TS_SOLVE -> new SolveStr8tsPresenter(gridSize, theme, autoStepForwardEnabled, highlightingEnabled);
+            case SUDOKU_SOLVE -> new SolveSudokuPresenter(subGridSize, theme, autoStepForwardEnabled, highlightingEnabled);
+            case SUDOKU_PLAY -> new PlayPresenter(subGridSize, theme, autoStepForwardEnabled, highlightingEnabled, tipLimit);
+            case KILLER_SOLVE -> new SolveKillerPresenter(subGridSize, theme, autoStepForwardEnabled, false);
+            case STR8TS_SOLVE -> new SolveStr8tsPresenter(subGridSize, theme, autoStepForwardEnabled, highlightingEnabled);
         }
         dispose();
     }

@@ -1,81 +1,117 @@
 package view.ingame;
 
+import view.Theme;
+
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Philipp Kremling
  */
 public final class CellPanel extends JPanel {
-    private final JLabel label;
-    private State state;
-    public enum State {
-        LABEL, PANEL
-    }
-    private boolean isPredefined = false;
-    private final int row;
-    private final int col;
-    String labelValue;
-    private ArrayList<String> notes;
-    private final Color primaryTextColor;
-    int size;
 
-    public CellPanel(JLabel lab, int row, int col, int size, Color primTextColor) {
-        label = lab;
-        state = State.LABEL;
+    // mutable state
+    private boolean isPredefined = false;
+    private String cellText = null;
+    private final List<JLabel> noteLabels = new ArrayList<>();
+    private JLabel killerSumLabel = null;
+
+    private final JLabel cellTextLabel;
+    private final int row;
+    private final int column;
+    private final Theme theme;
+    private final int subGridSize;
+
+
+    public CellPanel(int row, int column, int subGridSize, Theme theme, boolean withBorder) {
+        setCellLayout();
+
         this.row = row;
-        this.col = col;
-        this.size = size;
-        notes = new ArrayList<>();
-        this.setLayout(new BorderLayout());
-        primaryTextColor = primTextColor;
+        this.column = column;
+        this.subGridSize = subGridSize;
+        this.theme = theme;
+
+        cellTextLabel = new JLabel(" ");
+        cellTextLabel.setFont(new Font(getFont().getName(), Font.BOLD, 25));
+        cellTextLabel.setBackground(theme.normalCellColor);
+        cellTextLabel.setForeground(theme.primaryTextColor);
+        cellTextLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        cellTextLabel.setVerticalAlignment(SwingConstants.CENTER);
+
+        setOpaque(true);
+        setBackground(theme.normalCellColor);
+        setForeground(theme.primaryTextColor);
+
+        if (withBorder) {
+            setBorder(new LineBorder(theme.cellBorderColor, 1));
+        }
+    }
+
+
+    private void setNoteLayout() {
+        setLayout(new GridLayout(subGridSize, subGridSize));
+    }
+
+    private void setCellLayout() {
+        setLayout(new BorderLayout());
+    }
+
+    private void removeNotes() {
+        for (JLabel noteLabel : noteLabels) {
+            remove(noteLabel);
+        }
+        noteLabels.clear();
     }
 
     /**
-     * Sets a note to the object
+     * Adds or removes a note to/from the cell.
      *
-     * @param val value of the note
+     * @param value value of the note
      */
-    public void setNote(int val) {
-        String value = String.valueOf(val);
-        this.setNoteMode();
-        if (this.labelValue != null) {
-            this.removeAll();
-            this.labelValue = null;
-        }
-        if (notes.contains(value)) {
-            Component[] cList = this.getComponents();
-            for(Component c : cList) {
-                if(c.getName().equals(value)) {
-                    this.remove(c);
-                    break;
-                }
-            }
-            notes.remove(value);
-            this.repaint();
-            this.revalidate();
-            return;
-        }
-        if (state == State.LABEL) setNoteMode();
+    public void addOrRemoveNote(int value) {
+        if (isPredefined) return;
 
-        JLabel label = new JLabel(value);
-        label.setName(value);
-        label.setForeground(primaryTextColor);
-        if (notes.isEmpty()) {
-            this.add(label, 0);
-            notes.add(value);
-            return;
+        if (cellText != null) {
+            removeNotes();
+            cellText = null;
         }
-        for (int i = 0; i < notes.size(); i++) {
-            if (Integer.parseInt(notes.get(i)) > Integer.parseInt(value)) {
-                this.add(label, i);
-                notes.add(i, value);
-                return;
+
+        String stringValue = Integer.toString(value);
+        setNoteLayout();
+
+        int index = -1;
+        boolean addNew = true;
+        boolean addLast = true;
+        for (JLabel noteLabel : noteLabels) {
+            index++;
+            String name = noteLabel.getName();
+
+            if (name.equals(stringValue)) {
+                remove(noteLabel);
+                noteLabels.remove(index);
+                addNew = false;
+                break;
+            }
+
+            if (Integer.parseInt(name) > value) {
+                addLast = false;
+                break;
             }
         }
-        this.add(label, -1);
-        notes.add(notes.size() - 1, value);
+        if (addNew) {
+            JLabel label = new JLabel(stringValue);
+            label.setName(stringValue);
+            label.setForeground(theme.primaryTextColor);
+            add(label, addLast ? -1 : index);
+            if (addLast) noteLabels.add(label);
+            else noteLabels.add(index, label);
+        }
+
+        repaint();
+        revalidate();
     }
 
     public boolean isPredefined() {
@@ -83,12 +119,13 @@ public final class CellPanel extends JPanel {
     }
 
     /**
-     * Marks the cell as predefined or not
-     *
-     * @param isPredefined wether the cell is predefined (true) or not (false)
+     * Marks the cell as predefined with {@code value}.
      */
-    public void setPredefined(boolean isPredefined) {
-        this.isPredefined = isPredefined;
+    public void setPredefined(int value) {
+        isPredefined = true;
+        setBackground(theme.predefinedCellColor);
+        setForeground(theme.primaryTextColor);
+        setCellText(Integer.toString(value));
     }
 
     /**
@@ -101,69 +138,48 @@ public final class CellPanel extends JPanel {
     /**
      * @return the column of the cell
      */
-    public int getCol() {
-        return col;
+    public int getColumn() {
+        return column;
     }
 
-    /**
-     * @return the current set label of the cell
-     */
-    public JLabel getLabel() {
-        return label;
+    public void setCellTextColor(Color color) {
+        cellTextLabel.setForeground(color);
     }
 
     /**
      * @return the current value of the label of the cell
      */
-    public String getLabelValue() {
-        return labelValue;
+    public String getCellText() {
+        return cellText;
     }
 
     /**
-     * Makes the cell ready for normal inputs
-     */
-    public void setNormalMode() {
-        this.setLayout(new BorderLayout());
-        state = State.LABEL;
-    }
-
-    /**
-     * Makes the cell ready for notes
-     */
-    public void setNoteMode() {
-        this.setLayout(new GridLayout(size, size));
-        state = State.PANEL;
-    }
-
-    /**
-     * Sets a text in the object
+     * Sets a text in the cell
      *
      * @param value the value to be set
      */
-    public void setText(String value) {
-        this.setNormalMode();
-        this.removeAll();
-        this.repaint();
-        this.revalidate();
-        notes = new ArrayList<>();
-        this.add(label,BorderLayout.CENTER);
-        label.setText(value);
-        this.labelValue = value;
-        this.repaint();
-        this.revalidate();
+    public void setCellText(String value) {
+        removeNotes();
+        setCellLayout();
+        add(cellTextLabel, BorderLayout.CENTER);
+        cellTextLabel.setText(value);
+        cellText = value;
+        repaint();
+        revalidate();
     }
 
-    /**
-     * Sets a text in the object for gamemode Killer
-     *
-     * @param value the value to be set
-     */
-    public void setKillerText(String value) {
-        this.setNormalMode();
-        this.add(label,BorderLayout.CENTER);
-        label.setText(value);
-        this.labelValue = value;
-        this.repaint();
-        this.revalidate();
+    public void addKillerSumLabel(int sum) {
+        killerSumLabel = new JLabel(Integer.toString(sum));
+        killerSumLabel.setForeground(theme.primaryTextColor);
+        add(killerSumLabel, BorderLayout.NORTH);
+    }
+
+    public void removeKillerSumLabel() {
+        if (killerSumLabel != null) {
+            remove(killerSumLabel);
+            repaint();
+            revalidate();
+            killerSumLabel = null;
+        }
     }
 }

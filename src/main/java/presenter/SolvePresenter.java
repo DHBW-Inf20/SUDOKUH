@@ -28,20 +28,20 @@ public abstract class SolvePresenter implements Presenter {
 
     protected boolean autoStepForward;
 
-    public SolvePresenter(int gridSize, GameMode gameMode, Theme theme, boolean highlighting, boolean autoStepForward) {
+    public SolvePresenter(int subGridSize, GameMode gameMode, Theme theme, boolean highlighting, boolean autoStepForward) {
         this.autoStepForward = autoStepForward;
         switch (gameMode) {
             case STR8TS_SOLVE -> {
                 sudoku = new Str8ts();
-                inGameViewScaffold = new InGameViewScaffold(gridSize, this::handleButtonListenerEvent, SOLVE_STR8TS, theme, highlighting, autoStepForward, gameMode);
+                inGameViewScaffold = new InGameViewScaffold(subGridSize, this::handleButtonListenerEvent, SOLVE_STR8TS, theme, highlighting, autoStepForward, gameMode);
             }
             case KILLER_SOLVE -> {
                 sudoku = new Killer();
-                inGameViewScaffold = new InGameViewScaffold(gridSize, this::handleButtonListenerEvent, SOLVE_KILLER, theme, highlighting, autoStepForward, gameMode);
+                inGameViewScaffold = new InGameViewScaffold(subGridSize, this::handleButtonListenerEvent, SOLVE_KILLER, theme, highlighting, autoStepForward, gameMode);
             }
             default -> {
-                sudoku = new Sudoku(gridSize);
-                inGameViewScaffold = new InGameViewScaffold(gridSize, this::handleButtonListenerEvent, SOLVE_SUDOKU, theme, highlighting, autoStepForward, gameMode);
+                sudoku = new Sudoku(subGridSize);
+                inGameViewScaffold = new InGameViewScaffold(subGridSize, this::handleButtonListenerEvent, SOLVE_SUDOKU, theme, highlighting, autoStepForward, gameMode);
             }
         }
         inGameViewScaffold.addKeyListener(new KeyInputListener(this, autoStepForward));
@@ -65,7 +65,7 @@ public abstract class SolvePresenter implements Presenter {
             case NUMBER -> {
                 if (!clickedCell.isPredefined()) {
                     int number = button.getValue();
-                    final SetCellResult result = sudoku.setCell(clickedCell.getRow(), clickedCell.getCol(), number);
+                    final SetCellResult result = sudoku.setCell(clickedCell.getRow(), clickedCell.getColumn(), number);
                     if (result == SetCellResult.INVALID_VALUE) {
                         throw new IllegalStateException("Tried to set a cell to a number that was out of the valid range: " + number);
                     } else if (result.isSuccess()) {
@@ -82,7 +82,7 @@ public abstract class SolvePresenter implements Presenter {
             }
             case DELETE -> {
                 if (!clickedCell.isPredefined()) {
-                    sudoku.resetCell(clickedCell.getRow(), clickedCell.getCol());
+                    sudoku.resetCell(clickedCell.getRow(), clickedCell.getColumn());
                     inGameViewScaffold.resetCell();
                 }
             }

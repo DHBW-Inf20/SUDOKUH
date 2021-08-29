@@ -43,7 +43,7 @@ public final class SolveStr8tsPresenter extends SolvePresenter {
             case NUMBER -> {
                 if (!clickedCell.isPredefined()) {
                     int number = button.getValue();
-                    final SetCellResult result = sudoku.setCell(clickedCell.getRow(), clickedCell.getCol(), number);
+                    final SetCellResult result = sudoku.setCell(clickedCell.getRow(), clickedCell.getColumn(), number);
                     if (result == SetCellResult.INVALID_VALUE) {
                         throw new IllegalStateException("Tried to set a cell to a number that was out of the valid range: " + number);
                     } else if (result.isSuccess()) {
@@ -60,7 +60,7 @@ public final class SolveStr8tsPresenter extends SolvePresenter {
             }
             case DELETE -> {
                 if (!clickedCell.isPredefined()) {
-                    sudoku.resetCell(clickedCell.getRow(), clickedCell.getCol());
+                    sudoku.resetCell(clickedCell.getRow(), clickedCell.getColumn());
                     inGameViewScaffold.resetCell();
                 }
             }
@@ -89,7 +89,7 @@ public final class SolveStr8tsPresenter extends SolvePresenter {
             }
             case CHANGE_COLOR -> {
                 Str8ts.Color color = inGameViewScaffold.changeAndGetColor();
-                ((Str8ts) sudoku).setColor(clickedCell.getRow(), clickedCell.getCol(), color);
+                ((Str8ts) sudoku).setColor(clickedCell.getRow(), clickedCell.getColumn(), color);
             }
         }
     }
