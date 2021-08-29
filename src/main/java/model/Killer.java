@@ -124,12 +124,12 @@ public final class Killer extends AbstractSudoku {
     }
 
 
-    private GroupsUpdateResult newGroupsUpdateFailure(final FailureReason failureReason) {
-        return new GroupsUpdateResult(false, failureReason, getGroups());
+    private static int getMinSumForGroupWithNCells(final int n) {
+        return (n * (n + 1)) / 2; // Gauss' method
     }
 
-    private GroupsUpdateResult newGroupsUpdateSuccess() {
-        return new GroupsUpdateResult(true, null, getGroups());
+    private static int getMaxSumForGroupWithNCells(final int n) {
+        return Group.MAX_SUM - getMinSumForGroupWithNCells(GRID_SIZE - n);
     }
 
     private FailureReason reasonWhyGroupIsInvalid(final Group group) {
@@ -140,14 +140,15 @@ public final class Killer extends AbstractSudoku {
 
     private FailureReason reasonWhyGroupIsInvalidWithoutCells(final Group group, final Set<Cell> withoutCells) {
 
-        if (group.sum < 1 || group.sum > Group.MAX_SUM) {
-            return FailureReason.GROUP_SUM_NOT_VALID;
-        }
-
         final Set<Cell> cells = group.cells.stream().filter(not(withoutCells::contains)).collect(toSet());
 
         if (cells.size() > Group.MAX_CELLS) {
             return FailureReason.GROUP_HAS_TOO_MANY_CELLS;
+        }
+
+        if (group.sum < getMinSumForGroupWithNCells(cells.size())
+                || group.sum > getMaxSumForGroupWithNCells(cells.size())) {
+            return FailureReason.GROUP_SUM_NOT_VALID;
         }
 
         if (!allCellsAreConnected(cells)) {
@@ -183,11 +184,11 @@ public final class Killer extends AbstractSudoku {
     }
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-    private boolean allCellsAreConnected(final Set<Cell> cells) {
+    private static boolean allCellsAreConnected(final Set<Cell> cells) {
         return allCellsAreConnectedWithoutCells(cells, emptySet());
     }
 
-    private boolean allCellsAreConnectedWithoutCells(Set<Cell> cells, final Set<Cell> withoutCells) {
+    private static boolean allCellsAreConnectedWithoutCells(Set<Cell> cells, final Set<Cell> withoutCells) {
 
         cells = cells.stream().filter(not(withoutCells::contains)).collect(toSet());
 
@@ -202,8 +203,8 @@ public final class Killer extends AbstractSudoku {
         return connectedCells.size() == cellCount;
     }
 
-    private void findConnectedCellsWithDepthFirstSearch(final Cell cell, final Set<Cell> allCells,
-                                                        final HashSet<Cell> connectedCells) {
+    private static void findConnectedCellsWithDepthFirstSearch(final Cell cell, final Set<Cell> allCells,
+                                                               final HashSet<Cell> connectedCells) {
         connectedCells.add(cell);
 
         for (int i = -2; i < 2; i++) {
@@ -230,6 +231,14 @@ public final class Killer extends AbstractSudoku {
      */
     public Set<Group> getGroups() {
         return copyOf(groups);
+    }
+
+    private GroupsUpdateResult newGroupsUpdateFailure(final FailureReason failureReason) {
+        return new GroupsUpdateResult(false, failureReason, getGroups());
+    }
+
+    private GroupsUpdateResult newGroupsUpdateSuccess() {
+        return new GroupsUpdateResult(true, null, getGroups());
     }
 
     /**
@@ -406,9 +415,10 @@ public final class Killer extends AbstractSudoku {
      * cells, every cell is either {@link #EMPTY_CELL} or in the valid range from {@code 1} to {@link #gridSize}
      * (both inclusive), every cell is part of exactly one {@link Group group}, no group is empty, all groups have at
      * most {@link Group#MAX_CELLS Group#MAX_CELLS} cells, the {@link Group#sum sum} of each group is in the valid range
-     * from {@code 1} to {@link Group#MAX_SUM Group#MAX_SUM} (both inclusive), all cells in a group are connected, the
-     * total sum of all group sums is the same as {@link #TOTAL_SUM}, there are at least {@link #MIN_GROUP_AMOUNT}
-     * groups and there are no {@link #getConflictingCells(int, int, boolean) conflicts}.
+     * from {@link #getMinSumForGroupWithNCells(int) getMinSumForGroupWithNCells()} to
+     * {@link #getMaxSumForGroupWithNCells(int) getMaxSumForGroupWithNCells()} (both inclusive), all cells in a group
+     * are connected, the total sum of all group sums is the same as {@link #TOTAL_SUM}, there are at least
+     * {@link #MIN_GROUP_AMOUNT} groups and there are no {@link #getConflictingCells(int, int, boolean) conflicts}.
      */
     @Override
     protected boolean isInvalid() {
@@ -424,10 +434,10 @@ public final class Killer extends AbstractSudoku {
         // register occurrences and calculate totalSum
         for (final Group group : groups) {
 
-            if (group.sum < 1
-                    || group.sum > Group.MAX_SUM // sum is not in valid range
-                    || group.cells.isEmpty() // group is empty
+            if (group.cells.isEmpty() // group is empty
                     || group.cells.size() > Group.MAX_CELLS // too many cells
+                    || group.sum < getMinSumForGroupWithNCells(group.cells.size())
+                    || group.sum > getMaxSumForGroupWithNCells(group.cells.size()) // sum is not in valid range
                     || !allCellsAreConnected(group.cells)) { // cells are not connected
                 return true;
             }

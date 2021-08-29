@@ -14,9 +14,7 @@ public final class GroupPopUpWindow {
         String selectedValue = JOptionPane.showInputDialog(WHICH_SUM_DOES_THIS_GROUP_HAVE);
         try {
             sum = Integer.parseInt(selectedValue);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        } catch (Exception ignored) {}
     }
 
     /**
