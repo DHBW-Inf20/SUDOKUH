@@ -5,7 +5,8 @@ import presenter.SolveKillerPresenter;
 import presenter.SolveStr8tsPresenter;
 import presenter.SolveSudokuPresenter;
 import util.GameMode;
-import util.PreferencesService;
+import util.UserPreferencesService;
+import util.UserPreferences;
 import view.Theme;
 
 import javax.imageio.ImageIO;
@@ -32,52 +33,56 @@ public final class MainMenu extends JFrame {
     /**
      * CardLayout to switch between different JPanels
      */
-    final CardLayout cardLayout = new CardLayout();
+    private final CardLayout cardLayout = new CardLayout();
 
     /**
      * Different JPanels to represent the separate menus
      */
-    final JPanel cardsPanel = new JPanel(cardLayout);
-    final JPanel mainMenuPanel = new JPanel();
-    final JPanel settingsPanel = new JPanel();
-    final JPanel gameSettingsPanel = new JPanel();
+    private final JPanel cardsPanel = new JPanel(cardLayout);
+    private final JPanel mainMenuPanel = new JPanel();
+    private final JPanel settingsPanel = new JPanel();
+    private final JPanel gameSettingsPanel = new JPanel();
 
     /**
      * Text for the tipLabel
      */
-    final JLabel tipText = new JLabel(TIP_LIMIT);
+    private final JLabel tipText = new JLabel(TIP_LIMIT);
 
     /**
      * Sliders to setup game settings
      */
-    final TipChooseSlider tipSlider;
-    final SizeChooseSlider sizeSlider = new SizeChooseSlider();
-
-    /**
-     * Theme of menu
-     */
-    public Theme theme = LIGHT;
-    boolean darkModeEnabled = false;
+    private final TipChooseSlider tipSlider;
+    private final SizeChooseSlider sizeSlider = new SizeChooseSlider();
 
     /**
      * Saves gameMode to open correct menu after clicking Button
      */
-    GameMode gameMode = SUDOKU_SOLVE;
+    private GameMode gameMode = SUDOKU_SOLVE;
+
+    /**
+     * Theme of menu
+     */
+    private Theme theme;
 
     /**
      * Gamesettings
      */
-    public boolean autoStepForwardEnabled = true;
-    public boolean highlightingEnabled = true;
-    public int tipLimit = 3;
+    private boolean autoStepForwardEnabled;
+    private boolean highlightingEnabled;
+    private int tipLimit;
 
-    /**
-     * Preferences to save user settings
-     */
-    PreferencesService preferencesService = new PreferencesService();
 
     public MainMenu() {
         super(SUDOKUH + " " + MAIN_MENU);
+
+        // Load user preferences
+        UserPreferences preferences = UserPreferencesService.readUserPreferences();
+        theme = preferences.theme();
+        autoStepForwardEnabled = preferences.autoStepForwardEnabled();
+        highlightingEnabled = preferences.highlightingEnabled();
+        tipLimit = preferences.tipLimit();
+        tipSlider = new TipChooseSlider(tipLimit);
+
 
         setSize(new Dimension(350, 660));
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -91,10 +96,6 @@ public final class MainMenu extends JFrame {
             e.printStackTrace();
         }
 
-        //Load user settings
-        preferencesService.readUserPreferences(this);
-        if (theme == DARK) darkModeEnabled = true;
-        tipSlider = new TipChooseSlider(tipLimit);
 
         // Main Menu Panel
         mainMenuPanel.setLayout(null);
@@ -159,13 +160,12 @@ public final class MainMenu extends JFrame {
                 case 3 -> tipLimit = 10;
                 case 4 -> tipLimit = 20;
             }
+            // Saves settings to preferences after backButton is pressed
+            UserPreferencesService.writeUserPreferences(theme, autoStepForwardEnabled, highlightingEnabled, tipLimit);
             cardLayout.first(cardsPanel);
-            //Saves settings to preferences after backButton is pressed
-            preferencesService.writeUserPreferences(theme, autoStepForwardEnabled, highlightingEnabled, tipLimit);
         });
-        createToggleButtonAndAddToSettingsPanel(DARK_MODE, darkModeEnabled, 200, () -> {
-            darkModeEnabled = !darkModeEnabled;
-            theme = darkModeEnabled ? DARK : LIGHT;
+        createToggleButtonAndAddToSettingsPanel(DARK_MODE, theme == DARK, 200, () -> {
+            theme = theme == LIGHT ? DARK : LIGHT;
             updateTheme();
         });
         createToggleButtonAndAddToSettingsPanel(AUTO_STEP, autoStepForwardEnabled, 300,
@@ -228,11 +228,11 @@ public final class MainMenu extends JFrame {
     /**
      * adds button to the Panel
      *
-     * @param panel panel on witch the button should be added
-     * @param text text of the button
+     * @param panel    panel on witch the button should be added
+     * @param text     text of the button
      * @param x        coordinates
      * @param y        coordinates
-     * @param width width of the button
+     * @param width    width of the button
      * @param listener for inputs
      */
     private void createButtonAndAddToPanel(JPanel panel, String text, int x, int y, int width, Runnable listener) {
@@ -245,8 +245,8 @@ public final class MainMenu extends JFrame {
     /**
      * adds toggle button to settings menu
      *
-     * @param text text of ToggleButton
-     * @param toggled attribute to save toggled status
+     * @param text     text of ToggleButton
+     * @param toggled  attribute to save toggled status
      * @param y        coordinates
      * @param listener for inputs
      */
