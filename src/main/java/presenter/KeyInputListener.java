@@ -22,7 +22,10 @@ public final class KeyInputListener implements KeyListener {
         autoStep = autoStepForward;
     }
 
-
+    /**
+     * Handles key inputs
+     * @param e KeyEvent of pressed Key
+     */
     @Override
     public void keyPressed(KeyEvent e) {
         //NUMBERS ROW
@@ -37,6 +40,7 @@ public final class KeyInputListener implements KeyListener {
             if(autoStep)autoStepForward();
             return;
         }
+        //Shortcuts for methods
         switch (e.getKeyCode()) {
             case 8, 127 -> presenter.handleButton(new CustomButton(DELETE));
             case 84 -> presenter.handleButton(new CustomButton(TIP));
@@ -49,6 +53,7 @@ public final class KeyInputListener implements KeyListener {
             case 66 -> presenter.handleButton(new CustomButton(EDIT_GROUP));
         }
 
+        //Arrow keys to navigate inside the sudoku field
         if(e.getKeyCode()>=37 && e.getKeyCode()<=40){
            CellPanel lastClicked = presenter.getInGameViewScaffold().getClicked();
             switch (e.getKeyCode()){
@@ -88,6 +93,7 @@ public final class KeyInputListener implements KeyListener {
         }
     }
 
+    //Handle auto step if active
     private void autoStepForward() {
         if(!presenter.getNoteMode()){
             CellPanel lastClicked = presenter.getInGameViewScaffold().getClicked();
@@ -102,14 +108,9 @@ public final class KeyInputListener implements KeyListener {
     /**
         Not used KeyListener Methods
      */
+    @Override
+    public void keyReleased(KeyEvent e) {}
 
     @Override
-    public void keyReleased(KeyEvent e) {
-
-    }
-
-    @Override
-    public void keyTyped(KeyEvent e) {
-
-    }
+    public void keyTyped(KeyEvent e) {}
 }

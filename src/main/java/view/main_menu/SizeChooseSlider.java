@@ -9,6 +9,9 @@ import java.util.Hashtable;
  */
 public final class SizeChooseSlider extends JSlider {
 
+    /**
+     * Labels for the JSlider
+     */
     private final Hashtable<Integer, JLabel> labels;
 
     public SizeChooseSlider() {
@@ -25,6 +28,10 @@ public final class SizeChooseSlider extends JSlider {
         setBounds(70, 325, 200, 50);
     }
 
+    /**
+     * Change label Color for darkmode
+     * @param color new Color
+     */
     public void setLabelColors(Color color) {
         labels.values().forEach(label -> label.setForeground(color));
     }

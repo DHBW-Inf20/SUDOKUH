@@ -12,6 +12,10 @@ import static util.Strings.*;
  */
 public final class PopUpWindow {
 
+    /**
+     * Window to confirm backToMenu press
+     * @param frame current open frame
+     */
     public PopUpWindow(InGameViewScaffold frame) {
         int selectedValue = JOptionPane.showOptionDialog(null, GO_TO_MAIN_MENU_ALL_PROGRESS_WILL_BE_LOST, SUDOKUH, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, new String[]{YES, NO}, NO);
 

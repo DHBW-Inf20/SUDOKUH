@@ -10,6 +10,9 @@ import java.util.Hashtable;
  */
 public final class TipChooseSlider extends JSlider {
 
+    /**
+     * Labels for the JSlider
+     */
     private final Hashtable<Integer, JLabel> labels;
 
     public TipChooseSlider() {
@@ -28,6 +31,10 @@ public final class TipChooseSlider extends JSlider {
         setBounds(100, 500, 150, 50);
     }
 
+    /**
+     * Change label Color for darkmode
+     * @param color new Color
+     */
     public void setLabelColors(Color color) {
         labels.values().forEach(label -> label.setForeground(color));
     }

@@ -18,6 +18,17 @@ import static util.Strings.*;
  */
 public final class AgainPopUpWindow {
 
+    /**
+     * Window to confirm restart press
+     * @param frame current frame to close
+     * params to restart the game with the same settings again
+     * @param gamemode
+     * @param size
+     * @param theme
+     * @param autoStepForward
+     * @param highlighting
+     * @param tipLimit
+     */
     public AgainPopUpWindow(InGameViewScaffold frame, GameMode gamemode, int size, Theme theme, boolean autoStepForward, boolean highlighting, int tipLimit) {
         int selectedValue = JOptionPane.showOptionDialog(null, RESET_ALL_PROGRESS_WILL_BE_LOST, SUDOKUH, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, new String[]{YES, NO}, NO);
 

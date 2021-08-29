@@ -28,18 +28,44 @@ import static view.Theme.LIGHT;
  */
 public final class MainMenu extends JFrame {
 
+    /**
+     * CardLayout to switch between different JPanels
+     */
     final CardLayout cardLayout = new CardLayout();
+
+    /**
+     * Different JPanels to represent the separate menus
+     */
     final JPanel cardsPanel = new JPanel(cardLayout);
     final JPanel mainMenuPanel = new JPanel();
     final JPanel settingsPanel = new JPanel();
     final JPanel gameSettingsPanel = new JPanel();
+
+    /**
+     * Text for the tipLabel
+     */
     final JLabel tipText = new JLabel(TIP_LIMIT);
+
+    /**
+     * Sliders to setup game settings
+     */
     final TipChooseSlider tipSlider = new TipChooseSlider();
     final SizeChooseSlider sizeSlider = new SizeChooseSlider();
 
+    /**
+     * Theme of menu
+     */
     Theme theme = LIGHT;
-    GameMode gameMode = SUDOKU_SOLVE;
     boolean darkModeEnabled = false;
+
+    /**
+     * Saves gameMode to open correct menu after clicking Button
+     */
+    GameMode gameMode = SUDOKU_SOLVE;
+
+    /**
+     * Gamesettings
+     */
     boolean autoStepForwardEnabled = true;
     boolean highlightingEnabled = true;
     int tipLimit = 3;
@@ -151,6 +177,10 @@ public final class MainMenu extends JFrame {
         setVisible(true);
     }
 
+    /**
+     * Opens new Game
+     * @param size of the new game or solver
+     */
     private void startGame(int size) {
         try {
             UIManager.setLookAndFeel(new MetalLookAndFeel());
@@ -166,6 +196,9 @@ public final class MainMenu extends JFrame {
         dispose();
     }
 
+    /**
+     * changes Theme
+     */
     private void updateTheme() {
         mainMenuPanel.setBackground(theme.normalCellColor);
         settingsPanel.setBackground(theme.normalCellColor);
@@ -179,6 +212,15 @@ public final class MainMenu extends JFrame {
         sizeSlider.setLabelColors(theme.primaryTextColor);
     }
 
+    /**
+     * adds button to the Panel
+     * @param panel
+     * @param text
+     * @param x coordinates
+     * @param y coordinates
+     * @param width
+     * @param listener for inputs
+     */
     private void createButtonAndAddToPanel(JPanel panel, String text, int x, int y, int width, Runnable listener) {
         JButton button = new JButton(text);
         button.setBounds(x, y, width, 50);
@@ -186,6 +228,13 @@ public final class MainMenu extends JFrame {
         panel.add(button);
     }
 
+    /**
+     * adds toggle button to settings menu
+     * @param text
+     * @param toggled
+     * @param y coordinates
+     * @param listener for inputs
+     */
     private void createToggleButtonAndAddToSettingsPanel(String text, boolean toggled, int y, Runnable listener) {
         JToggleButton button = new JToggleButton(text, toggled);
         button.setBounds(100, y, 150, 50);

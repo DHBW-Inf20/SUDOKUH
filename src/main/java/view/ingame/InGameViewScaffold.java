@@ -19,21 +19,39 @@ import static util.Strings.*;
 /**
  * @author Philipp Kremling
  * @author Fabian Heinl
+ * Scaffold for inGame UI and different gamemodes
  */
 public class InGameViewScaffold extends JFrame implements ActionListener {
 
     private final Theme theme;
 
     GameMode gamemode;
-    int size;
-    boolean autoStepForward;
-    boolean highlighting;
-    int tipLimit;
+    /**
+     * different game settings
+     */
+    private int size;
+    private boolean autoStepForward;
+    private boolean highlighting;
+    private int tipLimit;
 
-    TopInfoPanel topInfoPanel;
-    GridPanel gridPanel;
-    RightControlsPanel rightControlsPanel;
+    /**
+     * Panel for information like current playtime or warnings
+     */
+    private TopInfoPanel topInfoPanel;
 
+    /**
+     * Panel for SudokuField
+     */
+    private GridPanel gridPanel;
+
+    /**
+     * Panel for input buttons
+     */
+    private RightControlsPanel rightControlsPanel;
+
+    /**
+     * Main buttons to restart and go back to MainMenu
+     */
     JButton againButton = new JButton();
     JButton homeButton = new JButton();
 
