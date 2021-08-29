@@ -15,10 +15,16 @@ public final class TipChooseSlider extends JSlider {
      */
     private final Hashtable<Integer, JLabel> labels;
 
-    public TipChooseSlider() {
+    public TipChooseSlider(int startValue) {
         setMinimum(0);
         setMaximum(4);
-        setValue(1);
+        switch (startValue){
+            case 0 -> setValue(0);
+            case 3 -> setValue(1);
+            case 5 -> setValue(2);
+            case 10 -> setValue(3);
+            case 20 -> setValue(4);
+        }
         setPaintTicks(true);
         setPaintLabels(true);
         labels = new Hashtable<>();

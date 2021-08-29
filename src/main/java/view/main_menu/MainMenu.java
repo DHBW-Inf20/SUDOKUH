@@ -5,6 +5,7 @@ import presenter.SolveKillerPresenter;
 import presenter.SolveStr8tsPresenter;
 import presenter.SolveSudokuPresenter;
 import util.GameMode;
+import util.PreferencesService;
 import view.Theme;
 
 import javax.imageio.ImageIO;
@@ -49,13 +50,13 @@ public final class MainMenu extends JFrame {
     /**
      * Sliders to setup game settings
      */
-    final TipChooseSlider tipSlider = new TipChooseSlider();
+    final TipChooseSlider tipSlider;
     final SizeChooseSlider sizeSlider = new SizeChooseSlider();
 
     /**
      * Theme of menu
      */
-    Theme theme = LIGHT;
+    public Theme theme = LIGHT;
     boolean darkModeEnabled = false;
 
     /**
@@ -66,9 +67,14 @@ public final class MainMenu extends JFrame {
     /**
      * Gamesettings
      */
-    boolean autoStepForwardEnabled = true;
-    boolean highlightingEnabled = true;
-    int tipLimit = 3;
+    public boolean autoStepForwardEnabled = true;
+    public boolean highlightingEnabled = true;
+    public int tipLimit = 3;
+
+    /**
+     * Preferences to save user settings
+     */
+    PreferencesService preferencesService = new PreferencesService();
 
     public MainMenu() {
         super(SUDOKUH + " " + MAIN_MENU);
@@ -85,6 +91,10 @@ public final class MainMenu extends JFrame {
             e.printStackTrace();
         }
 
+        //Load user settings
+        preferencesService.readUserPreferences(this);
+        if (theme == DARK) darkModeEnabled = true;
+        tipSlider = new TipChooseSlider(tipLimit);
 
         // Main Menu Panel
         mainMenuPanel.setLayout(null);
@@ -150,6 +160,8 @@ public final class MainMenu extends JFrame {
                 case 4 -> tipLimit = 20;
             }
             cardLayout.first(cardsPanel);
+            //Saves settings to preferences after backButton is pressed
+            preferencesService.writeUserPreferences(theme, autoStepForwardEnabled, highlightingEnabled, tipLimit);
         });
         createToggleButtonAndAddToSettingsPanel(DARK_MODE, darkModeEnabled, 200, () -> {
             darkModeEnabled = !darkModeEnabled;
@@ -173,12 +185,13 @@ public final class MainMenu extends JFrame {
         cardsPanel.add(settingsPanel, "settingsPanel");
         cardLayout.first(cardsPanel);
         add(cardsPanel, CENTER);
-
+        updateTheme();
         setVisible(true);
     }
 
     /**
      * Opens new Game
+     *
      * @param size of the new game or solver
      */
     private void startGame(int size) {
@@ -214,11 +227,12 @@ public final class MainMenu extends JFrame {
 
     /**
      * adds button to the Panel
-     * @param panel
-     * @param text
-     * @param x coordinates
-     * @param y coordinates
-     * @param width
+     *
+     * @param panel panel on witch the button should be added
+     * @param text text of the button
+     * @param x        coordinates
+     * @param y        coordinates
+     * @param width width of the button
      * @param listener for inputs
      */
     private void createButtonAndAddToPanel(JPanel panel, String text, int x, int y, int width, Runnable listener) {
@@ -230,9 +244,10 @@ public final class MainMenu extends JFrame {
 
     /**
      * adds toggle button to settings menu
-     * @param text
-     * @param toggled
-     * @param y coordinates
+     *
+     * @param text text of ToggleButton
+     * @param toggled attribute to save toggled status
+     * @param y        coordinates
      * @param listener for inputs
      */
     private void createToggleButtonAndAddToSettingsPanel(String text, boolean toggled, int y, Runnable listener) {
