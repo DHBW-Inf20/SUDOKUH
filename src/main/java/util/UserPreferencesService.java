@@ -9,7 +9,7 @@ import static java.util.Arrays.stream;
 /**
  * @author Fabian Heinl
  */
-public class UserPreferencesService {
+public final class UserPreferencesService {
 
     /**
      * Reads {@link UserPreferences} and returns them.
@@ -40,4 +40,6 @@ public class UserPreferencesService {
         prefs.putBoolean("highlightingEnabled", highlightingEnabled);
         prefs.putInt("tipLimit", tipLimit);
     }
+
+    private UserPreferencesService() {}
 }

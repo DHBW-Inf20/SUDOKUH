@@ -27,8 +27,8 @@ public final class SolveKillerPresenter extends SolvePresenter {
     private boolean chooseGroup;
     private boolean editGroup;
 
-    public SolveKillerPresenter(int size, Theme theme, boolean autoStepForward, boolean highlighting) {
-        super(size, GameMode.KILLER_SOLVE, theme, highlighting, autoStepForward);
+    public SolveKillerPresenter(int gridSize, Theme theme, boolean autoStepForward, boolean highlighting) {
+        super(gridSize, GameMode.KILLER_SOLVE, theme, highlighting, autoStepForward);
         chooseGroup = false;
         editGroup = false;
     }
@@ -39,7 +39,7 @@ public final class SolveKillerPresenter extends SolvePresenter {
     @Override
     public void handleButton(CustomButton button) {
         CellPanel clickedCell = inGameViewScaffold.getClicked();
-        inGameViewScaffold.resetGUIText();
+        inGameViewScaffold.resetInfoText();
         switch (button.getType()) {
             case NUMBER -> {
                 if (!clickedCell.isPredefined()) {
@@ -55,7 +55,7 @@ public final class SolveKillerPresenter extends SolvePresenter {
                             inGameViewScaffold.highlightConflicts(c);
                         }
                         inGameViewScaffold.invalidInput(String.valueOf(number));
-                        inGameViewScaffold.setGUIText(LOGICAL_WRONG_INPUT, Color.red);
+                        inGameViewScaffold.setInfoText(LOGICAL_WRONG_INPUT, Color.red);
                     }
                 }
             }
@@ -68,10 +68,10 @@ public final class SolveKillerPresenter extends SolvePresenter {
             case SOLVE -> {
                 AbstractPuzzle.SolveResult solveResult = sudoku.solve();
                 switch (solveResult) {
-                    case NO_SOLUTION -> inGameViewScaffold.setGUIText(THIS_PUZZLE_CANNOT_BE_SOLVED, Color.red);
-                    case NOT_IN_VALID_STATE_FOR_SOLVE -> inGameViewScaffold.setGUIText(THIS_PUZZLE_CANNOT_BE_SOLVED_YET, Color.red);
+                    case NO_SOLUTION -> inGameViewScaffold.setInfoText(THIS_PUZZLE_CANNOT_BE_SOLVED, Color.red);
+                    case NOT_IN_VALID_STATE_FOR_SOLVE -> inGameViewScaffold.setInfoText(THIS_PUZZLE_CANNOT_BE_SOLVED_YET, Color.red);
                     case ONE_SOLUTION -> {
-                        inGameViewScaffold.setGUIText(THE_PUZZLE_WAS_SOLVED_SUCCESSFULLY, Color.green);
+                        inGameViewScaffold.setInfoText(THE_PUZZLE_WAS_SOLVED_SUCCESSFULLY, Color.green);
                         for (int row = 0; row < sudoku.getGridSize(); row++) {
                             for (int column = 0; column < sudoku.getGridSize(); column++) {
                                 inGameViewScaffold.setValue(row, column, sudoku.getCell(row, column));
@@ -79,7 +79,7 @@ public final class SolveKillerPresenter extends SolvePresenter {
                         }
                     }
                     case MULTIPLE_SOLUTIONS -> {
-                        inGameViewScaffold.setGUIText(CENTER(THE_PUZZLE_WAS_SOLVED_SUCCESSFULLY + BR + BUT_THERE_WAS_MORE_THAN_ONE_POSSIBILITY), Color.green);
+                        inGameViewScaffold.setInfoText(CENTER(THE_PUZZLE_WAS_SOLVED_SUCCESSFULLY + BR + BUT_THERE_WAS_MORE_THAN_ONE_POSSIBILITY), Color.green);
                         for (int row = 0; row < sudoku.getGridSize(); row++) {
                             for (int column = 0; column < sudoku.getGridSize(); column++) {
                                 inGameViewScaffold.setValue(row, column, sudoku.getCell(row, column));
@@ -98,7 +98,7 @@ public final class SolveKillerPresenter extends SolvePresenter {
                         saveGroup(group);
                     }
                 } else {
-                    inGameViewScaffold.setGUIText(THE_SELECT_MODE_CANNOT_BE_ACTIVATED_WHILE_THE_EDIT_MODE_IS_ACTIVATED);
+                    inGameViewScaffold.setInfoText(THE_SELECT_MODE_CANNOT_BE_ACTIVATED_WHILE_THE_EDIT_MODE_IS_ACTIVATED);
                 }
             }
             case REMOVE_GROUP -> {
@@ -133,7 +133,7 @@ public final class SolveKillerPresenter extends SolvePresenter {
                         saveGroup(group);
                     }
                 } else {
-                    inGameViewScaffold.setGUIText(THE_EDIT_MODE_CANNOT_BE_ACTIVATED_WHILE_THE_SELECT_MODE_IS_ACTIVATED);
+                    inGameViewScaffold.setInfoText(THE_EDIT_MODE_CANNOT_BE_ACTIVATED_WHILE_THE_SELECT_MODE_IS_ACTIVATED);
                 }
             }
         }
@@ -150,14 +150,10 @@ public final class SolveKillerPresenter extends SolvePresenter {
 
     private void saveGroup(ArrayList<CellPanel> group) {
         if (!group.isEmpty()) {
-            GroupPopUpWindow userInput = new GroupPopUpWindow(group);
-            int sum = userInput.getSum();
+            int sum = new GroupPopUpWindow().getSum();
             // False input
             if (sum == -1) {
-                inGameViewScaffold.setGUIText(FAULTY_SUM, Color.red);
-                // Logical incorrect input
-            } else if (sum == -2) {
-                inGameViewScaffold.setGUIText(LOGICAL_INCORRECT_SUM, Color.red);
+                inGameViewScaffold.setInfoText(FAULTY_SUM, Color.red);
             } else {
                 final Set<Cell> cells = group.stream().map(it -> new Cell(it.getRow(), it.getCol())).collect(toSet());
                 final GroupsUpdateResult result = ((Killer) sudoku).putCellsIntoNewGroup(cells, sum);
@@ -165,7 +161,7 @@ public final class SolveKillerPresenter extends SolvePresenter {
                 if (result.isSuccess()) {
                     inGameViewScaffold.addGroup(group, sum);
                 } else {
-                    inGameViewScaffold.setGUIText(switch (result.failureReason()) {
+                    inGameViewScaffold.setInfoText(switch (result.failureReason()) {
                         case GROUP_VALUES_NOT_UNIQUE -> GROUPS_WITH_DUPLICATE_VALUES_ARE_NOT_ALLOWED;
                         case GROUP_SUM_NOT_VALID -> THE_SUM_IS_INVALID;
                         case GROUP_IS_EMPTY -> EMPTY_GROUPS_ARE_NOT_ALLOWED;

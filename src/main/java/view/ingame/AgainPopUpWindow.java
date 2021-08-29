@@ -22,24 +22,18 @@ public final class AgainPopUpWindow {
      * Window to confirm restart press
      * @param frame current frame to close
      * params to restart the game with the same settings again
-     * @param gamemode
-     * @param size
-     * @param theme
-     * @param autoStepForward
-     * @param highlighting
-     * @param tipLimit
      */
-    public AgainPopUpWindow(InGameViewScaffold frame, GameMode gamemode, int size, Theme theme, boolean autoStepForward, boolean highlighting, int tipLimit) {
+    public AgainPopUpWindow(InGameViewScaffold frame, GameMode gamemode, int gridSize, Theme theme, boolean autoStepForward, boolean highlighting, int tipLimit) {
         int selectedValue = JOptionPane.showOptionDialog(null, RESET_ALL_PROGRESS_WILL_BE_LOST, SUDOKUH, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, new String[]{YES, NO}, NO);
 
         //Button Events
         if (selectedValue == YES_OPTION) {
             frame.dispose();
             switch (gamemode) {
-                case SUDOKU_SOLVE -> new SolveSudokuPresenter(size, theme, autoStepForward, highlighting);
-                case SUDOKU_PLAY -> new PlayPresenter(size, theme, autoStepForward, highlighting, tipLimit);
-                case KILLER_SOLVE -> new SolveKillerPresenter(size, theme, autoStepForward, highlighting);
-                case STR8TS_SOLVE -> new SolveStr8tsPresenter(size, theme, autoStepForward, highlighting);
+                case SUDOKU_SOLVE -> new SolveSudokuPresenter(gridSize, theme, autoStepForward, highlighting);
+                case SUDOKU_PLAY -> new PlayPresenter(gridSize, theme, autoStepForward, highlighting, tipLimit);
+                case KILLER_SOLVE -> new SolveKillerPresenter(gridSize, theme, autoStepForward, highlighting);
+                case STR8TS_SOLVE -> new SolveStr8tsPresenter(gridSize, theme, autoStepForward, highlighting);
             }
         }
         if ((selectedValue == NO_OPTION || selectedValue == CLOSED_OPTION) && frame.getPlayPresenter() != null) {

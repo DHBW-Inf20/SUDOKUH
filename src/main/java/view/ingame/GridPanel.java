@@ -38,7 +38,7 @@ public final class GridPanel extends JPanel {
     private final ArrayList<ArrayList<Str8ts.Color>> colors;
 
     /**
-     * Reference to the actual clicked {@link CellPanel cell} of the sudoku game.
+     * Reference to the currently clicked {@link CellPanel cell} of the sudoku game.
      */
     private CellPanel clicked;
 
@@ -58,7 +58,7 @@ public final class GridPanel extends JPanel {
     private final int size;
 
     /**
-     * The actual played gamemode.
+     * The currently played gamemode.
      */
     private final GameMode gamemode;
 
@@ -425,7 +425,7 @@ public final class GridPanel extends JPanel {
     }
 
     /**
-     * @return the actual clicked cell
+     * @return the currently clicked cell
      */
     public CellPanel getClicked() {
         return clicked;
@@ -475,7 +475,7 @@ public final class GridPanel extends JPanel {
     }
 
     /**
-     * Deletes the value of the actual clicked cell
+     * Deletes the value of the currently clicked cell
      */
     public void resetCell() {
         if (gamemode == GameMode.SUDOKU_SOLVE) {
@@ -605,9 +605,9 @@ public final class GridPanel extends JPanel {
     }
 
     /**
-     * Change the color of the actual clicked cell
+     * Change the color of the currently clicked cell
      */
-    public Str8ts.Color changeColor() {
+    public Str8ts.Color changeAndGetColor() {
         int row = clicked.getRow();
         int col = clicked.getCol();
         Str8ts.Color color = colors.get(row).get(col);
@@ -722,7 +722,7 @@ public final class GridPanel extends JPanel {
     /**
      * Sets choose mode to false
      *
-     * @return the actual chosen group
+     * @return the currently chosen group
      */
     public ArrayList<CellPanel> endChooseGroupModeAndGetGroup() {
         chooseGroupModeActivated = false;
@@ -750,7 +750,7 @@ public final class GridPanel extends JPanel {
     /**
      * Sets edit mode to false
      *
-     * @return the actual chosen group
+     * @return the currently chosen group
      */
     public ArrayList<CellPanel> endEditGroupModeAndGetGroup() {
         editGroup = false;

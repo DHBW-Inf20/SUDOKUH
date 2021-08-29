@@ -16,7 +16,7 @@ public final class TopInfoPanel extends JPanel {
     /**
      * A text that is shown in the menu when various events are triggered.
      */
-    private final JLabel guiText = new JLabel("");
+    private final JLabel infoText = new JLabel("");
     private boolean textSet;
 
     public TopInfoPanel(Theme theme) {
@@ -35,16 +35,16 @@ public final class TopInfoPanel extends JPanel {
      * @param text  text to be printed
      * @param color color in which the text should be printed
      */
-    public void setGUIText(String text, Color color) {
-        guiText.setText(text);
-        guiText.setOpaque(true);
-        guiText.setBackground(theme.panelBackgroundColor);
-        guiText.setForeground(color);
-        guiText.setFont(new Font(getFont().getName(), Font.BOLD, 25));
-        guiText.setHorizontalAlignment(SwingConstants.CENTER);
-        guiText.setVerticalAlignment(SwingConstants.CENTER);
+    public void setInfoText(String text, Color color) {
+        infoText.setText(text);
+        infoText.setOpaque(true);
+        infoText.setBackground(theme.panelBackgroundColor);
+        infoText.setForeground(color);
+        infoText.setFont(new Font(getFont().getName(), Font.BOLD, 25));
+        infoText.setHorizontalAlignment(SwingConstants.CENTER);
+        infoText.setVerticalAlignment(SwingConstants.CENTER);
         this.removeAll();
-        this.add(guiText);
+        this.add(infoText);
         this.validate();
         textSet = true;
     }
@@ -54,14 +54,14 @@ public final class TopInfoPanel extends JPanel {
      *
      * @param text text to be printed
      */
-    public void setGUIText(String text) {
-        this.setGUIText(text, theme.primaryTextColor);
+    public void setInfoText(String text) {
+        this.setInfoText(text, theme.primaryTextColor);
     }
 
     /**
      * If there is a text at the top of the gui this method will remove it
      */
-    public void resetGUIText() {
+    public void resetInfoText() {
         if (textSet) {
             this.removeAll();
             this.repaint();

@@ -97,7 +97,7 @@ public final class RightControlsPanel extends JPanel {
     }
 
     /**
-     * Sets the color of the choose group button depending on {@code activated}.
+     * Sets the color of the choose-group button depending on {@code activated}.
      */
     public void setChooseGroupMode(boolean activated) {
         setNullableButtonActivated(chooseGroupButton, activated);

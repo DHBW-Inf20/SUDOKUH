@@ -90,7 +90,7 @@ that the same number mustn't be in the same row or column. In addition to this t
 displayed as black) which can't contain numbers or the predefined numbers in there cannot be changed. There can also
 only be seamless sequences of digits, i.e. streets, in horizontally or vertically connected white cells. For the
 separation between black and white cells there is a color change button: clicking on it will change the color of the
-actual chosen cell. Clicking it again will change it back. (Keyboard equivalent: F)
+currently chosen cell. Clicking it again will change it back. (Keyboard equivalent: F)
 
 For solving the Str8ts there again is a solve button. Clicking on it will fill the Str8ts with matching values. When the
 Str8ts is unsolvable a text will be displayed in the information panel. (Keyboard equivalent: ENTER)
@@ -103,7 +103,7 @@ has to match this number. There are also grids in which you don't have given any
 groups (mostly difficulty hard).
 
 Next to the normal numbers buttons and the delete button you've also got a link button. Clicking on it will turn it
-green signalizing the link mode is activated: The actual clicked cell will automatically turn predefined. Now you can
+green signalizing the link mode is activated: The currently clicked cell will automatically turn predefined. Now you can
 choose all neighbors of this cell and neighbors of these cells and so on to build a group. All group members have the
 predefined color. Clicking again on a group member will remove the cell from the group. You can not add cells to the
 group which are already in another group. When ready with choosing all group members, click again on the link button:

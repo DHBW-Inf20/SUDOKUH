@@ -8,8 +8,8 @@ import view.ingame.InGameViewScaffold;
  * @author Philipp Kremling
  */
 public final class SolveSudokuPresenter extends SolvePresenter {
-    public SolveSudokuPresenter(int size, Theme theme, boolean autoStepForward, boolean highlighting) {
-        super(size, GameMode.SUDOKU_SOLVE, theme, autoStepForward, highlighting);
+    public SolveSudokuPresenter(int gridSize, Theme theme, boolean autoStepForward, boolean highlighting) {
+        super(gridSize, GameMode.SUDOKU_SOLVE, theme, autoStepForward, highlighting);
     }
 
     public InGameViewScaffold getInGameViewScaffold() {

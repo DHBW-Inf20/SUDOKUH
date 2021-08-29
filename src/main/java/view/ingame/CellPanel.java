@@ -106,14 +106,14 @@ public final class CellPanel extends JPanel {
     }
 
     /**
-     * @return the actual set label of the cell
+     * @return the current set label of the cell
      */
     public JLabel getLabel() {
         return label;
     }
 
     /**
-     * @return the actual value of the label of the cell
+     * @return the current value of the label of the cell
      */
     public String getLabelValue() {
         return labelValue;

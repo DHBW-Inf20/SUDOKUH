@@ -38,7 +38,7 @@ public final class TipChooseSlider extends JSlider {
     }
 
     /**
-     * Change label Color for darkmode
+     * Change label Color for dark mode
      * @param color new Color
      */
     public void setLabelColors(Color color) {

@@ -27,7 +27,7 @@ public final class PlayPresenter implements Presenter {
 
     private final AbstractPuzzle sudoku;
     private final AbstractPuzzle solution;
-    private final view.ingame.InGameViewScaffold inGameViewScaffold;
+    private final InGameViewScaffold inGameViewScaffold;
 
     private final int tipLimit;
     private int tipsUsed;
@@ -44,14 +44,14 @@ public final class PlayPresenter implements Presenter {
      */
     private boolean noteModeActivated;
 
-    public PlayPresenter(int size, Theme theme, boolean autoStepForward, boolean highlighting, int tipLimit) {
+    public PlayPresenter(int gridSize, Theme theme, boolean autoStepForward, boolean highlighting, int tipLimit) {
         noteModeActivated = false;
 
-        SudokuGenerator.SudokuAndSolution sudokuAndSolution = SudokuGenerator.generateSudokuAndSolution(size);
+        SudokuGenerator.SudokuAndSolution sudokuAndSolution = SudokuGenerator.generateSudokuAndSolution(gridSize);
         sudoku = sudokuAndSolution.sudoku();
         solution = sudokuAndSolution.solution();
 
-        inGameViewScaffold = new InGameViewScaffold(size, this::handleButtonListenerEvent, PLAY, theme, highlighting, autoStepForward, tipLimit, GameMode.SUDOKU_PLAY, this);
+        inGameViewScaffold = new InGameViewScaffold(gridSize, this::handleButtonListenerEvent, PLAY, theme, highlighting, autoStepForward, GameMode.SUDOKU_PLAY, tipLimit, this);
 
         inGameViewScaffold.addKeyListener(new KeyInputListener(this, autoStepForward));
 
@@ -91,9 +91,9 @@ public final class PlayPresenter implements Presenter {
     private boolean verifySolution() {
         if (sudoku.equals(solution)) {
             timer.stop();
-            long actualTime = ZonedDateTime.now().toInstant().toEpochMilli();
-            long timeDif = actualTime - startTime;
-            inGameViewScaffold.setGUIText(CENTER(CORRECT_SOLUTION + BR + getTimerText(timeDif)), Color.green);
+            long currentTime = ZonedDateTime.now().toInstant().toEpochMilli();
+            long timeDif = currentTime - startTime;
+            inGameViewScaffold.setInfoText(CENTER(CORRECT_SOLUTION + BR + getTimerText(timeDif)), Color.green);
             solved = true;
             return true;
         }
@@ -137,7 +137,7 @@ public final class PlayPresenter implements Presenter {
                                 inGameViewScaffold.highlightConflicts(c);
                             }
                             inGameViewScaffold.invalidInput(String.valueOf(number));
-                            inGameViewScaffold.setGUIText(LOGICAL_WRONG_INPUT, Color.red);
+                            inGameViewScaffold.setInfoText(LOGICAL_WRONG_INPUT, Color.red);
                             // Pause time display for 1 seconds
                             lastUpdateTime += 1000;
                         }
@@ -169,7 +169,7 @@ public final class PlayPresenter implements Presenter {
             }
             case VERIFY -> {
                 if (!this.verifySolution()) {
-                    inGameViewScaffold.setGUIText(THIS_SOLUTION_IS_WRONG_OR_INCOMPLETE, Color.red);
+                    inGameViewScaffold.setInfoText(THIS_SOLUTION_IS_WRONG_OR_INCOMPLETE, Color.red);
                     // Pause time display for 5 seconds
                     lastUpdateTime += 5000;
                 }
@@ -182,15 +182,15 @@ public final class PlayPresenter implements Presenter {
     }
 
     /**
-     * Sets the playing time timer to the actual value
+     * Sets the playing time timer to the current time
      */
     private void setTimer() {
-        long actualTime = ZonedDateTime.now().toInstant().toEpochMilli();
+        long currentTime = ZonedDateTime.now().toInstant().toEpochMilli();
         // Only set the time if there is a difference of one second
-        if (actualTime >= lastUpdateTime + 1000) {
-            long timeDif = actualTime - startTime + pausedTime;
-            inGameViewScaffold.setGUIText(this.getTimerText(timeDif));
-            lastUpdateTime = actualTime;
+        if (currentTime >= lastUpdateTime + 1000) {
+            long timeDif = currentTime - startTime + pausedTime;
+            inGameViewScaffold.setInfoText(this.getTimerText(timeDif));
+            lastUpdateTime = currentTime;
         }
     }
 

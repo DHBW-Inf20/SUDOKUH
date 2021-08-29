@@ -24,24 +24,24 @@ import static util.Strings.*;
 public abstract class SolvePresenter implements Presenter {
 
     protected final AbstractPuzzle sudoku;
-    protected view.ingame.InGameViewScaffold inGameViewScaffold;
+    protected InGameViewScaffold inGameViewScaffold;
 
     protected boolean autoStepForward;
 
-    public SolvePresenter(int size, GameMode gameMode, Theme theme, boolean highlighting, boolean autoStepForward) {
+    public SolvePresenter(int gridSize, GameMode gameMode, Theme theme, boolean highlighting, boolean autoStepForward) {
         this.autoStepForward = autoStepForward;
         switch (gameMode) {
             case STR8TS_SOLVE -> {
                 sudoku = new Str8ts();
-                inGameViewScaffold = new InGameViewScaffold(size, this::handleButtonListenerEvent, SOLVE_STR8TS, theme, highlighting, autoStepForward, gameMode);
+                inGameViewScaffold = new InGameViewScaffold(gridSize, this::handleButtonListenerEvent, SOLVE_STR8TS, theme, highlighting, autoStepForward, gameMode);
             }
             case KILLER_SOLVE -> {
                 sudoku = new Killer();
-                inGameViewScaffold = new InGameViewScaffold(size, this::handleButtonListenerEvent, SOLVE_KILLER, theme, highlighting, autoStepForward, gameMode);
+                inGameViewScaffold = new InGameViewScaffold(gridSize, this::handleButtonListenerEvent, SOLVE_KILLER, theme, highlighting, autoStepForward, gameMode);
             }
             default -> {
-                sudoku = new Sudoku(size);
-                inGameViewScaffold = new InGameViewScaffold(size, this::handleButtonListenerEvent, SOLVE_SUDOKU, theme, highlighting, autoStepForward, gameMode);
+                sudoku = new Sudoku(gridSize);
+                inGameViewScaffold = new InGameViewScaffold(gridSize, this::handleButtonListenerEvent, SOLVE_SUDOKU, theme, highlighting, autoStepForward, gameMode);
             }
         }
         inGameViewScaffold.addKeyListener(new KeyInputListener(this, autoStepForward));
@@ -60,7 +60,7 @@ public abstract class SolvePresenter implements Presenter {
     public void handleButton(CustomButton button) {
         CellPanel clickedCell = inGameViewScaffold.getClicked();
 
-        inGameViewScaffold.resetGUIText();
+        inGameViewScaffold.resetInfoText();
         switch (button.getType()) {
             case NUMBER -> {
                 if (!clickedCell.isPredefined()) {
@@ -76,7 +76,7 @@ public abstract class SolvePresenter implements Presenter {
                             inGameViewScaffold.highlightConflicts(c);
                         }
                         inGameViewScaffold.invalidInput(String.valueOf(number));
-                        inGameViewScaffold.setGUIText(LOGICAL_WRONG_INPUT, Color.red);
+                        inGameViewScaffold.setInfoText(LOGICAL_WRONG_INPUT, Color.red);
                     }
                 }
             }
@@ -89,10 +89,10 @@ public abstract class SolvePresenter implements Presenter {
             case SOLVE -> {
                 AbstractPuzzle.SolveResult solveResult = sudoku.solve();
                 switch (solveResult) {
-                    case NO_SOLUTION -> inGameViewScaffold.setGUIText(THIS_SUDOKU_CANNOT_BE_SOLVED, Color.red);
-                    case NOT_IN_VALID_STATE_FOR_SOLVE -> inGameViewScaffold.setGUIText(THIS_SUDOKU_CANNOT_BE_SOLVED_YET, Color.red);
+                    case NO_SOLUTION -> inGameViewScaffold.setInfoText(THIS_SUDOKU_CANNOT_BE_SOLVED, Color.red);
+                    case NOT_IN_VALID_STATE_FOR_SOLVE -> inGameViewScaffold.setInfoText(THIS_SUDOKU_CANNOT_BE_SOLVED_YET, Color.red);
                     case ONE_SOLUTION -> {
-                        inGameViewScaffold.setGUIText(THE_SUDOKU_WAS_SOLVED_SUCCESSFULLY, Color.green);
+                        inGameViewScaffold.setInfoText(THE_SUDOKU_WAS_SOLVED_SUCCESSFULLY, Color.green);
                         for (int row = 0; row < sudoku.getGridSize(); row++) {
                             for (int column = 0; column < sudoku.getGridSize(); column++) {
                                 inGameViewScaffold.setValue(row, column, sudoku.getCell(row, column));
@@ -100,7 +100,7 @@ public abstract class SolvePresenter implements Presenter {
                         }
                     }
                     case MULTIPLE_SOLUTIONS -> {
-                        inGameViewScaffold.setGUIText(CENTER(THE_SUDOKU_WAS_SOLVED_SUCCESSFULLY + BR + BUT_THERE_WAS_MORE_THAN_ONE_POSSIBILITY), Color.green);
+                        inGameViewScaffold.setInfoText(CENTER(THE_SUDOKU_WAS_SOLVED_SUCCESSFULLY + BR + BUT_THERE_WAS_MORE_THAN_ONE_POSSIBILITY), Color.green);
                         for (int row = 0; row < sudoku.getGridSize(); row++) {
                             for (int column = 0; column < sudoku.getGridSize(); column++) {
                                 inGameViewScaffold.setValue(row, column, sudoku.getCell(row, column));

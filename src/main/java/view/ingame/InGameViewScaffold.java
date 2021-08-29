@@ -1,6 +1,7 @@
 package view.ingame;
 
-import model.AbstractPuzzle;
+import model.AbstractPuzzle.Cell;
+import model.Str8ts;
 import presenter.PlayPresenter;
 import util.GameMode;
 import view.Theme;
@@ -8,7 +9,6 @@ import view.Theme;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -21,70 +21,65 @@ import static util.Strings.*;
  * @author Fabian Heinl
  * Scaffold for inGame UI and different gamemodes
  */
-public class InGameViewScaffold extends JFrame implements ActionListener {
-
-    private final Theme theme;
-
-    GameMode gamemode;
-    /**
-     * different game settings
-     */
-    private int size;
-    private boolean autoStepForward;
-    private boolean highlighting;
-    private int tipLimit;
+public final class InGameViewScaffold extends JFrame {
 
     /**
      * Panel for information like current playtime or warnings
      */
-    private TopInfoPanel topInfoPanel;
+    private final TopInfoPanel topInfoPanel;
 
     /**
      * Panel for SudokuField
      */
-    private GridPanel gridPanel;
+    private final GridPanel gridPanel;
 
     /**
      * Panel for input buttons
      */
-    private RightControlsPanel rightControlsPanel;
+    private final RightControlsPanel rightControlsPanel;
 
-    /**
-     * Main buttons to restart and go back to MainMenu
-     */
-    JButton againButton = new JButton();
-    JButton homeButton = new JButton();
+    private final PlayPresenter playPresenter;
 
-    private PlayPresenter playPresenter;
 
-    public InGameViewScaffold(int gridSize, ActionListener buttonListener, String title, Theme theme, boolean highlighting, boolean autoStepForward, GameMode gamemode) {
-        //General Window Options
+    public InGameViewScaffold(int gridSize, ActionListener buttonListener, String title, Theme theme,
+                              boolean highlighting, boolean autoStepForward, GameMode gamemode) {
+        this(gridSize, buttonListener, title, theme, highlighting, autoStepForward, gamemode, 0, null);
+    }
+
+    public InGameViewScaffold(int gridSize, ActionListener buttonListener, String title, Theme theme,
+                              boolean highlighting, boolean autoStepForward, GameMode gamemode, int tipLimit,
+                              PlayPresenter playPresenter) {
         super(SUDOKUH + "-" + title);
-        this.setResizable(false);
-        this.setSize(1195, 980);
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setLocationRelativeTo(null);
-        this.getContentPane().setLayout(null);
 
-        //JFrame Container Settings
-        this.theme = theme;
+        // different game settings
+        this.playPresenter = playPresenter;
+
+        // General Window Options
+        setResizable(false);
+        setSize(1195, 980);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+        getContentPane().setLayout(null);
+
+        // JFrame Container Settings
         Container mainContainer = this.getContentPane();
         mainContainer.setBackground(theme.menuBackgroundColor);
         mainContainer.setLayout(null);
 
-        //Top information panel
+        // Top information panel
         topInfoPanel = new TopInfoPanel(theme);
         mainContainer.add(topInfoPanel);
 
-        //Sudoku grid panel
+        // Sudoku grid panel
         gridPanel = new GridPanel(gridSize, theme, highlighting, gamemode);
         mainContainer.add(gridPanel);
 
-        //Right controls panel
+        // Right controls panel
         rightControlsPanel = new RightControlsPanel(gridSize, buttonListener, theme, gamemode);
         mainContainer.add(rightControlsPanel);
 
-        //Control Buttons
+        // Control Buttons
+        JButton againButton = new JButton();
         againButton.setBackground(theme.menuBackgroundColor);
         againButton.setBounds(980, 20, 80, 80);
         try {
@@ -95,45 +90,47 @@ public class InGameViewScaffold extends JFrame implements ActionListener {
         }
         againButton.setFocusable(false);
         againButton.setBorder(null);
-        againButton.addActionListener(this);
+        againButton.addActionListener((e) -> {
+            if (playPresenter != null) {
+                playPresenter.pauseTimer();
+            }
+            new AgainPopUpWindow(this, gamemode, gridSize, theme, autoStepForward, highlighting, tipLimit);
+        });
         againButton.setToolTipText(RESET);
         mainContainer.add(againButton);
 
+        JButton homeButton = new JButton();
         homeButton.setBackground(theme.menuBackgroundColor);
         homeButton.setBounds(1080, 20, 80, 80);
         try {
             Image img = ImageIO.read(requireNonNull(getClass().getResourceAsStream("/logo_80.png")));
             homeButton.setIcon(new ImageIcon(img));
-            //Sets Icon of Frame
-            this.setIconImage(img);
+            // Sets Icon of Frame
+            setIconImage(img);
         } catch (NullPointerException | IOException e) {
             e.printStackTrace();
         }
         homeButton.setFocusable(false);
         homeButton.setBorder(null);
-        homeButton.addActionListener(this);
+        homeButton.addActionListener((e) -> {
+            if (playPresenter != null) {
+                playPresenter.pauseTimer();
+            }
+            new PopUpWindow(this);
+        });
         homeButton.setToolTipText(GO_TO_MAIN_MENU);
         mainContainer.add(homeButton);
 
-        this.setVisible(true);
-
-        this.gamemode = gamemode;
-        this.size = gridSize;
-        this.autoStepForward = autoStepForward;
-        this.highlighting = highlighting;
-    }
-
-    public InGameViewScaffold(int gridSize, ActionListener buttonListener, String title, Theme theme, boolean highlighting, boolean autoStepForward, int tipLimit, GameMode gamemode, PlayPresenter playPresenter) {
-        this(gridSize, buttonListener, title, theme, highlighting, autoStepForward, gamemode);
-        this.playPresenter = playPresenter;
-        this.tipLimit = tipLimit;
+        setVisible(true);
     }
 
 
     /**
-     * @return the actual clicked cell
+     * @return the currently clicked cell
      */
-    public CellPanel getClicked() {return gridPanel.getClicked();}
+    public CellPanel getClicked() {
+        return gridPanel.getClicked();
+    }
 
     /**
      * Set the clicked cell to specified coordinates
@@ -157,7 +154,7 @@ public class InGameViewScaffold extends JFrame implements ActionListener {
     }
 
     /**
-     * Deletes the value of the actual clicked cell
+     * Deletes the value of the currently clicked cell
      */
     public void resetCell() {
         gridPanel.resetCell();
@@ -197,8 +194,8 @@ public class InGameViewScaffold extends JFrame implements ActionListener {
      * @param text  text to be printed
      * @param color color in which the text should be printed
      */
-    public void setGUIText(String text, Color color) {
-        topInfoPanel.setGUIText(text, color);
+    public void setInfoText(String text, Color color) {
+        topInfoPanel.setInfoText(text, color);
     }
 
     /**
@@ -206,24 +203,24 @@ public class InGameViewScaffold extends JFrame implements ActionListener {
      *
      * @param text text to be printed
      */
-    public void setGUIText(String text) {
-        topInfoPanel.setGUIText(text);
+    public void setInfoText(String text) {
+        topInfoPanel.setInfoText(text);
     }
 
     /**
      * If there is a text at the top of the gui this method will remove it
      */
-    public void resetGUIText() {
-        topInfoPanel.resetGUIText();
+    public void resetInfoText() {
+        topInfoPanel.resetInfoText();
     }
 
     /**
      * Sets the color of a conflicting cell to red and adds it to the conflicts-list
      *
-     * @param c the invalid cell
+     * @param cell the invalid cell
      */
-    public void highlightConflicts(AbstractPuzzle.Cell c) {
-        gridPanel.highlightConflicts(c);
+    public void highlightConflicts(Cell cell) {
+        gridPanel.highlightConflicts(cell);
     }
 
     /**
@@ -234,7 +231,7 @@ public class InGameViewScaffold extends JFrame implements ActionListener {
     }
 
     /**
-     * Marks a specific cell as predifined in order to cannot be changed and has another color
+     * Marks a specific cell as predefined in order to be unchangeable and have another color
      */
     public void setPredefined(int row, int col, int value) {
         gridPanel.setPredefined(row, col, value);
@@ -275,10 +272,10 @@ public class InGameViewScaffold extends JFrame implements ActionListener {
     }
 
     /**
-     * Change the color of the actual clicked cell
+     * Change the color of the currently clicked cell
      */
-    public model.Str8ts.Color changeColor() {
-        return gridPanel.changeColor();
+    public Str8ts.Color changeAndGetColor() {
+        return gridPanel.changeAndGetColor();
     }
 
     /**
@@ -286,25 +283,6 @@ public class InGameViewScaffold extends JFrame implements ActionListener {
      */
     public PlayPresenter getPlayPresenter() {
         return playPresenter;
-    }
-
-    /**
-     * Handles control button events
-     */
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == homeButton) {
-            if (playPresenter != null) {
-                playPresenter.pauseTimer();
-            }
-            new PopUpWindow(this);
-        }
-        if (e.getSource() == againButton) {
-            if (playPresenter != null) {
-                playPresenter.pauseTimer();
-            }
-            new AgainPopUpWindow(this, gamemode, size, theme, autoStepForward, highlighting, tipLimit);
-        }
     }
 
     /**
@@ -318,7 +296,7 @@ public class InGameViewScaffold extends JFrame implements ActionListener {
     /**
      * Sets choose mode to false
      *
-     * @return the actual chosen group
+     * @return the currently chosen group
      */
     public ArrayList<CellPanel> endChooseGroupModeAndGetGroup() {
         rightControlsPanel.setChooseGroupMode(false);
@@ -336,7 +314,7 @@ public class InGameViewScaffold extends JFrame implements ActionListener {
     /**
      * Sets edit mode to false
      *
-     * @return the actual chosen group
+     * @return the currently chosen group
      */
     public ArrayList<CellPanel> endEditGroupModeAndGetGroup() {
         rightControlsPanel.setEditGroupMode(false);

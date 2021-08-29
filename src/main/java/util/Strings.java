@@ -75,8 +75,6 @@ public final class Strings {
 
     public static final String FAULTY_SUM = isGerman ? "Fehlerhafte Summe!" : "Faulty sum!";
 
-    public static final String LOGICAL_INCORRECT_SUM = isGerman ? "Logisch inkorrekte Summe!" : "Logical incorrect sum!";
-
     public static final String GROUPS_WITH_DUPLICATE_VALUES_ARE_NOT_ALLOWED = isGerman ? "Gruppen mit doppelt vorkommenden Werten sind nicht erlaubt!" : "Groups with duplicate values are not allowed!";
 
     public static final String THE_SUM_IS_INVALID = isGerman ? "Die Summe ist ung\u00fcltig!" : "The sum is invalid!";

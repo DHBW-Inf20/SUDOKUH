@@ -35,7 +35,7 @@ public final class MainMenu extends JFrame {
      */
     private final CardLayout cardLayout = new CardLayout();
 
-    /**
+    /*
      * Different JPanels to represent the separate menus
      */
     private final JPanel cardsPanel = new JPanel(cardLayout);
@@ -48,7 +48,7 @@ public final class MainMenu extends JFrame {
      */
     private final JLabel tipText = new JLabel(TIP_LIMIT);
 
-    /**
+    /*
      * Sliders to setup game settings
      */
     private final TipChooseSlider tipSlider;
@@ -64,8 +64,8 @@ public final class MainMenu extends JFrame {
      */
     private Theme theme;
 
-    /**
-     * Gamesettings
+    /*
+     * Game settings
      */
     private boolean autoStepForwardEnabled;
     private boolean highlightingEnabled;
@@ -192,19 +192,19 @@ public final class MainMenu extends JFrame {
     /**
      * Opens new Game
      *
-     * @param size of the new game or solver
+     * @param gridSize of the new game or solver
      */
-    private void startGame(int size) {
+    private void startGame(int gridSize) {
         try {
             UIManager.setLookAndFeel(new MetalLookAndFeel());
         } catch (UnsupportedLookAndFeelException e) {
             e.printStackTrace();
         }
         switch (gameMode) {
-            case SUDOKU_SOLVE -> new SolveSudokuPresenter(size, theme, autoStepForwardEnabled, highlightingEnabled);
-            case SUDOKU_PLAY -> new PlayPresenter(size, theme, autoStepForwardEnabled, highlightingEnabled, tipLimit);
-            case KILLER_SOLVE -> new SolveKillerPresenter(size, theme, autoStepForwardEnabled, false);
-            case STR8TS_SOLVE -> new SolveStr8tsPresenter(size, theme, autoStepForwardEnabled, highlightingEnabled);
+            case SUDOKU_SOLVE -> new SolveSudokuPresenter(gridSize, theme, autoStepForwardEnabled, highlightingEnabled);
+            case SUDOKU_PLAY -> new PlayPresenter(gridSize, theme, autoStepForwardEnabled, highlightingEnabled, tipLimit);
+            case KILLER_SOLVE -> new SolveKillerPresenter(gridSize, theme, autoStepForwardEnabled, false);
+            case STR8TS_SOLVE -> new SolveStr8tsPresenter(gridSize, theme, autoStepForwardEnabled, highlightingEnabled);
         }
         dispose();
     }
