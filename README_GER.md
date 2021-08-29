@@ -1,4 +1,4 @@
-![](https://i.imgur.com/R2yKOuR.png)
+![SUDOKUH Logo](https://i.imgur.com/R2yKOuR.png)
 
 # SUDOKUH
 
@@ -7,24 +7,24 @@
 SUDOKUH ist ein einfaches Sudoku-Spiel für verschiedene Größen (2x2, 3x3, 4x4) und ein Sudoku-Löser für normales
 Sudoku (in verschiedenen Größen: 2x2, 3x3, 4x4), Str8ts und Killer (für 3x3).
 
-SUDOKUH wurde erstellt von [Luca Kellermann](https://github.com/Lukellmann)
-, [Fabian Heinl](https://github.com/WHYZNSoftware) und [Philipp Kremling](https://github.com/KremlingP ).
+SUDOKUH wurde erstellt von [Luca Kellermann](https://github.com/Lukellmann),
+[Fabian Heinl](https://github.com/WHYZNSoftware) und [Philipp Kremling](https://github.com/KremlingP).
 
-Bitte beachten Sie, dass Sie möglicherweise die Umgebungsvariable `JAVA_HOME` auf den Ort Ihrer Java-Installation (z.
-B. `C:\Program Files\Java\jdk-16.0.2`) setzen müssen, um das Programm ausführen oder bauen zu können. Zum Bauen
-benötigen Sie mindestens Java 7, zum Ausführen mindestens Java 16.
+Bitte beachten Sie, dass Sie möglicherweise die Umgebungsvariable `JAVA_HOME` auf den Ort Ihrer Java-Installation (z. B.
+`C:\Program Files\Java\jdk-16.0.2`) setzen müssen, um das Programm ausführen oder bauen zu können. Zum Bauen benötigen
+Sie mindestens Java 7, zum Ausführen mindestens Java 16.
 
 ## Einstieg
 
-Um das bereits gebaute SUDOKU Programm zu starten, führen Sie `final-build/bin/sudokuh` (Linux)
-oder `final-build/bin/sudokuh.bat` (Windows) aus. Das Startmenü öffnet sich automatisch. Hier können Sie zwischen den
+Um das bereits gebaute SUDOKU Programm zu starten, führen Sie `final-build/bin/sudokuh` (Linux) oder
+`final-build/bin/sudokuh.bat` (Windows) aus. Das Startmenü öffnet sich automatisch. Hier können Sie zwischen den
 verschiedenen Kategorien wählen: dem Sudoku-Spiel, dem Sudoku-Löser für ein normales Sudoku, dem Sudoku-Löser für Str8ts
 und dem Sudoku-Löser für Killer. Mit einem Klick auf eine der Kategorien sehen Sie ein Menü, in dem Sie zwischen den
 drei Größen (2x2, 3x3, 4x4) wählen können. Ein Klick auf "Start" öffnet ein neues Fenster, in dem das Spiel-Overlay zu
 sehen ist. Im Startmenü gibt es auch eine Einstellungsschaltfläche. Wenn Sie darauf klicken, erhalten Sie ein neues Menü
 und Sie können das Erscheinungsbild auswählen (Standard- oder DarkMode), Auto Step (das bedeutet, ob die nächste Zelle
 beim Eingeben einer Zahl automatisch ausgewählt werden soll), Hervorhebung (dies bedeutet, ob Zellen, die potenziell
-Konflikte zur aktuell ausgewählten Zell beinhalten, hervorgehoben werden sollen) und das Tipplimit (wie viele Tipps Sie
+Konflikte zur aktuell ausgewählten Zelle beinhalten, hervorgehoben werden sollen) und das Tipplimit (wie viele Tipps Sie
 im Spiel-Modus haben möchten). Ein Klick auf den Zurück-Button bringt Sie zurück zum Home-Menü und die Einstellungen
 werden automatisch gespeichert.
 
@@ -59,16 +59,16 @@ Aktionen verloren.
 
 ### Sudoku spielen
 
-Achtung: Die Auswahl des 4x4-Sudoku zum Spielen dauert sehr lange! Bitte seien Sie sich dessen bewusst.
+Achtung: Das Generieren des 4x4-Sudoku zum Spielen dauert sehr lange! Bitte seien Sie sich dessen bewusst.
 
 Beim Spielen von Sudoku wird die Spielzeit im Informationsfeld angezeigt. Sobald das Sudoku vollständig gelöst ist,
 stoppt der Timer und die gesamte Spielzeit wird angezeigt. Durch Klicken auf die Hauptmenü- oder
-Erneut-Spielen-Schaltfläche wird der Timer angehalten.
+Erneut-Spielen-Schaltfläche wird der Timer pausiert.
 
 Zum Spielen gibt es ein paar zusätzliche Schaltflächen: Zunächst die Tipp-Schaltfläche: Wenn Sie darauf klicken, wird
 die richtige Nummer für die ausgewählte Zelle angezeigt. Die Zelle wird nun als vordefiniert angesehen und kann nicht
 mehr geändert werden. Wie viele Tipps Sie zur Verfügung haben, hängt von den Einstellungen im Hauptmenü ab
-(Standard: 3). Sobald Ihnen die Tipps ausgehen, wechselt die Schaltfläche auf rot und hat keine Funktion mehr.
+(Standard: 3). Sobald Ihnen die Tipps ausgehen, wechselt die Schaltfläche auf Rot und hat keine Funktion mehr.
 (Tastaturäquivalent: T)
 
 Zusätzlich gibt es den Validieren-Button: Ein Klick darauf zwingt das Programm, Ihre Lösung zu überprüfen, ob sie
@@ -88,8 +88,8 @@ ausschalten (erneut auf die Schaltfläche Notiz klicken) und dann eine Zahl eing
 In dieser Kategorie können Sie ein ungelöstes Sudoku eingeben und der Algorithmus wird es für Sie lösen. Daher gibt es
 neben den normalen Zahlen-Buttons und dem Löschen-Button auch einen Lösen-Button. Wenn Sie darauf klicken, wird das
 Sudoku mit übereinstimmenden Werten gefüllt. Alle von Ihnen gesetzten Eingaben werden als vordefiniert angezeigt (können
-aber geändert werden). Wenn das Sudoku nicht lösbar ist, wird ein Text im Informationsfeld angezeigt. (
-Tastaturäquivalent: ENTER)
+aber geändert werden). Wenn das Sudoku nicht lösbar ist, wird ein Text im Informationsfeld angezeigt.
+(Tastaturäquivalent: ENTER)
 
 ### Str8ts lösen
 
@@ -101,25 +101,26 @@ Zellen nur nahtlose Ziffernfolgen, also Straßen, geben. Für die Trennung zwisc
 einen Farbwechsel-Button: Ein Klick darauf ändert die Farbe der aktuell ausgewählten Zelle. Durch erneutes Anklicken
 wird sie wieder geändert. (Tastaturäquivalent: F)
 
-Zum Lösen des Sudokus gibt es wieder einen Lösen-Button. Wenn Sie darauf klicken, wird das Sudoku mit übereinstimmenden
-Werten gefüllt. Wenn das Sudoku nicht lösbar ist, wird ein Text im Informationsfeld angezeigt. (Tastaturäquivalent:
+Zum Lösen des Str8ts gibt es wieder einen Lösen-Button. Wenn Sie darauf klicken, wird das Str8ts mit übereinstimmenden
+Werten gefüllt. Wenn das Str8ts nicht lösbar ist, wird ein Text im Informationsfeld angezeigt. (Tastaturäquivalent:
 ENTER)
 
 ### Killer lösen
 
 Killer ist auch eine besondere Variante von Sudoku: Neben den normalen Sudoku-Regeln gibt es hier auch Summenfelder: Das
 heißt, eine oder mehrere Zellen werden zusammengefasst und mit einer Nummer versehen. Die Summe aller Werte dieser
-Gruppe muss dieser Zahl entsprechen. Umgekehrt gibt es auch Sudokus, bei denen Sie gar keine Werte vordefiniert haben,
-sondern nur die Summen und Gruppen (meist auf Schwierigkeitsstufe schwer).
+Gruppe muss dieser Zahl entsprechen. Es gibt auch Killer, bei denen Sie gar keine Werte vordefiniert haben, sondern nur
+die Summen und Gruppen (meist auf Schwierigkeitsstufe schwer).
 
 Neben den normalen Nummern-Buttons und dem Löschen-Button gibt es auch einen Verbinden-Button. Wenn Sie darauf klicken,
-wird dieser grün und signalisiert, dass der Verbindungs-Modus aktiviert ist: Die aktuell angeklickte Zelle wird
-automatisch als vordefiniert angezeigt. Jetzt können Sie alle Nachbarn dieser Zelle und Nachbarn dieser Zellen auswählen
-usw., um eine Gruppe zu bilden. Alle Gruppenmitglieder haben die vordefinierte Farbe. Durch erneutes Klicken auf ein
-Gruppenmitglied wird die Zelle aus der Gruppe entfernt. Sie können der Gruppe keine Zellen hinzufügen, die sich bereits
-in einer anderen Gruppe befinden. Wenn Sie mit der Auswahl aller Gruppenmitglieder fertig sind, klicken Sie erneut auf
-die Verbinden-Schaltfläche: Sie sehen ein neues Fenster, in dem Sie die Summe der Gruppe eingeben können. Wenn Sie dies
-bestätigen, wird die Gruppe mit der Summe in der ersten ausgewählten Zelle angezeigt. (Tastaturäquivalent: G)
+wird dieser grün und signalisiert, dass der Verbindungsmodus aktiviert ist: Die aktuell angeklickte Zelle wird
+automatisch als vordefiniert angezeigt. Jetzt können Sie alle Nachbarn dieser Zelle und Nachbarn dieser Zellen usw.
+auswählen, um eine Gruppe zu bilden. Alle Gruppenmitglieder haben die vordefinierte Farbe. Durch erneutes Klicken auf
+ein Gruppenmitglied wird die Zelle aus der Gruppe entfernt. Sie können der Gruppe keine Zellen hinzufügen, die sich
+bereits in einer anderen Gruppe befinden. Wenn Sie mit der Auswahl aller Gruppenmitglieder fertig sind, klicken Sie
+erneut auf die Verbinden-Schaltfläche: Sie sehen ein neues Fenster, in dem Sie die Summe der Gruppe eingeben können.
+Wenn Sie dies bestätigen, wird die Gruppe mit der Summe in der ersten ausgewählten Zelle angezeigt. (Tastaturäquivalent:
+G)
 
 Wenn Sie den Verknüpfungsvorgang beim Auswählen von Zellen abbrechen möchten, verwenden Sie bitte die Schaltfläche zum
 Aufheben der Verknüpfung. (Tastaturäquivalent: L)
@@ -136,6 +137,6 @@ Gruppe eine neue Summe hinzufügen. Sie müssen Zellen im Bearbeitungsmodus nich
 verwenden, um eine neue Summe auszuwählen. Bitte beachten Sie: Der Link-Modus und der Edit-Modus können nicht
 gleichzeitig aktiviert sein. (Tastaturäquivalent: B)
 
-Zum Lösen des Sudokus gibt es wieder einen Lösen-Button. Wenn Sie darauf klicken, wird das Sudoku mit übereinstimmenden
-Werten gefüllt. Wenn das Sudoku nicht lösbar ist, wird ein Text im Informationsfeld angezeigt.
+Zum Lösen des Killers gibt es wieder einen Lösen-Button. Wenn Sie darauf klicken, wird das Killer mit übereinstimmenden
+Werten gefüllt. Wenn das Killer nicht lösbar ist, wird ein Text im Informationsfeld angezeigt.
 (Tastaturäquivalent: ENTER)
