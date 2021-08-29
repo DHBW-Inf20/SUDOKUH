@@ -19,14 +19,16 @@ import static util.Strings.*;
 public final class AgainPopUpWindow {
 
     /**
-     * Window to confirm restart press
-     * @param frame current frame to close
-     * params to restart the game with the same settings again
+     * Window to confirm restart press.
+     * <p>
+     * Takes the current {@code frame} to close and params to restart the game with the same settings again.
      */
-    public AgainPopUpWindow(InGameViewScaffold frame, GameMode gamemode, int gridSize, Theme theme, boolean autoStepForward, boolean highlighting, int tipLimit) {
-        int selectedValue = JOptionPane.showOptionDialog(null, RESET_ALL_PROGRESS_WILL_BE_LOST, SUDOKUH, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, new String[]{YES, NO}, NO);
+    public AgainPopUpWindow(InGameViewScaffold frame, GameMode gamemode, int gridSize, Theme theme,
+                            boolean autoStepForward, boolean highlighting, int tipLimit) {
+        int selectedValue = JOptionPane.showOptionDialog(null, RESET_ALL_PROGRESS_WILL_BE_LOST, SUDOKUH,
+                JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, new String[]{YES, NO}, NO);
 
-        //Button Events
+        // Button Events
         if (selectedValue == YES_OPTION) {
             frame.dispose();
             switch (gamemode) {
@@ -35,8 +37,7 @@ public final class AgainPopUpWindow {
                 case KILLER_SOLVE -> new SolveKillerPresenter(gridSize, theme, autoStepForward, highlighting);
                 case STR8TS_SOLVE -> new SolveStr8tsPresenter(gridSize, theme, autoStepForward, highlighting);
             }
-        }
-        if ((selectedValue == NO_OPTION || selectedValue == CLOSED_OPTION) && frame.getPlayPresenter() != null) {
+        } else if ((selectedValue == NO_OPTION || selectedValue == CLOSED_OPTION) && frame.getPlayPresenter() != null) {
             frame.getPlayPresenter().resumeTimer();
         }
     }

@@ -14,12 +14,14 @@ public final class PopUpWindow {
 
     /**
      * Window to confirm backToMenu press
+     *
      * @param frame current open frame
      */
     public PopUpWindow(InGameViewScaffold frame) {
-        int selectedValue = JOptionPane.showOptionDialog(null, GO_TO_MAIN_MENU_ALL_PROGRESS_WILL_BE_LOST, SUDOKUH, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, new String[]{YES, NO}, NO);
+        int selectedValue = JOptionPane.showOptionDialog(null, GO_TO_MAIN_MENU_ALL_PROGRESS_WILL_BE_LOST,
+                SUDOKUH, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, new String[]{YES, NO}, NO);
 
-        //Button Events
+        // Button Events
         if (selectedValue == YES_OPTION) {
             frame.dispose();
             try {
@@ -28,8 +30,7 @@ public final class PopUpWindow {
                 e.printStackTrace();
             }
             new MainMenu();
-        }
-        if ((selectedValue == NO_OPTION || selectedValue == CLOSED_OPTION) && frame.getPlayPresenter() != null) {
+        } else if ((selectedValue == NO_OPTION || selectedValue == CLOSED_OPTION) && frame.getPlayPresenter() != null) {
             frame.getPlayPresenter().resumeTimer();
         }
     }
