@@ -89,7 +89,9 @@ public final class SolveStr8tsPresenter extends SolvePresenter {
             }
             case CHANGE_COLOR -> {
                 Str8ts.Color color = inGameViewScaffold.changeAndGetColor();
-                ((Str8ts) sudoku).setColor(clickedCell.getRow(), clickedCell.getColumn(), color);
+                if (!((Str8ts) sudoku).setColor(clickedCell.getRow(), clickedCell.getColumn(), color)) {
+                    inGameViewScaffold.changeAndGetColor();
+                }
             }
         }
     }
